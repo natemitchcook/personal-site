@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nate Cook</title>
+    <link rel="icon" type="image/png" href="favicon.png">
     <style>
         * {
             margin: 0;
@@ -26,6 +27,21 @@
 
         header {
             margin-bottom: 80px;
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .header-content {
+            flex: 1;
+        }
+
+        .profile-photo {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
         }
 
         h1 {
@@ -151,6 +167,16 @@
                 padding: 60px 20px;
             }
 
+            header {
+                flex-direction: column-reverse;
+                gap: 24px;
+            }
+
+            .profile-photo {
+                width: 120px;
+                height: 120px;
+            }
+
             h1 {
                 font-size: 28px;
             }
@@ -164,46 +190,83 @@
 <body>
     <div class="container">
         <header>
-            <h1>Hi, I'm Nate Cook</h1>
-            <p class="subtitle">
-                I build tools and systems that help teams ship faster. Currently working on developer experience and AI-powered workflows.
-            </p>
+            <div class="header-content">
+                <h1>Hi, I'm Nate Cook</h1>
+                <p class="subtitle">
+                    I build AI-powered tools that accelerate development workflows. My focus is on creating intelligent systems—from CLI tools and MCP servers to agentic frameworks—that help teams leverage AI effectively while maintaining quality and structure.
+                </p>
+            </div>
+            <img src="profile.png" alt="Nate Cook" class="profile-photo">
         </header>
 
         <section class="projects">
-            <h2 class="section-title">Selected Projects</h2>
+            <h2 class="section-title">Latest Work</h2>
             
             <article class="project-card">
-                <h3 class="project-title">Kiro CLI</h3>
-                <div class="project-meta">Developer Tools • 2025 - Present</div>
+                <h3 class="project-title">Office Hours Calendar</h3>
+                <div class="project-meta">Full-Stack Application • 2026</div>
                 <p class="project-description">
-                    AI-powered command-line interface for developers. Integrates with local development environments to provide intelligent code assistance and automation.
+                    Multi-team booking system deployed on internal infrastructure. Features AI-powered booking assistant, calendar integration, and team permission management. Handles real-time scheduling with automated notifications.
                 </p>
-                <span class="tag">TypeScript</span>
-                <span class="tag">AI/ML</span>
+                <span class="tag">React</span>
+                <span class="tag">AWS CDK</span>
+                <span class="tag">DynamoDB</span>
+                <span class="tag">Lambda</span>
+            </article>
+
+            <article class="project-card">
+                <h3 class="project-title">Test Account CLI</h3>
+                <div class="project-meta">Developer Tools • 2026</div>
+                <p class="project-description">
+                    Command-line tool for programmatic test account creation with credential-free authentication. Supports batch operations, multi-marketplace configuration, and local history management. Designed for both human developers and AI agents.
+                </p>
+                <span class="tag">Python</span>
                 <span class="tag">CLI</span>
+                <span class="tag">API Integration</span>
             </article>
 
             <article class="project-card">
-                <h3 class="project-title">Internal Developer Platform</h3>
-                <div class="project-meta">Infrastructure • 2024</div>
+                <h3 class="project-title">Chrome Extension for Account Management</h3>
+                <div class="project-meta">Browser Extension • 2025</div>
                 <p class="project-description">
-                    Built deployment pipelines and observability tools for engineering teams. Reduced deployment time by 60% and improved system reliability.
+                    Chrome extension streamlining test account creation across 13 international marketplaces. Features secure credential storage, account history tracking, and configurable attributes for rapid testing workflows.
                 </p>
+                <span class="tag">JavaScript</span>
+                <span class="tag">Chrome APIs</span>
+                <span class="tag">REST APIs</span>
+            </article>
+
+            <article class="project-card">
+                <h3 class="project-title">AI Literacy Assessment Platform</h3>
+                <div class="project-meta">Interactive Application • 2025</div>
+                <p class="project-description">
+                    Real-time assessment tool for evaluating AI literacy in teams. Built with React and deployed on internal infrastructure, featuring live presentation dashboards and team analytics for measuring AI adoption readiness.
+                </p>
+                <span class="tag">React</span>
+                <span class="tag">Tailwind CSS</span>
                 <span class="tag">AWS</span>
-                <span class="tag">Kubernetes</span>
-                <span class="tag">DevOps</span>
             </article>
 
             <article class="project-card">
-                <h3 class="project-title">API Gateway Service</h3>
-                <div class="project-meta">Backend • 2023</div>
+                <h3 class="project-title">Developer API Capabilities Package</h3>
+                <div class="project-meta">AI Agent Framework • 2026</div>
                 <p class="project-description">
-                    Designed and implemented a high-throughput API gateway handling 10M+ requests daily. Focused on security, rate limiting, and observability.
+                    Structured documentation and agent specifications enabling consistent API development patterns. Includes pre-configured agents, standard operating procedures, and context files for authentication, rate limiting, and API design.
                 </p>
-                <span class="tag">Go</span>
-                <span class="tag">Redis</span>
-                <span class="tag">Microservices</span>
+                <span class="tag">Agent Design</span>
+                <span class="tag">Documentation</span>
+                <span class="tag">Standards</span>
+            </article>
+
+            <article class="project-card">
+                <h3 class="project-title">AI Agent Steering Documents</h3>
+                <div class="project-meta">Framework Development • 2025 - Present</div>
+                <p class="project-description">
+                    Reusable steering documents and agent specifications that enable consistent code generation across projects. Establishes patterns for product requirements, technical architecture, and project structure that AI agents can follow reliably.
+                </p>
+                <span class="tag">Agent Architecture</span>
+                <span class="tag">MCP</span>
+                <span class="tag">Standards</span>
             </article>
         </section>
 
@@ -211,24 +274,47 @@
             <h2 class="section-title">Work Experience</h2>
             
             <div class="work-item">
-                <div class="work-title">Senior Software Engineer</div>
-                <div class="work-company">Amazon Web Services</div>
-                <div class="work-period">2023 - Present</div>
+                <div class="work-title">Product - AI Accelerator</div>
+                <div class="work-company">Audible</div>
+                <div class="work-period">Oct 2025 - Present</div>
             </div>
 
             <div class="work-item">
-                <div class="work-title">Software Engineer</div>
-                <div class="work-company">Tech Startup</div>
-                <div class="work-period">2021 - 2023</div>
+                <div class="work-title">Director, Global Marketing Web Development</div>
+                <div class="work-company">Audible</div>
+                <div class="work-period">Apr 2021 - Oct 2025</div>
+            </div>
+
+            <div class="work-item">
+                <div class="work-title">Sr. Web Development Engineer II</div>
+                <div class="work-company">Audible</div>
+                <div class="work-period">May 2018 - Apr 2021</div>
+            </div>
+
+            <div class="work-item">
+                <div class="work-title">Web Development Engineer</div>
+                <div class="work-company">Audible</div>
+                <div class="work-period">Jul 2015 - May 2018</div>
+            </div>
+
+            <div class="work-item">
+                <div class="work-title">Web Team Manager</div>
+                <div class="work-company">Liferay, Inc.</div>
+                <div class="work-period">Aug 2014 - Jul 2015</div>
+            </div>
+
+            <div class="work-item">
+                <div class="work-title">Front-End Software Engineer</div>
+                <div class="work-company">Liferay, Inc.</div>
+                <div class="work-period">Nov 2011 - Aug 2014</div>
             </div>
         </section>
 
         <footer>
-            <div class="connect">Feel free to reach out at nate@example.com</div>
+            <div class="connect">Feel free to reach out at natemitchcook@gmail.com</div>
             <div class="links">
-                <a href="https://github.com/nccook" target="_blank">GitHub</a>
+                <a href="https://github.com/natemitchcook" target="_blank">GitHub</a>
                 <a href="https://linkedin.com/in/natemitchcook" target="_blank">LinkedIn</a>
-                <a href="https://twitter.com/nccook" target="_blank">Twitter</a>
             </div>
         </footer>
     </div>
