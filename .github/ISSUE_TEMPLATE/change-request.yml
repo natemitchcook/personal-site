@@ -1,28 +1,27 @@
-name: Website Change Request
-description: Propose a change to natemitchcook.com. An AI agent will generate a PR for review.
-title: "[Change Request] "
-labels: ["change-request"]
+name: Suggest a Change
+description: Suggest a change to the site. For best results, have your AI agent fork the repo and open a PR directly (see AGENTS.md).
+title: "[Suggestion] "
+labels: ["suggestion"]
 body:
+  - type: markdown
+    attributes:
+      value: |
+        **Prefer opening a PR directly!** This repo is designed for agent-driven contributions.
+        Fork it, read `AGENTS.md`, make your edit, and submit a PR.
+
+        Use this form only if you want to suggest something without making the change yourself.
   - type: textarea
     id: description
     attributes:
       label: What should change?
-      description: Describe the change you'd like to see on the site. Be specific about what page, section, or content to modify.
-      placeholder: "e.g., Add a new project card for my open-source library X with description Y"
+      description: Describe the change you'd like to see.
+      placeholder: "e.g., Add a new project card for X, fix the typo in Y, improve Z"
     validations:
       required: true
-  - type: textarea
-    id: context
-    attributes:
-      label: Additional context
-      description: Any links, screenshots, or details that help clarify the request.
-    validations:
-      required: false
   - type: input
     id: requester
     attributes:
       label: Who are you?
-      description: Name or handle so I know who suggested this.
-      placeholder: "e.g., @username or Your Name"
+      placeholder: "@username or your name"
     validations:
       required: false

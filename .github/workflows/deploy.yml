@@ -37,7 +37,10 @@ jobs:
             --content-type "text/html" \
             --metadata-directive REPLACE
           aws s3 cp s3://natemitchcook.com/llms.txt s3://natemitchcook.com/llms.txt \
-            --content-type "text/plain" \
+            --content-type "text/plain; charset=utf-8" \
+            --metadata-directive REPLACE
+          aws s3 cp s3://natemitchcook.com/AGENTS.md s3://natemitchcook.com/AGENTS.md \
+            --content-type "text/markdown; charset=utf-8" \
             --metadata-directive REPLACE
           for img in $(aws s3 ls s3://natemitchcook.com/ --recursive | grep '\.png$' | awk '{print $4}'); do
             aws s3 cp "s3://natemitchcook.com/$img" "s3://natemitchcook.com/$img" \

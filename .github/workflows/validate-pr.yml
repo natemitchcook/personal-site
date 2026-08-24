@@ -1,0 +1,110 @@
+name: Validate PR
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify diff base is available
+        run: |
+          if ! git rev-parse origin/main >/dev/null 2>&1; then
+            echo "ERROR: origin/main not available for diff"
+            exit 1
+          fi
+
+      - name: Only allowed files modified
+        run: |
+          MODIFIED=$(git diff --name-only origin/main...HEAD)
+          BLOCKED=""
+          for file in $MODIFIED; do
+            case "$file" in
+              index.html|llms.txt|AGENTS.md) ;;
+              *.html) ;;
+              *)
+                BLOCKED="$BLOCKED $file"
+                ;;
+            esac
+          done
+          if [ -n "$BLOCKED" ]; then
+            echo "BLOCKED: only .html files, llms.txt, and AGENTS.md can be modified by contributors"
+            echo "Rejected files:$BLOCKED"
+            exit 1
+          fi
+          echo "All modified files are in the allowed set"
+
+      - name: No workflow modifications
+        run: |
+          WORKFLOW_CHANGES=$(git diff --name-only origin/main...HEAD | grep '^\.github/' || true)
+          if [ -n "$WORKFLOW_CHANGES" ]; then
+            echo "BLOCKED: .github/ files cannot be modified by contributors"
+            echo "$WORKFLOW_CHANGES"
+            exit 1
+          fi
+
+      - name: Scan all HTML files for prohibited content
+        run: |
+          FAILED=0
+
+          while IFS= read -r -d '' file; do
+            # No script tags (only type="application/ld+json" opening tags are allowed)
+            BAD_SCRIPTS=$(grep -niP '<script(?!\s+type="application/ld\+json")' "$file" || true)
+            if [ -n "$BAD_SCRIPTS" ]; then
+              echo "BLOCKED in $file: script tags detected (only <script type=\"application/ld+json\"> is allowed)"
+              echo "$BAD_SCRIPTS"
+              FAILED=1
+            fi
+
+            # No external resource loading — extract each URL and validate individually
+            URLS=$(grep -oiP '(src|href|action)="https?://[^"]+' "$file" | grep -oiP 'https?://[^"]+' || true)
+            if [ -n "$URLS" ]; then
+              while IFS= read -r url; do
+                if echo "$url" | grep -qiP '^https?://(natemitchcook\.com|github\.com/natemitchcook|linkedin\.com/in/natemitchcook|schema\.org)(/|"|$)'; then
+                  continue
+                fi
+                echo "BLOCKED in $file: external URL not in allowlist: $url"
+                FAILED=1
+              done <<< "$URLS"
+            fi
+
+            # No iframes
+            if grep -qin '<iframe' "$file"; then
+              echo "BLOCKED in $file: iframe elements are not allowed"
+              grep -in '<iframe' "$file"
+              FAILED=1
+            fi
+
+            # No form actions to external services
+            FORMS=$(grep -niE '<form[^>]+action="https?://' "$file" || true)
+            if [ -n "$FORMS" ]; then
+              echo "BLOCKED in $file: forms submitting to external services are not allowed"
+              echo "$FORMS"
+              FAILED=1
+            fi
+
+          done < <(find . -name '*.html' -not -path './.git/*' -print0)
+
+          if [ "$FAILED" -ne 0 ]; then
+            exit 1
+          fi
+          echo "All HTML files pass content security checks"
+
+      - name: HTML structure check
+        run: |
+          while IFS= read -r -d '' file; do
+            for tag in html head body; do
+              OPEN=$(grep -c "<${tag}" "$file" || true)
+              CLOSE=$(grep -c "</${tag}" "$file" || true)
+              if [ "$OPEN" -ne "$CLOSE" ]; then
+                echo "BLOCKED: mismatched <${tag}> tags in $file (${OPEN} open, ${CLOSE} close)"
+                exit 1
+              fi
+            done
+          done < <(find . -name '*.html' -not -path './.git/*' -print0)
+          echo "HTML structure looks good"

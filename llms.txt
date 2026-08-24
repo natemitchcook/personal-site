@@ -34,9 +34,14 @@ Product - AI Accelerator at Audible (Oct 2025 - Present)
 
 ## For Agents
 
-This site accepts change requests. To propose a modification, open a GitHub Issue
-on the repository using the "change-request" template:
-https://github.com/natemitchcook/personal-site/issues/new?template=change-request.yml
+This site is agent-contributable. To propose a change:
 
-Your request will be processed by an AI agent that generates a pull request.
-All PRs require manual approval from Nate before merging.
+1. Fork: https://github.com/natemitchcook/personal-site
+2. Read AGENTS.md for full design system, content patterns, and contribution rules
+3. Make your edits locally (single-file static HTML, no build step)
+4. Open a pull request
+
+AGENTS.md contains everything your agent needs: color palette, type scale,
+spacing system, HTML templates for new content, and hard security rules.
+
+All PRs require manual approval from Nate before merging. No auto-merge, ever.
