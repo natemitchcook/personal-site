@@ -1,0 +1,28 @@
+name: Website Change Request
+description: Propose a change to natemitchcook.com. An AI agent will generate a PR for review.
+title: "[Change Request] "
+labels: ["change-request"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: What should change?
+      description: Describe the change you'd like to see on the site. Be specific about what page, section, or content to modify.
+      placeholder: "e.g., Add a new project card for my open-source library X with description Y"
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Any links, screenshots, or details that help clarify the request.
+    validations:
+      required: false
+  - type: input
+    id: requester
+    attributes:
+      label: Who are you?
+      description: Name or handle so I know who suggested this.
+      placeholder: "e.g., @username or Your Name"
+    validations:
+      required: false

@@ -1,0 +1,52 @@
+name: Deploy to S3
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::589005473076:role/github-actions-deploy
+          aws-region: us-east-1
+
+      - name: Sync to S3
+        run: |
+          aws s3 sync . s3://natemitchcook.com \
+            --exclude ".git/*" \
+            --exclude ".github/*" \
+            --exclude "deploy.sh" \
+            --exclude "README.md" \
+            --exclude "DEPLOY.md" \
+            --exclude "setup-oidc.sh" \
+            --delete
+
+      - name: Set content types
+        run: |
+          aws s3 cp s3://natemitchcook.com/index.html s3://natemitchcook.com/index.html \
+            --content-type "text/html" \
+            --metadata-directive REPLACE
+          aws s3 cp s3://natemitchcook.com/llms.txt s3://natemitchcook.com/llms.txt \
+            --content-type "text/plain" \
+            --metadata-directive REPLACE
+          for img in $(aws s3 ls s3://natemitchcook.com/ --recursive | grep '\.png$' | awk '{print $4}'); do
+            aws s3 cp "s3://natemitchcook.com/$img" "s3://natemitchcook.com/$img" \
+              --content-type "image/png" \
+              --metadata-directive REPLACE
+          done
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id EKTOMPVYYAD6U \
+            --paths "/*"

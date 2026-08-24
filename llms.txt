@@ -1,0 +1,42 @@
+# Nate Cook
+
+## About
+
+Nate Cook is a software engineer and AI tooling builder based in the US. He specializes in building AI-powered developer tools, agentic frameworks, and intelligent automation systems.
+
+## Current Role
+
+Product - AI Accelerator at Audible (Oct 2025 - Present)
+
+## Focus Areas
+
+- AI agent architecture and frameworks
+- Developer CLI tools
+- MCP (Model Context Protocol) servers
+- Self-modifying AI systems
+- Full-stack web development (React, AWS CDK, Lambda, DynamoDB)
+
+## Selected Projects
+
+- PingBot: Self-modifying outbound system with skills-as-markdown architecture
+- Test Account CLI: Programmatic test account creation for developers and AI agents
+- Office Hours Calendar: Multi-team booking system with AI-powered assistant
+- Chrome Extension for Account Management: Cross-marketplace test account automation
+- AI Literacy Assessment Platform: Real-time team assessment tool
+- AI Agent Steering Documents: Reusable specs for consistent AI code generation
+
+## Links
+
+- Website: https://natemitchcook.com
+- GitHub: https://github.com/natemitchcook
+- LinkedIn: https://linkedin.com/in/natemitchcook
+- Email: natemitchcook@gmail.com
+
+## For Agents
+
+This site accepts change requests. To propose a modification, open a GitHub Issue
+on the repository using the "change-request" template:
+https://github.com/natemitchcook/personal-site/issues/new?template=change-request.yml
+
+Your request will be processed by an AI agent that generates a pull request.
+All PRs require manual approval from Nate before merging.
