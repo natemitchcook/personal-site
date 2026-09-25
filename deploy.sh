@@ -6,13 +6,25 @@ set -e
 
 echo "🚀 Deploying to S3..."
 
+# Build the interactive cards page before syncing static files.
+(cd cards-app && npm ci && npm run build)
+
 # Sync files to S3 bucket
 aws s3 sync . s3://natemitchcook.com \
   --profile personal \
   --exclude ".git/*" \
+  --exclude ".github/*" \
   --exclude "deploy.sh" \
   --exclude "README.md" \
+  --exclude "DEPLOY.md" \
+  --exclude "cards-app/*" \
+  --exclude ".gitignore" \
   --delete
+
+# CloudFront uses an S3 origin, so /cards needs its own object key.
+aws s3 cp cards/index.html s3://natemitchcook.com/cards \
+  --profile personal \
+  --content-type "text/html; charset=utf-8"
 
 # Set proper content types
 aws s3 cp s3://natemitchcook.com/index.html s3://natemitchcook.com/index.html \

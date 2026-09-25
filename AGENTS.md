@@ -2,6 +2,8 @@
 
 This file is written for AI agents. If your user wants to suggest a change to this site, you (the agent) should fork the repo, make the edit locally, and open a pull request. Nate reviews and merges all PRs manually.
 
+The rules below protect the root résumé homepage and unsolicited contributions. The owner has separately authorized the interactive travel card guide under `cards-app/`, including its referral links and the build/deploy steps in `.github/workflows/deploy.yml`. Do not apply the homepage's single-file and no-script restrictions to that separate page. Owner-directed changes to the cards app or its deployment follow the owner's current request.
+
 ## Quick Start
 
 ```bash

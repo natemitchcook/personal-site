@@ -1,0 +1,49 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "../vendor/shadcn-tailwind-4.13.0.css";
+
+:root {
+  --background: #f5f4f0; --foreground: #282827; --card: #fffefa; --card-foreground: #282827;
+  --popover: #fffefa; --popover-foreground: #282827; --primary: #242321; --primary-foreground: #faf9f6;
+  --secondary: #ebe9e3; --secondary-foreground: #282827; --muted: #ebe9e3; --muted-foreground: #66645f;
+  --accent: #ebe9e3; --accent-foreground: #282827; --destructive: #c7283e; --border: #d7d5ce;
+  --input: #d7d5ce; --ring: #b193df; --chart-1: #b193df; --chart-2: #e2a9b7; --chart-3: #8bd0c9;
+  --chart-4: #d3d58e; --chart-5: #83799c; --radius: .75rem;
+  --sidebar: #f5f4f0; --sidebar-foreground: #282827; --sidebar-primary: #242321;
+  --sidebar-primary-foreground: #faf9f6; --sidebar-accent: #ebe9e3; --sidebar-accent-foreground: #282827;
+  --sidebar-border: #d7d5ce; --sidebar-ring: #b193df;
+}
+.dark {
+  --background: #131313; --foreground: #f4f2ed; --card: #1d1d1c; --card-foreground: #f4f2ed;
+  --popover: #242321; --popover-foreground: #f4f2ed; --primary: #d5b8ff; --primary-foreground: #161515;
+  --secondary: #2d2c2b; --secondary-foreground: #f4f2ed; --muted: #333230; --muted-foreground: #aaa9a4;
+  --accent: #373530; --accent-foreground: #f4f2ed; --destructive: #fa7284; --border: #ffffff28;
+  --input: #ffffff2a; --ring: #d5b8ff; --sidebar: #181817; --sidebar-foreground: #f4f2ed;
+  --sidebar-primary: #d5b8ff; --sidebar-primary-foreground: #161515; --sidebar-accent: #2d2c2b;
+  --sidebar-accent-foreground: #f4f2ed; --sidebar-border: #ffffff28; --sidebar-ring: #d5b8ff;
+}
+@theme inline {
+  --color-background: var(--background); --color-foreground: var(--foreground); --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground); --color-popover: var(--popover); --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary); --color-primary-foreground: var(--primary-foreground); --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground); --color-muted: var(--muted); --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent); --color-accent-foreground: var(--accent-foreground); --color-destructive: var(--destructive);
+  --color-border: var(--border); --color-input: var(--input); --color-ring: var(--ring); --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2); --color-chart-3: var(--chart-3); --color-chart-4: var(--chart-4); --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar); --color-sidebar-foreground: var(--sidebar-foreground); --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground); --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground); --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring); --radius-sm: calc(var(--radius) - 4px); --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius); --radius-xl: calc(var(--radius) + 4px); --font-sans: Arial, Helvetica, sans-serif;
+}
+html { scroll-behavior: smooth; }
+body { background: #f5f4f0; color: #282827; font-family: Arial, Helvetica, sans-serif; }
+.paper-shell { background: #f5f4f0; color: #373633; }
+.editorial-title { font-family: Georgia, "Times New Roman", serif; font-weight: 400; }
+.marker-underline { font-weight: inherit; position: relative; z-index: 0; white-space: nowrap; }
+.marker-underline::after { content: ""; position: absolute; z-index: -1; left: 2%; right: -1%; bottom: .05em; height: .13em; border-radius: 100%; transform: rotate(-1deg); background: linear-gradient(90deg,#f1b1c4 0%,#d4bae9 54%,#add9d4 100%); opacity: .8; }
+.spectral-rule { height: 2px; background: linear-gradient(90deg,transparent 6%,#ddacc5 28%,#9e90d8 56%,#8ed2c5 76%,transparent 95%); opacity: .82; }
+.ambient-glow { pointer-events: none; position: absolute; right: -10%; top: -250px; width: 650px; height: 550px; background: radial-gradient(ellipse at center,rgba(127,89,151,.15),transparent 65%); }
+.iridescent-text { background: linear-gradient(110deg,#f0b7d2 0%,#c7b5f5 50%,#8bd6c7 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+@media (prefers-reduced-motion: no-preference) { .tab-transition { transition: color .2s ease, background .2s ease; } }
+@media (max-width: 450px) { .marker-underline { white-space: normal; } }

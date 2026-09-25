@@ -1,0 +1,478 @@
+{
+  "reserve": {
+    "name": "Chase Sapphire Reserve",
+    "fee": 795,
+    "subtitle": "The travel credit is broad. Most other credits have narrower rules.",
+    "url": "https://creditcards.chase.com/rewards-credit-cards/sapphire/reserve",
+    "perks": [
+      [
+        "General travel credit",
+        300,
+        "Each account year on eligible travel purchases; credited purchases do not earn points.",
+        300
+      ],
+      [
+        "The Edit hotel credit",
+        500,
+        "Up to $250 per prepaid stay, twice yearly. Two-night minimum through Chase Travel; compare rates."
+      ],
+      [
+        "Sapphire Exclusive Tables dining",
+        300,
+        "Up to $150 in each half of the calendar year at select restaurants on OpenTable."
+      ],
+      [
+        "DoorDash promos",
+        300,
+        "Up to $25 monthly: $5 restaurants plus two $10 nonrestaurant offers. DashPass required; through 2027."
+      ],
+      [
+        "StubHub / viagogo",
+        300,
+        "Up to $150 each half-year. Activation required; through 2027."
+      ],
+      [
+        "Apple TV + Apple Music",
+        288,
+        "Issuer annualized subscription value. Ends June 22, 2027; count only subscriptions you would pay for."
+      ],
+      [
+        "Lyft in-app credits",
+        120,
+        "Up to $10 monthly on eligible rides through September 2027."
+      ],
+      [
+        "Peloton membership",
+        120,
+        "Up to $10 monthly. Activation required; through 2027."
+      ],
+      [
+        "DashPass membership",
+        120,
+        "Issuer value for 12 months; count only if you would otherwise buy it. Activate by end of 2027."
+      ]
+    ],
+    "extras": [
+      [
+        "Select Chase Travel hotels in 2026",
+        "Up to $250",
+        "Prepaid, eligible brand, two-night stay. Ends December 31, 2026; not recurring."
+      ],
+      [
+        "Lounge access",
+        "Your use determines value",
+        "Chase Sapphire Lounges and Priority Pass. Chase estimates $850+ for multiple visits; not a cash credit."
+      ],
+      [
+        "Global Entry / TSA PreCheck / NEXUS",
+        "Up to $120 / 4 years",
+        "Application fee reimbursement once every four years."
+      ],
+      [
+        "The Edit stay extras",
+        "Issuer estimate: $550+ / stay",
+        "Breakfast, property credit and possible upgrades. Do not automatically add this to the hotel credit."
+      ],
+      [
+        "Travel insurance",
+        "Coverage depends on a claim",
+        "Trip delay, cancellation and rental coverage under policy terms; coverage ceilings are not savings."
+      ]
+    ],
+    "welcome": {
+      "headline": "100,000 Chase points",
+      "detail": "After $6,000 in purchases in the first 3 months. Public offer; a referral application may show different terms."
+    },
+    "referralUrl": "https://www.referyourchasecard.com/19y/BSE5VI162U"
+  },
+  "preferred": {
+    "name": "Chase Sapphire Preferred",
+    "fee": 95,
+    "subtitle": "Fewer credits and a lower annual fee.",
+    "url": "https://creditcards.chase.com/rewards-credit-cards/sapphire/preferred",
+    "perks": [
+      [
+        "Chase Travel hotel credit",
+        100,
+        "Eligible hotels booked through Chase Travel each account anniversary year."
+      ],
+      [
+        "DoorDash promo",
+        120,
+        "Up to $10 monthly on eligible nonrestaurant purchases with DashPass through 2027."
+      ]
+    ],
+    "extras": [
+      [
+        "DashPass membership",
+        "Stated $120 / 12 months",
+        "Complimentary membership if activated by end of 2027."
+      ],
+      [
+        "Apple TV",
+        "Stated $156 / one year",
+        "One year complimentary if activated by December 31, 2026."
+      ],
+      [
+        "Global Entry / TSA PreCheck / NEXUS",
+        "Up to $120 / 4 years",
+        "One application fee reimbursement every four years."
+      ],
+      [
+        "Points earning and transfers",
+        "Depends on spending",
+        "Transferable points; 5× on Chase Travel and 3× dining and select categories."
+      ]
+    ],
+    "welcome": {
+      "headline": "75,000 Chase points",
+      "detail": "After $5,000 in purchases in the first 3 months."
+    }
+  },
+  "venturex": {
+    "name": "Capital One Venture X",
+    "fee": 395,
+    "subtitle": "The portal credit is valuable if its bookings suit you.",
+    "url": "https://www.capitalone.com/credit-cards/compare/",
+    "perks": [
+      [
+        "Capital One Travel credit",
+        300,
+        "Annual credit for bookings through Capital One Travel, not a general travel statement credit."
+      ]
+    ],
+    "extras": [
+      [
+        "Anniversary miles",
+        "10,000 miles / year",
+        "Starts after the first anniversary; worth $100 toward eligible travel at 1¢ per mile."
+      ],
+      [
+        "Airport lounges",
+        "Your use determines value",
+        "Capital One Lounges and Priority Pass; check locations and guest rules."
+      ],
+      [
+        "Everyday earning",
+        "2× miles / $1",
+        "Dollar value depends on spend and redemption."
+      ]
+    ],
+    "welcome": {
+      "headline": "75,000 Capital One miles",
+      "detail": "After $4,000 in purchases in the first 3 months."
+    }
+  },
+  "venture": {
+    "name": "Capital One Venture",
+    "fee": 95,
+    "subtitle": "Its headline hotel credit applies in the first year only.",
+    "url": "https://www.capitalone.com/credit-cards/venture/",
+    "perks": [],
+    "extras": [
+      [
+        "First-year stays credit",
+        "Up to $300 / first year",
+        "Eligible hotel or vacation-rental bookings through Capital One Travel; not recurring."
+      ],
+      [
+        "Global Entry / TSA PreCheck",
+        "Up to $120 / application",
+        "Eligible application fee reimbursement, subject to issuer terms."
+      ],
+      [
+        "Lifestyle Collection",
+        "$50 / eligible stay",
+        "Experience credit for qualifying bookings; no fixed annual amount."
+      ],
+      [
+        "Everyday earning",
+        "2× miles / $1",
+        "Dollar value depends on spend and redemption."
+      ]
+    ],
+    "welcome": {
+      "headline": "75,000 Capital One miles",
+      "detail": "After $4,000 in purchases in the first 3 months. The separate first-year $300 Capital One Travel Stays credit appears under other benefits."
+    }
+  },
+  "gold": {
+    "name": "American Express Gold",
+    "fee": 325,
+    "subtitle": "The credits add up, but most expire monthly or half-yearly.",
+    "url": "https://www.americanexpress.com/us/credit-cards/card/gold-card/",
+    "perks": [
+      [
+        "Dining credit",
+        120,
+        "Up to $10 monthly at participating restaurants and services; enrollment required."
+      ],
+      [
+        "Uber Cash",
+        120,
+        "Up to $10 monthly on eligible U.S. rides or orders after adding the card to Uber."
+      ],
+      [
+        "Resy credit",
+        100,
+        "Up to $50 each half-year at qualifying U.S. restaurants; enrollment required."
+      ],
+      [
+        "Dunkin’ credit",
+        84,
+        "Up to $7 monthly at U.S. Dunkin’ locations; enrollment required."
+      ]
+    ],
+    "extras": [
+      [
+        "Dining and grocery earning",
+        "4× points / $1",
+        "Restaurants worldwide and U.S. supermarkets, subject to caps; value depends on redemption."
+      ],
+      [
+        "The Hotel Collection",
+        "$100 / eligible stay",
+        "Credit on eligible stays of at least two nights, not a general annual credit."
+      ]
+    ],
+    "welcome": {
+      "headline": "As high as 100,000 Amex points",
+      "detail": "After $8,000 in purchases in the first 6 months. Apply to learn your personalized offer; it may be lower or unavailable."
+    },
+    "referralUrl": "https://americanexpress.com/en-us/referral/gold-card?ref=NATHACqMg9&XL=MIMNS"
+  },
+  "platinum": {
+    "name": "American Express Platinum",
+    "fee": 895,
+    "subtitle": "A large menu of credits. The useful total depends on eligible hotels, dining, subscriptions and travel you already buy.",
+    "url": "https://global.americanexpress.com/card-benefits/view-all/platinum",
+    "perks": [
+      [
+        "Hotel credit",
+        600,
+        "$300 Jan–Jun and $300 Jul–Dec on prepaid Fine Hotels + Resorts or The Hotel Collection through Amex Travel. The Hotel Collection requires two nights."
+      ],
+      [
+        "Resy dining credit",
+        400,
+        "Up to $100 each quarter at qualifying U.S. Resy restaurants and eligible Resy purchases; enrollment required."
+      ],
+      [
+        "Digital entertainment credit",
+        300,
+        "Up to $25 monthly on eligible subscriptions from select providers; direct billing and enrollment required."
+      ],
+      [
+        "lululemon credit",
+        300,
+        "Up to $75 each quarter at eligible U.S. stores or lululemon.com; enrollment required."
+      ],
+      [
+        "Equinox credit",
+        300,
+        "Up to $300 each calendar year for an eligible Equinox club membership or Equinox+ subscription; enrollment required."
+      ],
+      [
+        "CLEAR+ credit",
+        219,
+        "Up to $219 each calendar year for an auto-renewing CLEAR+ membership, excluding taxes and fees."
+      ],
+      [
+        "Airline incidental fee credit",
+        200,
+        "Up to $200 each calendar year for eligible fees from one selected qualifying airline; airline tickets do not qualify."
+      ],
+      [
+        "Uber Cash",
+        200,
+        "$15 monthly plus $20 extra in December for U.S. rides or Uber Eats; add the card and select an Amex card when paying."
+      ],
+      [
+        "Oura Ring credit",
+        200,
+        "Up to $200 each calendar year on a ring purchased at ouraring.com; enrollment required. Count it only in years you would buy a ring."
+      ],
+      [
+        "Walmart+ membership credit",
+        155,
+        "Up to $12.95 plus applicable tax monthly for one auto-renewing Walmart+ membership; Plus Ups excluded."
+      ],
+      [
+        "Uber One membership credit",
+        120,
+        "Up to $120 per calendar year for an eligible auto-renewing Uber One membership charged to the card."
+      ]
+    ],
+    "extras": [
+      [
+        "Global Lounge Collection",
+        "Access; value varies",
+        "Centurion Lounges, Priority Pass Select with enrollment, 10 Delta Sky Club visits per year on eligible Delta flights, and select partner lounges. Guest and entry rules apply."
+      ],
+      [
+        "Fine Hotels + Resorts",
+        "$550 average / eligible stay",
+        "Amex-reported average suite value includes breakfast, an on-property credit, 4 p.m. checkout and possible upgrades. Actual value varies; do not add the full figure automatically to the hotel credit."
+      ],
+      [
+        "Hotel elite status",
+        "Value varies",
+        "Enrollment for Hilton Honors Gold, Marriott Bonvoy Gold Elite and Leading Hotels of the World Leaders Club Sterling; upgrades and perks depend on availability."
+      ],
+      [
+        "Global Entry / TSA PreCheck",
+        "Up to $120 / 4 years",
+        "Application fee credit for Global Entry or up to $85 for a five-year TSA PreCheck application under issuer terms."
+      ],
+      [
+        "SoulCycle at-home bike",
+        "$300 / eligible bike",
+        "Statement credit on a qualifying full-price bike purchase at Equinox+; a 12-month Equinox+ membership is required. Count only if buying a bike."
+      ],
+      [
+        "Flights and prepaid hotels",
+        "5× Membership Rewards points",
+        "Eligible flights booked directly or through Amex Travel, up to $500,000 per calendar year; prepaid hotels booked through Amex Travel."
+      ],
+      [
+        "Hotel, cruise and flight programs",
+        "Booking-dependent",
+        "The Hotel Collection, International Airline Program, Cruise Privileges Program, Platinum Destinations Vacations and Amex travel service offer eligible booking perks."
+      ],
+      [
+        "Dining and experiences",
+        "Availability-dependent",
+        "Global Dining Access by Resy, Platinum Nights and select member experiences; no guaranteed cash value."
+      ],
+      [
+        "Car rental privileges",
+        "Value varies",
+        "Enrollment-based status or benefits with participating rental partners; terms differ by program."
+      ],
+      [
+        "Travel protections",
+        "Claims-dependent",
+        "Trip delay, cancellation/interruption, baggage, car rental coverage and Premium Global Assist, each subject to policy and eligible payment rules."
+      ],
+      [
+        "Shopping and phone protection",
+        "Claims-dependent",
+        "Purchase, return, extended warranty and cell phone protection under separate terms; a coverage limit is not a saving."
+      ],
+      [
+        "Other member services",
+        "Value varies",
+        "Amex Offers, concierge and fraud assistance. No foreign transaction fees on eligible purchases."
+      ]
+    ],
+    "welcome": {
+      "headline": "As high as 175,000 Amex points",
+      "detail": "After $12,000 in purchases in the first 6 months. Apply to learn your personalized offer; it may be lower or unavailable."
+    },
+    "referralUrl": "https://americanexpress.com/en-us/referral/platinum-card?ref=NATHAC7QXK&XL=MIMNS"
+  },
+  "bilt": {
+    "name": "Bilt Blue",
+    "fee": 0,
+    "subtitle": "There is no fixed recurring cash credit; housing points depend on card spending.",
+    "url": "https://support.biltrewards.com/hc/en-us/articles/42897766682381-Bilt-Card-2-0-Program-Overview",
+    "perks": [],
+    "extras": [
+      [
+        "Rent and mortgage payment",
+        "No transaction fee",
+        "Pay through Bilt without a housing transaction fee."
+      ],
+      [
+        "Housing rewards",
+        "Up to 1.25× points",
+        "Housing-only choice scales with everyday card spending; another choice uses Bilt Cash to unlock up to 1×."
+      ],
+      [
+        "Everyday earning",
+        "1× point / $1",
+        "Points on eligible purchases; value depends on spending and redemption."
+      ]
+    ],
+    "welcome": {
+      "headline": "$100 in Bilt Cash",
+      "detail": "Awarded when approved, for eligible Bilt ecosystem redemptions; it is not cash back."
+    },
+    "referralUrl": "https://www.bilt.com/card?invite=KRZSF27J"
+  },
+  "palladium": {
+    "name": "Bilt Palladium",
+    "fee": 495,
+    "subtitle": "Housing payments have no transaction fee, but earning housing points depends on your rewards choice and other card spending.",
+    "url": "https://www.bilt.com/card",
+    "perks": [
+      [
+        "Bilt Travel Hotel credit",
+        400,
+        "Two $200 credits per year on qualifying Bilt Travel Portal hotel bookings; each stay requires at least two nights."
+      ],
+      [
+        "Annual Bilt Cash",
+        200,
+        "Issued annually for eligible Bilt ecosystem redemptions, not cash back. Up to $100 carries into the next calendar year; value the uses you actually have."
+      ]
+    ],
+    "extras": [
+      [
+        "Priority Pass lounge access",
+        "Issuer comparison: $469 / year",
+        "Complimentary cardholder membership with up to two guests per visit; additional guests cost $35 each. A membership price is not guaranteed savings."
+      ],
+      [
+        "Rent, mortgage and HOA payments",
+        "No transaction fee",
+        "Pay through Bilt even when the landlord or lender does not accept cards; housing reward eligibility follows Bilt program rules."
+      ],
+      [
+        "Housing-only rewards",
+        "Up to 1.25× points",
+        "At least 25%, 50%, 75% or 100% of housing amount in eligible card purchases earns 0.5×, 0.75×, 1× or 1.25× on housing, respectively."
+      ],
+      [
+        "Flexible Bilt Cash option",
+        "4% Bilt Cash on everyday spend",
+        "Choose instead of housing-only rewards. You may spend Bilt Cash across the ecosystem or use $30 to unlock 1,000 housing points, up to 1×. Do not count it twice."
+      ],
+      [
+        "Everyday and partner earning",
+        "2× base; up to 5× dining",
+        "2× other everyday purchases, up to 5× Bilt partner dining, 4× portal hotels, 3× portal flights and 4× Lyft after linking. Partner rates include base earn."
+      ],
+      [
+        "Rent Day",
+        "Up to 1,000 bonus points / month",
+        "On the first of each month, eligible everyday purchases earn double points (4× on Palladium); housing payments excluded."
+      ],
+      [
+        "Transfer partners",
+        "Value depends on redemption",
+        "Move Bilt Points to participating airline and hotel loyalty programs; availability and transfer ratios vary."
+      ],
+      [
+        "Travel protections",
+        "Claims-dependent",
+        "Trip cancellation/interruption, trip delay, baggage delay, lost or damaged luggage and secondary rental car coverage, subject to guide terms."
+      ],
+      [
+        "Purchases and phone",
+        "Claims-dependent",
+        "Purchase assurance, extended warranty, cell phone protection and price drop protection under guide terms."
+      ],
+      [
+        "Mastercard World Legend",
+        "Offers vary",
+        "The Mastercard Collection, merchant offers and enrolled ID theft protection. No foreign transaction fees."
+      ]
+    ],
+    "welcome": {
+      "headline": "50,000 Bilt points + Gold status",
+      "detail": "$4,000 in eligible purchases excluding housing in the first 90 days. Also $300 Bilt Cash upon approval; this is distinct from the recurring $200 annual Bilt Cash."
+    },
+    "referralUrl": "https://www.bilt.com/card?invite=KRZSF27J"
+  }
+}

@@ -6,7 +6,7 @@
 ./deploy.sh
 ```
 
-This uploads to S3 and sets proper content types.
+This uploads the root homepage files to S3. For the cards page, use the GitHub Actions workflow or build `cards-app` and upload its generated `cards/` directory and exact `/cards` object separately.
 
 ## CloudFront Cache Invalidation
 
@@ -19,6 +19,10 @@ aws cloudfront create-invalidation \
   --profile personal \
   --region us-east-1
 ```
+
+## Cards page
+
+The deployment workflow builds the React cards page from `cards-app/` and uploads `cards/index.html` and its versioned assets. It also copies the HTML to the S3 object key `cards` with `text/html` content type so `https://natemitchcook.com/cards` resolves through CloudFront's S3 origin. When deploying manually, build first, sync `cards/` to `s3://natemitchcook.com/cards/`, copy `cards/index.html` to `s3://natemitchcook.com/cards` with `--content-type 'text/html; charset=utf-8'`, then invalidate CloudFront. Keep generated assets available for any cached HTML until invalidation completes.
 
 ## Infrastructure Details
 

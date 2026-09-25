@@ -14,6 +14,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: cards-app/package-lock.json
+
+      - name: Build cards page
+        working-directory: cards-app
+        run: |
+          npm ci
+          npm run build
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -29,7 +41,14 @@ jobs:
             --exclude "README.md" \
             --exclude "DEPLOY.md" \
             --exclude "setup-oidc.sh" \
+            --exclude "cards-app/*" \
+            --exclude ".gitignore" \
             --delete
+
+      - name: Serve exact /cards URL
+        run: |
+          aws s3 cp cards/index.html s3://natemitchcook.com/cards \
+            --content-type "text/html; charset=utf-8"
 
       - name: Set content types
         run: |
