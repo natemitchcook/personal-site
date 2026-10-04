@@ -81,7 +81,7 @@
     ],
     "welcome": {
       "headline": "100,000 Chase points",
-      "detail": "After $6,000 in purchases in the first 3 months. Public offer; a referral application may show different terms."
+      "detail": "After $6,000 in purchases in the first 3 months. Public offer; a referral application may show different terms. Referral offer could not be verified on October 4, 2026; the offer above is public context, not a confirmed referral offer. Review your application terms."
     },
     "referralUrl": "https://www.referyourchasecard.com/19y/BSE5VI162U"
   },
@@ -121,7 +121,7 @@
       [
         "Points earning and transfers",
         "Depends on spending",
-        "Transferable points; 5× on Chase Travel and 3× dining and select categories."
+        "5× on Chase Travel; 3× dining, gas stations, EV charging, eligible vacation homes, select streaming and online groceries; 2× other travel and 1× other purchases. Category exclusions apply."
       ]
     ],
     "welcome": {
@@ -150,17 +150,17 @@
       [
         "Airport lounges",
         "Your use determines value",
-        "Capital One Lounges and Priority Pass; check locations and guest rules."
+        "Primary cardholder access to Capital One Lounges, Landings and enrolled Priority Pass. Priority Pass guests cost $35 each per visit; additional cardholder lounge access costs $125 annually."
       ],
       [
         "Everyday earning",
         "2× miles / $1",
-        "Dollar value depends on spend and redemption."
+        "2× other purchases; 10× hotels and rental cars and 5× flights and vacation rentals booked through Capital One Travel. Redemption value varies."
       ]
     ],
     "welcome": {
       "headline": "75,000 Capital One miles",
-      "detail": "After $4,000 in purchases in the first 3 months."
+      "detail": "After $4,000 in purchases in the first 3 months. Not eligible if you received a Venture X new-cardmember bonus in the past 48 months."
     }
   },
   "venture": {
@@ -193,7 +193,7 @@
     ],
     "welcome": {
       "headline": "75,000 Capital One miles",
-      "detail": "After $4,000 in purchases in the first 3 months. The separate first-year $300 Capital One Travel Stays credit appears under other benefits."
+      "detail": "After $4,000 in purchases in the first 3 months. The separate first-year $300 Capital One Travel Stays credit appears under other benefits. Not eligible if you received a Venture or Venture X new-cardmember bonus in the past 48 months."
     }
   },
   "gold": {
@@ -210,7 +210,7 @@
       [
         "Uber Cash",
         120,
-        "Up to $10 monthly on eligible U.S. rides or orders after adding the card to Uber."
+        "Up to $10 monthly for U.S. rides or orders after adding the card to Uber; select an Amex card for payment."
       ],
       [
         "Resy credit",
@@ -227,7 +227,7 @@
       [
         "Dining and grocery earning",
         "4× points / $1",
-        "Restaurants worldwide and U.S. supermarkets, subject to caps; value depends on redemption."
+        "4× at restaurants worldwide up to $50,000 per calendar year and U.S. supermarkets up to $25,000 per calendar year; then 1×. Redemption value varies."
       ],
       [
         "The Hotel Collection",
@@ -237,7 +237,7 @@
     ],
     "welcome": {
       "headline": "As high as 100,000 Amex points",
-      "detail": "After $8,000 in purchases in the first 6 months. Apply to learn your personalized offer; it may be lower or unavailable."
+      "detail": "After $8,000 in purchases in the first 6 months. Apply to learn your personalized offer; it may be lower or unavailable. Referral offer could not be verified on October 4, 2026; the offer above is public context, not a confirmed referral offer. Review your application terms."
     },
     "referralUrl": "https://americanexpress.com/en-us/referral/gold-card?ref=NATHACqMg9&XL=MIMNS"
   },
@@ -367,7 +367,7 @@
     ],
     "welcome": {
       "headline": "As high as 175,000 Amex points",
-      "detail": "After $12,000 in purchases in the first 6 months. Apply to learn your personalized offer; it may be lower or unavailable."
+      "detail": "After $12,000 in purchases in the first 6 months. Apply to learn your personalized offer; it may be lower or unavailable. Referral offer could not be verified on October 4, 2026; the offer above is public context, not a confirmed referral offer. Review your application terms."
     },
     "referralUrl": "https://americanexpress.com/en-us/referral/platinum-card?ref=NATHAC7QXK&XL=MIMNS"
   },
@@ -391,12 +391,12 @@
       [
         "Everyday earning",
         "1× point / $1",
-        "Points on eligible purchases; value depends on spending and redemption."
+        "1× other everyday purchases; up to 4× Bilt partner dining, 3× portal hotels, 2× portal flights and 3× Lyft after linking. Partner rates include base earn."
       ]
     ],
     "welcome": {
       "headline": "$100 in Bilt Cash",
-      "detail": "Awarded when approved, for eligible Bilt ecosystem redemptions; it is not cash back."
+      "detail": "Awarded when approved, for eligible Bilt ecosystem redemptions; it is not cash back. Referral offer could not be verified on October 4, 2026; the offer above is public context, not a confirmed referral offer. Review your application terms."
     },
     "referralUrl": "https://www.bilt.com/card?invite=KRZSF27J"
   },
@@ -471,7 +471,7 @@
     ],
     "welcome": {
       "headline": "50,000 Bilt points + Gold status",
-      "detail": "$4,000 in eligible purchases excluding housing in the first 90 days. Also $300 Bilt Cash upon approval; this is distinct from the recurring $200 annual Bilt Cash."
+      "detail": "$4,000 in eligible purchases excluding housing in the first 90 days. Also $300 Bilt Cash upon approval; this is distinct from the recurring $200 annual Bilt Cash. Referral offer could not be verified on October 4, 2026; the offer above is public context, not a confirmed referral offer. Review your application terms."
     },
     "referralUrl": "https://www.bilt.com/card?invite=KRZSF27J"
   }
