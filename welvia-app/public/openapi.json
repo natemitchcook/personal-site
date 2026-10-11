@@ -196,6 +196,7 @@
           }
         },
         "security": [
+          {},
           {
             "businessInvitation": []
           }
@@ -280,7 +281,8 @@
               }
             }
           }
-        }
+        },
+        "description": "Anonymous submission is allowed only for test-kitchen. Every real business requires a valid business-scoped invitation. Save answers for review; this does not publish them or authorize implementation."
       }
     },
     "/api/businesses/{businessId}/qa": {
