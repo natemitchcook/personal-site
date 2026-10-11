@@ -1,9 +1,9 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "Welvia Pilot",
-    "version": "1.0.0",
-    "description": "Test company actions only. No live orders, payments or external notifications."
+    "title": "Welvia",
+    "version": "1.1.0",
+    "description": "Business information and staff-reviewed requests. Invitation-scoped access is required for private business pages."
   },
   "servers": [
     {
@@ -13,7 +13,7 @@
   "paths": {
     "/api/businesses/{businessId}": {
       "get": {
-        "summary": "Read public business facts",
+        "summary": "Read accessible business facts",
         "parameters": [
           {
             "name": "businessId",
@@ -30,13 +30,16 @@
           },
           "404": {
             "description": "Unknown business"
+          },
+          "403": {
+            "description": "Valid invitation for this business is required."
           }
         }
       }
     },
     "/api/businesses/{businessId}/requests": {
       "post": {
-        "summary": "Submit a customer-approved fictional catering inquiry",
+        "summary": "Submit a customer-approved catering inquiry",
         "parameters": [
           {
             "name": "businessId",
@@ -141,7 +144,7 @@
             "description": "Request received, not accepted"
           },
           "403": {
-            "description": "Live orders disabled"
+            "description": "Valid invitation for this business is required."
           },
           "422": {
             "description": "Missing fields or policy violation"
@@ -180,7 +183,7 @@
             "description": "Answers saved"
           },
           "403": {
-            "description": "Invitation required"
+            "description": "Valid invitation for this business is required."
           },
           "422": {
             "description": "Missing or invalid answer"
@@ -327,6 +330,9 @@
           },
           "503": {
             "description": "Database temporarily unavailable; retry with the same submission ID where applicable"
+          },
+          "403": {
+            "description": "Valid invitation for this business is required."
           }
         }
       }
@@ -375,6 +381,9 @@
           },
           "503": {
             "description": "Database temporarily unavailable; retry with the same submission ID where applicable"
+          },
+          "403": {
+            "description": "Valid invitation for this business is required."
           }
         }
       }
@@ -385,8 +394,13 @@
       "businessInvitation": {
         "type": "http",
         "scheme": "bearer",
-        "description": "Seven-day, business-scoped onboarding invitation. Not needed for the fictional demo."
+        "description": "Expiring invitation scoped to one business; issued by the owner through IAM-authorized administration."
       }
     }
-  }
+  },
+  "security": [
+    {
+      "businessInvitation": []
+    }
+  ]
 }

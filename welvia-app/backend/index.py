@@ -7,7 +7,7 @@ from botocore.exceptions import ClientError
 
 db = boto3.resource('dynamodb').Table(os.environ['TABLE_NAME'])
 LOG = logging.getLogger(__name__)
-PUBLIC_FIELDS = ['id','name','city','state','category','site','is_demo','headline','description','benefits','services','rules','sources','faq','ordering_url']
+PUBLIC_FIELDS = ['campaign','id','name','city','state','category','is_demo','sources','faq']
 REQUIRED_ONBOARDING = ['contact_name','contact_email','services','request_route','request_destination','website_help','approval']
 REQUIRED_REQUEST = ['food','quantity','fulfillment','date','time','timezone','recipient','requester','phone','confirm']
 
@@ -18,7 +18,24 @@ def response(code, data):
     return {'statusCode':code,'headers':{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'},'body':json.dumps(data,default=lambda x:float(x) if isinstance(x,Decimal) else str(x))}
 
 def get_business(bid):
-    return db.get_item(Key={'pk':'BUSINESS#'+bid},ConsistentRead=True).get('Item')
+    business = db.get_item(Key={'pk':'BUSINESS#'+bid},ConsistentRead=True).get('Item') or {}
+    prospect = db.get_item(Key={'pk':'PROSPECT#'+bid},ConsistentRead=True).get('Item')
+    page = db.get_item(Key={'pk':'PAGE#'+bid},ConsistentRead=True).get('Item')
+    if prospect and page:
+        p, c = prospect['fields'], page['fields']
+        split = lambda value: [v.strip() for v in str(value or '').split(';') if v.strip()]
+        campaign = {'slug':bid, 'business_name':p['business_name'], 'website':p['website_url'],
+          'headline':c['headline'], 'intro':c['subheadline'], 'status':c.get('proposal_notice',''),
+          'journey_heading':c['scenario_title'], 'pilot_heading':'Your next step. A focused first pilot.',
+          'growth_intro':'Prepare your business information and request workflow for AI-assisted customers.',
+          'growth_example':c['specific_observation'],
+          'benefits':[{'title':c.get('benefit_'+str(i)+'_title',''),'description':c.get('benefit_'+str(i)+'_body','')} for i in range(1,4) if c.get('benefit_'+str(i)+'_title')],
+          'scenarios':[{'title':c['scenario_title'],'prompt':c['customer_prompt'],'fields':split(c['required_fields']),'note':c['business_rules']}],
+          'pilot_steps':split(c['pilot_steps']), 'cta_label':c['cta_label']}
+        business.update({'id':bid,'name':p['business_name'],'city':p['city'],'state':p['state'],'category':p['category'], 'site':p['website_url'], 'campaign':campaign, 'public_enabled':bool(page.get('public_enabled') and c.get('content_approval')=='Approved')})
+    if business.get('campaign_override'):
+        business['campaign']=business['campaign_override']
+    return business or None
 
 def auth(event, bid):
     token = (event.get('headers',{}).get('authorization') or event.get('headers',{}).get('Authorization') or '').removeprefix('Bearer ')
@@ -44,23 +61,23 @@ def validate(kind,data):
         if data.get('fulfillment')=='delivery':
             for k in ['address','city','state','zip']:
                 if not data.get(k): errors[k]='A complete delivery address is required.'
-        if data.get('timezone')!='America/Los_Angeles': errors['timezone']='The test kitchen uses America/Los_Angeles.'
+        if data.get('timezone')!='America/Los_Angeles': errors['timezone']='Our kitchen uses America/Los_Angeles.'
         try:
             qty=int(data.get('quantity',0))
-            if not 12<=qty<=500: errors['quantity']='The fictional kitchen requires 12 to 500 portions.'
+            if not 12<=qty<=500: errors['quantity']='Our kitchen requires 12 to 500 portions.'
         except (TypeError,ValueError): errors['quantity']='Enter a whole-number quantity.'
         try:
             from zoneinfo import ZoneInfo
             arrival=datetime.fromisoformat(str(data.get('date',''))+'T'+str(data.get('time',''))).replace(tzinfo=ZoneInfo('America/Los_Angeles'))
-            if not 8 <= arrival.hour < 17: errors['time']='The fictional kitchen handles requests from 8 AM to 5 PM Pacific.'
+            if not 8 <= arrival.hour < 17: errors['time']='Our kitchen handles requests from 8 AM to 5 PM Pacific.'
             if (arrival-datetime.now(timezone.utc)).total_seconds()<48*3600:
-                errors['date']='The fictional kitchen requires at least 48 hours notice.'
+                errors['date']='Our kitchen requires at least 48 hours notice.'
         except (ValueError,TypeError): errors['date']='Enter a valid date and time.'
-        if data.get('confirm') is not True: errors['confirm']='Review and approve this test request.'
+        if data.get('confirm') is not True: errors['confirm']='Review and approve this request.'
         if data.get('fulfillment')=='delivery' and str(data.get('zip','')) not in ['92870','92886']:
-            errors['zip']='The fictional delivery area is ZIP 92870 or 92886.'
+            errors['zip']='Our delivery area is ZIP 92870 or 92886.'
         if data.get('food') not in ['Bagel breakfast box','Sandwich lunch box']:
-            errors['food']='Choose a listed test menu item.'
+            errors['food']='Choose a listed menu item.'
     return errors
 
 def limit(event):
@@ -96,9 +113,12 @@ def handler(event,context):
         bid,kind=match.groups()
         business=get_business(bid)
         if not business:return response(404,{'error':'Unknown business'})
+        invitation=auth(event,bid)
+        if not business.get('public_enabled') and not invitation:
+            return response(403,{'error':'Use your private invitation link to open this page.'})
         if method=='GET' and not kind:
             public={k:business.get(k) for k in PUBLIC_FIELDS}
-            public['can_submit']=bool(business.get('is_demo') or auth(event,bid))
+            public['can_submit']=bool(invitation)
             return response(200,public)
         if method!='POST':return response(405,{'error':'Method not allowed'})
         if not limit(event):return response(429,{'error':'Too many requests. Please wait a minute.'})
@@ -120,7 +140,7 @@ def handler(event,context):
             if not item or item.get('business_id')!=bid:return response(404,{'error':'Receipt not found'})
             return response(200,{k:item.get(k) for k in ['reference','status','kind','is_demo','created_at','notification','checklist']})
         if kind not in ['onboarding','requests']:return response(404,{'error':'Not found'})
-        if not business.get('is_demo') and not auth(event,bid):return response(403,{'error':'Use your private invitation link to submit.'})
+        if not invitation:return response(403,{'error':'Use your private invitation link to submit.'})
         if kind=='requests' and not business.get('is_demo'):return response(403,{'error':'Live customer requests are not enabled for this business.'})
         errors=validate(kind,data)
         if errors:return response(422,{'error':'Please complete the highlighted details.','fields':errors})
@@ -128,12 +148,12 @@ def handler(event,context):
         if not re.fullmatch(r'[a-f0-9-]{36}',idem):return response(400,{'error':'A valid submission ID is required.'})
         rid='WEL-'+idem[:8].upper()
         token=digest(bid+':'+kind+':'+idem) # random UUID is the bearer capability; returned only to submitter
-        checklist=['Review owner answers','Confirm website editing route','Approve implementation scope'] if kind=='onboarding' else ['Staff review availability and price','No food prepared or payment taken']
+        checklist=['Review owner answers','Confirm website editing route','Approve implementation scope'] if kind=='onboarding' else ['Staff review availability and price','Confirm the request with the customer']
         if kind=='onboarding':
             for k in ['lead_time','delivery_area','minimum','rules']:
                 if not data.get(k) or data.get(k)=='Not sure':checklist.append('Confirm '+k.replace('_',' '))
         now=datetime.now(timezone.utc).isoformat()
-        item={'pk':'RECEIPT#'+digest(token),'reference':rid,'business_id':bid,'kind':kind,'answers':data,'status':'Needs review' if kind=='onboarding' else 'Test request received — not an accepted order','is_demo':bool(business.get('is_demo')),'created_at':now,'notification':'Stored in database; external notifications disabled for this pilot','checklist':checklist}
+        item={'pk':'RECEIPT#'+digest(token),'reference':rid,'business_id':bid,'kind':kind,'answers':data,'status':'Needs review' if kind=='onboarding' else 'Request received — awaiting confirmation','is_demo':bool(business.get('is_demo')),'created_at':now,'notification':'Your request has been saved for review.','checklist':checklist}
         try:
             db.put_item(Item=item,ConditionExpression=Attr('pk').not_exists())
         except db.meta.client.exceptions.ConditionalCheckFailedException:

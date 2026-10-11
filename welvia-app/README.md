@@ -1,7 +1,7 @@
 # Welvia working pilot
 
 Homepage: https://welvia.natemitchcook.com/
-Fictional company: https://welvia.natemitchcook.com/?business=test-kitchen
+Private example business: https://welvia.natemitchcook.com/?business=test-kitchen
 Avalon proposal: https://welvia.natemitchcook.com/?business=avalon
 
 This app lives alongside the personal website in `welvia-app/`; it has its own AWS stack, asset bucket, CloudFront distribution, API, database and GitHub deployment role. The personal homepage and cards remain separate.
@@ -26,7 +26,7 @@ The demo request enforces 12–500 portions, 48-hour notice, a Pacific arrival w
 
 ## Discovery and access
 
-`llms.txt` and `openapi.json` expose the test facts/action contract. Robots/noindex discourage indexing; they do not restrict viewing access. This subdomain is a publicly accessible, clearly labeled test site. Public real-business proposals contain only verified service facts. Onboarding answers and receipts are private. The earlier ChatGPT Sites preview keeps its original access settings.
+`llms.txt` and `openapi.json` describe the action contract. They do not grant access to private records. Robots/noindex discourage indexing; they do not restrict viewing access. The generic homepage is public. Business pages and all business APIs require an expiring invitation unless the Page record is explicitly public_enabled and content_approval is Approved. The internal example uses realistic presentation; it remains a non-operational request fixture. Onboarding answers and receipts are private. The earlier ChatGPT Sites preview keeps its original access settings.
 
 ## Operational limits before commercial launch
 
@@ -35,3 +35,11 @@ Add authenticated staff review/status UI, approved notification destination/serv
 Automated backend and live API tests cover completeness, policy handling, duplicate requests, receipt isolation and invitation access. Browser testing verifies the embedded SurveyJS flow. See the deployment result in the conversation for what actually passed.
 
 Recovery storage parameters reuse the original retained encrypted bucket and table. They are external to the app stack; preserve them when changing infrastructure.
+
+## One template, DynamoDB content
+
+The homepage and business-page design come from the original Sites version 4. `campaign.js` validates `?business=<stable-id>` and fetches the same-origin backend with a private invitation. The backend reads `PROSPECT#<id>` and `PAGE#<id>` on every load with consistent reads, and projects only a named set of business identity and landing-page fields. No static per-business exports or database credentials are shipped to browsers. All variable content uses textContent or React text escaping. API responses use no-store; CloudFront disables API caching. Private email drafts, contacts, notes, suppression, research and owner answers never enter the public projection.
+
+Existing Avalon and Juniper Table supplemental campaign records remain in DynamoDB, using the same shared template. They preserve the original Avalon proposal's two scenarios. Owner answers are kept separately from approved page copy.
+
+The workbook v2 import preserves 72 prospect rows, 72 joined Page content rows and 59 Workflow rules in private DynamoDB items. `scripts/import_workbook.py` supports source-version guards, revisions and a three-way merge preserving manual database edits against the imported baseline. Raw workbook data must never be committed to this public repository or uploaded to the assets bucket. The scheduled spreadsheet researcher has not yet been switched to database writes; use the guarded importer to reconcile future workbook versions until that transition is implemented.
