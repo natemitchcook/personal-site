@@ -1,6 +1,6 @@
-import json,uuid,urllib.request,urllib.error
+import json,uuid,os,urllib.request,urllib.error
 from datetime import datetime,timedelta
-BASE='https://qewoua8c3m.execute-api.us-east-1.amazonaws.com'
+BASE=os.environ.get('WELVIA_API_BASE','https://welvia.natemitchcook.com').rstrip('/')
 results=[]
 def call(path,data=None):
  req=urllib.request.Request(BASE+path,data=json.dumps(data).encode() if data is not None else None,headers={'Content-Type':'application/json'},method='POST' if data is not None else 'GET')
