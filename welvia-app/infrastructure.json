@@ -122,7 +122,10 @@
                     "logs:PutLogEvents"
                   ],
                   "Resource": {
-                    "Fn::Sub": "${Logs.Arn}:*"
+                    "Fn::GetAtt": [
+                      "Logs",
+                      "Arn"
+                    ]
                   }
                 }
               ]
