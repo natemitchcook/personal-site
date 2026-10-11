@@ -3,6 +3,9 @@ name: Deploy to S3
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - "welvia-app/**"
+      - ".github/workflows/deploy-welvia.yml"
 
 permissions:
   id-token: write
@@ -42,6 +45,7 @@ jobs:
             --exclude "DEPLOY.md" \
             --exclude "setup-oidc.sh" \
             --exclude "cards-app/*" \
+            --exclude "welvia-app/*" \
             --exclude ".gitignore" \
             --delete
 

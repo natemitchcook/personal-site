@@ -1,0 +1,48 @@
+name: Deploy Welvia pilot
+on:
+  push:
+    branches: [main]
+    paths: ['welvia-app/**', '.github/workflows/deploy-welvia.yml']
+  workflow_dispatch:
+permissions:
+  id-token: write
+  contents: read
+concurrency:
+  group: welvia-deployment
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: welvia-app/package-lock.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build and test
+        working-directory: welvia-app
+        run: |
+          npm ci
+          pip install boto3
+          npm test
+          npm run build
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::589005473076:role/welvia-pilot-github-deploy
+          aws-region: us-east-1
+      - name: Deploy only Welvia assets and code
+        working-directory: welvia-app
+        run: |
+          aws cloudformation describe-stacks --stack-name welvia-pilot --query 'Stacks[0].Outputs' --output json > /tmp/welvia-outputs.json
+          bucket=$(python3 -c 'import json; print(next(x["OutputValue"] for x in json.load(open("/tmp/welvia-outputs.json")) if x["OutputKey"]=="Bucket"))')
+          distribution=$(python3 -c 'import json; print(next(x["OutputValue"] for x in json.load(open("/tmp/welvia-outputs.json")) if x["OutputKey"]=="DistributionId"))')
+          function=$(python3 -c 'import json; print(next(x["OutputValue"] for x in json.load(open("/tmp/welvia-outputs.json")) if x["OutputKey"]=="Function"))')
+          python3 -c 'import zipfile; z=zipfile.ZipFile("/tmp/welvia-api.zip","w"); z.write("backend/index.py","index.py"); z.close()'
+          aws lambda update-function-code --function-name "$function" --zip-file fileb:///tmp/welvia-api.zip
+          aws lambda wait function-updated --function-name "$function"
+          aws s3 sync dist/ "s3://$bucket/" --delete --cache-control 'public,max-age=300'
+          aws cloudfront create-invalidation --distribution-id "$distribution" --paths '/*'

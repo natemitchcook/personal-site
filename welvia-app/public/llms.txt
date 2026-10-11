@@ -1,0 +1,8 @@
+# Welvia
+Welvia is an agent information and request workflow pilot.
+## Test business
+- [Welvia Test Kitchen](https://welvia.natemitchcook.com/?business=test-kitchen): Fictional business, synthetic services, no real food, payment, delivery or external messages.
+- [Approved test facts](https://welvia.natemitchcook.com/api/businesses/test-kitchen): Structured facts and published synthetic rules.
+- [Action contract](https://welvia.natemitchcook.com/openapi.json): Read facts, prepare complete requests, obtain customer approval, submit test requests, read private receipts.
+## Boundaries
+Receipt is not order acceptance. Onboarding answers require owner review before publishing. Never invent business policies. Real business onboarding requires an invitation. Search indexing is disabled for this pilot; discovery should be tested using this site's URL.

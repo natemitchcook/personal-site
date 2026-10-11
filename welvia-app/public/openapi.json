@@ -1,0 +1,176 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Welvia Pilot",
+    "version": "1.0.0",
+    "description": "Test company actions only. No live orders, payments or external notifications."
+  },
+  "servers": [
+    {
+      "url": "https://welvia.natemitchcook.com"
+    }
+  ],
+  "paths": {
+    "/api/businesses/{businessId}": {
+      "get": {
+        "summary": "Read public business facts",
+        "parameters": [
+          {
+            "name": "businessId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Approved facts"
+          },
+          "404": {
+            "description": "Unknown business"
+          }
+        }
+      }
+    },
+    "/api/businesses/{businessId}/requests": {
+      "post": {
+        "summary": "Submit a customer-approved fictional catering inquiry",
+        "parameters": [
+          {
+            "name": "businessId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "submission_id",
+                  "food",
+                  "quantity",
+                  "fulfillment",
+                  "date",
+                  "time",
+                  "timezone",
+                  "recipient",
+                  "requester",
+                  "phone",
+                  "confirm"
+                ],
+                "properties": {
+                  "submission_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "food": {
+                    "type": "string",
+                    "enum": [
+                      "Bagel breakfast box",
+                      "Sandwich lunch box"
+                    ]
+                  },
+                  "quantity": {
+                    "type": "integer",
+                    "minimum": 12,
+                    "maximum": 500
+                  },
+                  "fulfillment": {
+                    "type": "string",
+                    "enum": [
+                      "pickup",
+                      "delivery"
+                    ]
+                  },
+                  "date": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "time": {
+                    "type": "string",
+                    "example": "10:30"
+                  },
+                  "timezone": {
+                    "type": "string",
+                    "enum": [
+                      "America/Los_Angeles"
+                    ]
+                  },
+                  "recipient": {
+                    "type": "string"
+                  },
+                  "requester": {
+                    "type": "string"
+                  },
+                  "phone": {
+                    "type": "string"
+                  },
+                  "address": {
+                    "type": "string"
+                  },
+                  "city": {
+                    "type": "string"
+                  },
+                  "state": {
+                    "type": "string"
+                  },
+                  "zip": {
+                    "type": "string"
+                  },
+                  "confirm": {
+                    "type": "boolean",
+                    "enum": [
+                      true
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Request received, not accepted"
+          },
+          "403": {
+            "description": "Live orders disabled"
+          },
+          "422": {
+            "description": "Missing fields or policy violation"
+          }
+        }
+      }
+    },
+    "/api/businesses/{businessId}/onboarding": {
+      "post": {
+        "summary": "Save owner answers for review; non-demo businesses require a private invitation",
+        "parameters": [
+          {
+            "name": "businessId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Answers saved"
+          },
+          "403": {
+            "description": "Invitation required"
+          }
+        }
+      }
+    }
+  }
+}
