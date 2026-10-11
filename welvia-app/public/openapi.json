@@ -145,8 +145,21 @@
           },
           "422": {
             "description": "Missing fields or policy violation"
+          },
+          "200": {
+            "description": "Original receipt returned for an identical retry"
+          },
+          "409": {
+            "description": "Submission ID reused with different answers"
+          },
+          "429": {
+            "description": "Rate limited; wait before retrying"
+          },
+          "503": {
+            "description": "Database temporarily unavailable; retry with the same submission ID where applicable"
           }
-        }
+        },
+        "description": "Only test-kitchen is enabled. Customer approval is required. Full address, city, state and ZIP are required for delivery. Fictional ZIPs 92870/92886; at least 48 hours notice; arrival 8 AM to before 5 PM Pacific. Receipt means received, not accepted. Use made-up contact details."
       }
     },
     "/api/businesses/{businessId}/onboarding": {
@@ -168,8 +181,209 @@
           },
           "403": {
             "description": "Invitation required"
+          },
+          "422": {
+            "description": "Missing or invalid answer"
+          },
+          "409": {
+            "description": "Same submission ID with different answers"
+          },
+          "429": {
+            "description": "Rate limited; wait before retrying"
+          },
+          "503": {
+            "description": "Database temporarily unavailable; retry with the same submission ID where applicable"
+          }
+        },
+        "security": [
+          {
+            "businessInvitation": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "submission_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "contact_name": {
+                    "type": "string",
+                    "maxLength": 2000
+                  },
+                  "contact_email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "services": {
+                    "type": "string",
+                    "maxLength": 2000
+                  },
+                  "request_route": {
+                    "type": "string",
+                    "enum": [
+                      "email",
+                      "phone",
+                      "form"
+                    ]
+                  },
+                  "request_destination": {
+                    "type": "string",
+                    "maxLength": 2000
+                  },
+                  "website_help": {
+                    "type": "string",
+                    "enum": [
+                      "me",
+                      "team",
+                      "provider",
+                      "unsure"
+                    ]
+                  },
+                  "approval": {
+                    "type": "boolean",
+                    "enum": [
+                      true
+                    ]
+                  },
+                  "lead_time": {
+                    "type": "string",
+                    "maxLength": 2000
+                  },
+                  "delivery_area": {
+                    "type": "string",
+                    "maxLength": 2000
+                  },
+                  "minimum": {
+                    "type": "string",
+                    "maxLength": 2000
+                  },
+                  "rules": {
+                    "type": "string",
+                    "maxLength": 2000
+                  }
+                },
+                "required": [
+                  "submission_id",
+                  "contact_name",
+                  "contact_email",
+                  "services",
+                  "request_route",
+                  "request_destination",
+                  "website_help",
+                  "approval"
+                ]
+              }
+            }
           }
         }
+      }
+    },
+    "/api/businesses/{businessId}/qa": {
+      "post": {
+        "summary": "Answer a question using approved business FAQ facts",
+        "parameters": [
+          {
+            "name": "businessId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-z0-9-]{1,80}$"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "question": {
+                    "type": "string",
+                    "maxLength": 500
+                  }
+                },
+                "required": [
+                  "question"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Grounded answer or explicit unknown-detail fallback"
+          },
+          "429": {
+            "description": "Rate limited; wait before retrying"
+          },
+          "503": {
+            "description": "Database temporarily unavailable; retry with the same submission ID where applicable"
+          }
+        }
+      }
+    },
+    "/api/businesses/{businessId}/receipts": {
+      "post": {
+        "summary": "Read private receipt status with the capability returned to the submitter",
+        "parameters": [
+          {
+            "name": "businessId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-z0-9-]{1,80}$"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "receipt_token": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "receipt_token"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Receipt status, reference and checklist; no submitted personal details"
+          },
+          "404": {
+            "description": "Unknown receipt or wrong business"
+          },
+          "429": {
+            "description": "Rate limited; wait before retrying"
+          },
+          "503": {
+            "description": "Database temporarily unavailable; retry with the same submission ID where applicable"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "businessInvitation": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Seven-day, business-scoped onboarding invitation. Not needed for the fictional demo."
       }
     }
   }
