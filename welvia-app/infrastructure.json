@@ -2,73 +2,6 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "Welvia isolated SurveyJS pilot. No external messages or payment actions.",
   "Resources": {
-    "Data": {
-      "Type": "AWS::DynamoDB::Table",
-      "Properties": {
-        "BillingMode": "PAY_PER_REQUEST",
-        "AttributeDefinitions": [
-          {
-            "AttributeName": "pk",
-            "AttributeType": "S"
-          }
-        ],
-        "KeySchema": [
-          {
-            "AttributeName": "pk",
-            "KeyType": "HASH"
-          }
-        ],
-        "SSESpecification": {
-          "SSEEnabled": true
-        },
-        "PointInTimeRecoverySpecification": {
-          "PointInTimeRecoveryEnabled": true
-        },
-        "TimeToLiveSpecification": {
-          "AttributeName": "expires",
-          "Enabled": true
-        },
-        "Tags": [
-          {
-            "Key": "Project",
-            "Value": "Welvia"
-          }
-        ]
-      },
-      "DeletionPolicy": "Retain",
-      "UpdateReplacePolicy": "Retain"
-    },
-    "Assets": {
-      "Type": "AWS::S3::Bucket",
-      "Properties": {
-        "PublicAccessBlockConfiguration": {
-          "BlockPublicAcls": true,
-          "BlockPublicPolicy": true,
-          "IgnorePublicAcls": true,
-          "RestrictPublicBuckets": true
-        },
-        "BucketEncryption": {
-          "ServerSideEncryptionConfiguration": [
-            {
-              "ServerSideEncryptionByDefault": {
-                "SSEAlgorithm": "AES256"
-              }
-            }
-          ]
-        },
-        "VersioningConfiguration": {
-          "Status": "Enabled"
-        },
-        "Tags": [
-          {
-            "Key": "Project",
-            "Value": "Welvia"
-          }
-        ]
-      },
-      "DeletionPolicy": "Retain",
-      "UpdateReplacePolicy": "Retain"
-    },
     "Logs": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
@@ -109,10 +42,7 @@
                     "dynamodb:UpdateItem"
                   ],
                   "Resource": {
-                    "Fn::GetAtt": [
-                      "Data",
-                      "Arn"
-                    ]
+                    "Fn::Sub": "arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${Data}"
                   }
                 },
                 {
@@ -278,10 +208,7 @@
             {
               "Id": "assets",
               "DomainName": {
-                "Fn::GetAtt": [
-                  "Assets",
-                  "RegionalDomainName"
-                ]
+                "Fn::Sub": "${Assets}.s3.${AWS::Region}.amazonaws.com"
               },
               "S3OriginConfig": {
                 "OriginAccessIdentity": ""
@@ -366,7 +293,7 @@
               },
               "Action": "s3:GetObject",
               "Resource": {
-                "Fn::Sub": "${Assets.Arn}/*"
+                "Fn::Sub": "arn:${AWS::Partition}:s3:::${Assets}/*"
               },
               "Condition": {
                 "StringEquals": {
@@ -454,10 +381,7 @@
                     "s3:ListBucket"
                   ],
                   "Resource": {
-                    "Fn::GetAtt": [
-                      "Assets",
-                      "Arn"
-                    ]
+                    "Fn::Sub": "arn:${AWS::Partition}:s3:::${Assets}"
                   }
                 },
                 {
@@ -468,7 +392,7 @@
                     "s3:DeleteObject"
                   ],
                   "Resource": {
-                    "Fn::Sub": "${Assets.Arn}/*"
+                    "Fn::Sub": "arn:${AWS::Partition}:s3:::${Assets}/*"
                   }
                 },
                 {
@@ -548,6 +472,16 @@
           "Arn"
         ]
       }
+    }
+  },
+  "Parameters": {
+    "Data": {
+      "Type": "String",
+      "Default": "welvia-pilot-Data-4KCGX2QW1VR"
+    },
+    "Assets": {
+      "Type": "String",
+      "Default": "welvia-pilot-assets-byop8ppb6x9g"
     }
   }
 }

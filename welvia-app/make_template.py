@@ -24,4 +24,17 @@ resource('AssetsPolicy','AWS::S3::BucketPolicy',{'Bucket':ref('Assets'),'PolicyD
 resource('DNS','AWS::Route53::RecordSetGroup',{'HostedZoneId':'Z2UVKF8RP48AH','RecordSets':[{'Name':'welvia.natemitchcook.com.','Type':typ,'AliasTarget':{'DNSName':attr('CDN','DomainName'),'HostedZoneId':'Z2FDTNDATAQYW2','EvaluateTargetHealth':False}} for typ in ['A','AAAA']]})
 resource('GitHubDeployRole','AWS::IAM::Role',{'RoleName':sub('${AWS::StackName}-github-deploy'),'AssumeRolePolicyDocument':{'Version':'2012-10-17','Statement':[{'Effect':'Allow','Principal':{'Federated':sub('arn:${AWS::Partition}:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com')},'Action':'sts:AssumeRoleWithWebIdentity','Condition':{'StringEquals':{'token.actions.githubusercontent.com:aud':'sts.amazonaws.com','token.actions.githubusercontent.com:sub':'repo:natemitchcook/personal-site:ref:refs/heads/main'}}}]},'Policies':[{'PolicyName':'DeployWelviaOnly','PolicyDocument':{'Version':'2012-10-17','Statement':[{'Effect':'Allow','Action':['s3:ListBucket'],'Resource':attr('Assets','Arn')},{'Effect':'Allow','Action':['s3:GetObject','s3:PutObject','s3:DeleteObject'],'Resource':sub('${Assets.Arn}/*')},{'Effect':'Allow','Action':['lambda:UpdateFunctionCode','lambda:GetFunctionConfiguration'],'Resource':attr('ApiFunction','Arn')},{'Effect':'Allow','Action':['cloudfront:CreateInvalidation'],'Resource':sub('arn:${AWS::Partition}:cloudfront::${AWS::AccountId}:distribution/${CDN}')},{'Effect':'Allow','Action':['cloudformation:DescribeStacks'],'Resource':ref('AWS::StackId')}]}}]})
 T={'AWSTemplateFormatVersion':'2010-09-09','Description':'Welvia isolated SurveyJS pilot. No external messages or payment actions.','Resources':R,'Outputs':{k:{'Value':v} for k,v in {'Bucket':ref('Assets'),'Table':ref('Data'),'Function':ref('ApiFunction'),'ApiUrl':attr('Api','ApiEndpoint'),'DistributionId':ref('CDN'),'SiteUrl':'https://welvia.natemitchcook.com','DeployRoleArn':attr('GitHubDeployRole','Arn')}.items()}}
+# Reuse retained encrypted/versioned pilot storage without replacing test submissions.
+R.pop('Data'); R.pop('Assets')
+def existing(v):
+ if isinstance(v,list): return [existing(x) for x in v]
+ if isinstance(v,dict):
+  if v==attr('Data','Arn'): return sub('arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${Data}')
+  if v==attr('Assets','Arn'): return sub('arn:${AWS::Partition}:s3:::${Assets}')
+  if v==attr('Assets','RegionalDomainName'): return sub('${Assets}.s3.${AWS::Region}.amazonaws.com')
+  if v==sub('${Assets.Arn}/*'): return sub('arn:${AWS::Partition}:s3:::${Assets}/*')
+  return {k:existing(x) for k,x in v.items()}
+ return v
+T=existing(T)
+T['Parameters']={'Data':{'Type':'String','Default':'welvia-pilot-Data-4KCGX2QW1VR'},'Assets':{'Type':'String','Default':'welvia-pilot-assets-byop8ppb6x9g'}}
 Path('infrastructure.json').write_text(json.dumps(T,indent=2)+'\n')

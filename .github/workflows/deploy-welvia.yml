@@ -32,12 +32,12 @@ jobs:
           npm run build
       - uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::589005473076:role/welvia-pilot-github-deploy
+          role-to-assume: arn:aws:iam::589005473076:role/welvia-app-github-deploy
           aws-region: us-east-1
       - name: Deploy only Welvia assets and code
         working-directory: welvia-app
         run: |
-          aws cloudformation describe-stacks --stack-name welvia-pilot --query 'Stacks[0].Outputs' --output json > /tmp/welvia-outputs.json
+          aws cloudformation describe-stacks --stack-name welvia-app --query 'Stacks[0].Outputs' --output json > /tmp/welvia-outputs.json
           bucket=$(python3 -c 'import json; print(next(x["OutputValue"] for x in json.load(open("/tmp/welvia-outputs.json")) if x["OutputKey"]=="Bucket"))')
           distribution=$(python3 -c 'import json; print(next(x["OutputValue"] for x in json.load(open("/tmp/welvia-outputs.json")) if x["OutputKey"]=="DistributionId"))')
           function=$(python3 -c 'import json; print(next(x["OutputValue"] for x in json.load(open("/tmp/welvia-outputs.json")) if x["OutputKey"]=="Function"))')
