@@ -1,0 +1,27 @@
+{
+  "name": "welvia-app",
+  "version": "1.0.0",
+  "description": "Welvia pilot with SurveyJS, AWS API and DynamoDB",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "python3 -m unittest discover -s tests"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "survey-core": "3.2.0",
+    "survey-react-ui": "3.2.0"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.11"
+  },
+  "private": true
+}
