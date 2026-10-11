@@ -63,6 +63,8 @@ def merge(existing, incoming):
     """Three-way merge: retain changes made in the database since the last import."""
     if not existing:
         return incoming, []
+    if existing.get('source', {}).get('library_file_id') not in (None, incoming['source']['library_file_id']):
+        raise ValueError('Source workbook identity changed')
     if existing.get('source', {}).get('sha256') == incoming['source']['sha256']:
         return existing, []
     if incoming['source']['version'] <= existing.get('source', {}).get('version', 0):
@@ -78,7 +80,13 @@ def merge(existing, incoming):
             fields[key] = value
     merged = {**existing, **incoming, 'revision': existing.get('revision', 0) + 1, 'public_enabled': existing.get('public_enabled', False)}
     if 'fields' in incoming:
-        merged['fields'] = fields
+        protected = existing.get('pk', '').startswith('PAGE#') and (existing.get('public_enabled') or existing.get('fields', {}).get('content_approval') == 'Approved')
+        if protected and fields != existing.get('fields', {}):
+            merged['fields'] = existing['fields']
+            merged['proposed_fields'] = fields
+            conflicts.append('approved_page_content')
+        else:
+            merged['fields'] = fields
     return merged, conflicts
 
 def apply(table_name, data, region):
