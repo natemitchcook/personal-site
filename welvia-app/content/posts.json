@@ -1,0 +1,413 @@
+[
+  {
+    "slug": "small-businesses-belong-in-the-agent-era",
+    "title": "Small businesses belong in the agent era",
+    "category": "Our point of view",
+    "description": "A neighborhood business should not need an enterprise technology team to be understood by a customer’s assistant.",
+    "date": "2026-10-12",
+    "updated": "2026-10-12",
+    "author": "Welvia",
+    "sections": [
+      {
+        "heading": "The next front door",
+        "paragraphs": [
+          "Imagine asking an assistant to find lunch for a team, arrange a repair or request a quote for an event. The assistant needs to understand which businesses fit, what they offer and how to take the next step. We believe small businesses deserve a fair chance to be part of that journey.",
+          "That is the reason Welvia exists. A restaurant’s practical knowledge often lives with its owner: which menu works for a large group, how much notice the kitchen needs, and which deliveries are realistic. Our aim is to make that knowledge easier to find and use, while keeping the owner in control."
+        ]
+      },
+      {
+        "heading": "Start with the business, not the jargon",
+        "paragraphs": [
+          "Consider an independent caterer. A useful first project might explain the menu, collect a delivery address and arrival time, and prepare an inquiry for staff. It does not need to start with autonomous payments or a replacement ordering system.",
+          "We want the owner’s first question to be simple: what should a good customer request contain? From there, we can work backward to the facts, form fields and review process that support it. Every addition should earn its place by helping a real task."
+        ]
+      },
+      {
+        "heading": "Participation without promises",
+        "paragraphs": [
+          "Being easier to understand is not a guarantee that an assistant will recommend a business. Google’s guidance for its AI search features, for example, says that eligibility does not guarantee inclusion. Different systems discover and use information differently.",
+          "Our position is that clear information and dependable request paths are worth building even while adoption is uneven. They can help an owner explain the business consistently, and they create something concrete to test. The future we want is one where a great neighborhood business can participate without pretending to be a technology company."
+        ]
+      }
+    ],
+    "takeaway": "Write down one request you want to receive, then list the facts a customer needs to make it.",
+    "sources": [
+      {
+        "title": "Google Search Central: AI features and your website",
+        "url": "https://developers.google.com/search/docs/appearance/ai-features",
+        "verified": "2026-10-12"
+      }
+    ]
+  },
+  {
+    "slug": "discovered-is-not-the-same-as-actionable",
+    "title": "Being discovered is only half the job",
+    "category": "Agent basics",
+    "description": "An assistant can mention your business and still have no reliable way to request your service.",
+    "date": "2026-10-12",
+    "updated": "2026-10-12",
+    "author": "Welvia",
+    "sections": [
+      {
+        "heading": "Three different questions",
+        "paragraphs": [
+          "Can an assistant find your business? Can it understand whether you fit the customer’s needs? Can it help the customer make an appropriate request? Those questions are related, but they describe different problems.",
+          "A page can answer the first two beautifully and leave the third unfinished. A customer may learn that you cater office lunches, yet still have to guess what belongs in an inquiry. Discovery gets someone to the door. A clear next step helps them walk through it."
+        ]
+      },
+      {
+        "heading": "Describe a useful action",
+        "paragraphs": [
+          "Take a hypothetical equipment rental company. A useful first action could be requesting availability for a specific item, date range and delivery location. The response might be a receipt confirming the request reached the team. That is a meaningful outcome even when a person still checks stock and prepares the quote.",
+          "The business should define required details, validation rules and the difference between a request and a reservation. The assistant should ask for missing information rather than filling gaps with guesses. A repeated submission should not silently create two jobs."
+        ]
+      },
+      {
+        "heading": "Measure the handoff",
+        "paragraphs": [
+          "For a pilot, we would track whether the request arrived complete, whether staff had to ask basic follow-up questions and whether the customer understood the status. Those measures tell an owner more about the workflow than an attractive AI answer alone.",
+          "Anthropic’s evaluation guidance distinguishes what an agent says from the resulting state in a system. That distinction belongs in small-business workflows too: ‘I submitted it’ is only useful if a request actually exists. Welvia’s approach is to test both the answer and the handoff, within the actions the business has approved."
+        ]
+      }
+    ],
+    "takeaway": "Name the exact state your first action should create: an inquiry, a quote request or a confirmed booking. Keep those meanings separate.",
+    "sources": [
+      {
+        "title": "Anthropic: Demystifying evals for AI agents",
+        "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "verified": "2026-10-12"
+      }
+    ]
+  },
+  {
+    "slug": "what-ai-shopping-growth-does-and-does-not-tell-us",
+    "title": "AI shopping is growing. What does that mean locally?",
+    "category": "Signals & news",
+    "description": "Adobe’s retail data is a useful signal, but it is not a forecast for your restaurant or service business.",
+    "date": "2026-10-12",
+    "updated": "2026-10-12",
+    "author": "Welvia",
+    "sections": [
+      {
+        "heading": "A signal worth watching",
+        "paragraphs": [
+          "In its January 12, 2026 analysis of the 2025 holiday season, Adobe reported that traffic from generative AI tools to U.S. retail sites rose 693.4% year over year. Adobe describes those referrals as people clicking from AI tools to retail websites.",
+          "That distinction matters. A referral is not proof that an agent completed a purchase autonomously. A large growth rate also does not tell us what share of all customers used AI. It tells us that this particular route into retail websites grew quickly during the period Adobe measured."
+        ]
+      },
+      {
+        "heading": "Translate carefully",
+        "paragraphs": [
+          "A neighborhood bakery, a plumber and a national retailer do not have identical customer journeys. Holiday retail data cannot tell an owner how many catering inquiries they will receive next month, or whether their customers want an assistant to handle the entire request.",
+          "Our interpretation is more practical: it is worth checking what happens when a customer arrives through an assistant. Can the visitor understand the offer? Are the relevant rules easy to find? Is the next step a usable form, a working ordering link or a clear contact route?"
+        ]
+      },
+      {
+        "heading": "Run a small experiment",
+        "paragraphs": [
+          "Pick one service and one question that customers already ask. Record the answer produced from current public information. Improve the underlying facts and request instructions, then repeat the test with the same question. Keep the original result so the comparison is inspectable.",
+          "If you also measure real traffic, distinguish referrals, started forms, completed inquiries and accepted work. Avoid counting all four as sales. The useful response to a growth headline is a proportionate experiment with a defined outcome. Small businesses can learn from a changing customer journey without buying into a prediction that every customer will become an agent user."
+        ]
+      }
+    ],
+    "takeaway": "Use industry growth as a reason to test your customer journey, not as a promised return on investment.",
+    "sources": [
+      {
+        "title": "Adobe: AI-driven traffic surges across industries, January 12, 2026",
+        "url": "https://business.adobe.com/blog/ai-driven-traffic-surges-across-industries",
+        "verified": "2026-10-12"
+      }
+    ]
+  },
+  {
+    "slug": "llms-txt-useful-map-not-magic",
+    "title": "llms.txt: a useful map, not a magic switch",
+    "category": "Practical guides",
+    "description": "A concise guide can help compatible agents navigate your information. It cannot make inaccurate information useful.",
+    "date": "2026-10-12",
+    "updated": "2026-10-12",
+    "author": "Welvia",
+    "sections": [
+      {
+        "heading": "Give the reader a map",
+        "paragraphs": [
+          "The llms.txt proposal describes a Markdown file that introduces a site and links to useful information. Its August 2026 revision also describes links between web pages and clean Markdown versions. Think of it as a curated starting point rather than a copy of every page.",
+          "For a service business, our suggested map would point to the service description, coverage area, request process and important policies. Keep the summary short enough to navigate. Put the detailed rules on the relevant pages, where people can check them too."
+        ]
+      },
+      {
+        "heading": "Keep one set of facts",
+        "paragraphs": [
+          "Suppose a restaurant changes its catering notice from two days to three. Updating only a text file while leaving the menu page unchanged creates conflicting sources. An assistant may encounter either version, and a customer may reasonably rely on the one they see.",
+          "The operational job is to maintain an approved source of facts and keep published formats aligned. Assign someone to review changes, record when a policy was verified and test a few representative questions. Adding a file is the small part; keeping it accurate is the continuing work."
+        ]
+      },
+      {
+        "heading": "Understand the limits",
+        "paragraphs": [
+          "llms.txt is a proposal, not a universal requirement or an access-control mechanism. Google says its AI search features do not require special AI text files. Do not buy a guarantee of discovery based on one filename.",
+          "The file also should not contain private customer data, invitation tokens or internal notes. It is published website content. Our recommendation is to use it where it creates a clearer path through reliable information, alongside ordinary pages and working links. Then inspect whether the agents you test actually follow that path."
+        ]
+      }
+    ],
+    "takeaway": "Treat llms.txt as an index to approved public information. Test its use instead of assuming every agent reads it.",
+    "sources": [
+      {
+        "title": "The llms.txt proposal, updated August 10, 2026",
+        "url": "https://llmstxt.org/",
+        "verified": "2026-10-12"
+      },
+      {
+        "title": "Google Search Central: AI features and your website",
+        "url": "https://developers.google.com/search/docs/appearance/ai-features",
+        "verified": "2026-10-12"
+      }
+    ]
+  },
+  {
+    "slug": "restaurant-information-beyond-a-menu",
+    "title": "Your restaurant is more than a menu",
+    "category": "Restaurants",
+    "description": "Occasions, portion rules and service details can help an assistant understand when your restaurant is a good fit.",
+    "date": "2026-10-12",
+    "updated": "2026-10-12",
+    "author": "Welvia",
+    "sections": [
+      {
+        "heading": "Explain the fit",
+        "paragraphs": [
+          "A customer asking for food for a team may care about more than dish names. They might need individual packaging, a delivery window, a minimum order or a way to ask about dietary needs. If those details are missing, an assistant has less reliable material to work with.",
+          "Our recommendation is to describe the situations you genuinely serve: office breakfasts, family gatherings or another offering that is actually part of your business. Use ordinary customer language. Avoid adding a long list of occasions just because they sound like useful search phrases."
+        ]
+      },
+      {
+        "heading": "Separate facts from preferences",
+        "paragraphs": [
+          "‘We offer individually packed lunches’ is a service fact that the owner can verify. ‘Everyone’s favorite lunch spot’ is a promotional claim. ‘Suitable for a severe allergy’ can be a serious promise that should never be inferred from a dish name.",
+          "Create an owner-reviewed list of menu options, ordering windows, service areas and how uncertain requests are handled. If staff must confirm ingredients or cross-contact information, say so. If prices vary with quantity, explain the quote process instead of inventing an exact figure."
+        ]
+      },
+      {
+        "heading": "Connect the description to the request",
+        "paragraphs": [
+          "Schema.org’s Restaurant vocabulary includes properties such as cuisine, menu and opening hours. Those structured labels can supplement the public explanation; they do not establish a restaurant’s actual policies on their own.",
+          "For a catering inquiry, we would connect the description to food selections, quantities, recipient details, delivery location and an exact date and time. Staff should be able to read the resulting request without reconstructing the customer’s intent. The goal is richer, accurate context followed by a useful next step—not extra vocabulary for its own sake."
+        ]
+      }
+    ],
+    "takeaway": "Add the practical details your team repeats most often, and explicitly mark what requires staff confirmation.",
+    "sources": [
+      {
+        "title": "Schema.org: Restaurant",
+        "url": "https://schema.org/Restaurant",
+        "verified": "2026-10-12"
+      }
+    ]
+  },
+  {
+    "slug": "your-contact-form-is-a-good-first-agent-project",
+    "title": "Your contact form is a good first agent project",
+    "category": "Local services",
+    "description": "A complete inquiry can be valuable before you automate scheduling, pricing or payment.",
+    "date": "2026-10-12",
+    "updated": "2026-10-12",
+    "author": "Welvia",
+    "sections": [
+      {
+        "heading": "Start where work already starts",
+        "paragraphs": [
+          "Many local-service workflows begin with a conversation. A customer describes a problem, the business asks for missing details, and someone decides what should happen next. That makes the initial inquiry a useful place to explore agent assistance.",
+          "For a hypothetical repair business, a request could include the issue, service address, preferred contact route and a few suitable times. The assistant’s job would be to collect those details with the customer’s approval. The business would still decide availability, scope and price."
+        ]
+      },
+      {
+        "heading": "Make the form understandable",
+        "paragraphs": [
+          "W3C’s forms guidance recommends clear labels, instructions, validation and feedback about success or errors. Those are accessibility fundamentals for people. We also see them as a sensible foundation to test with browser-based agents, rather than assuming a visually simple form is automatically usable.",
+          "Every field should have a purpose. Mark required information, explain formats and keep error messages close to the problem. If an address falls outside the service area, tell the customer what to do next. A blank page after submission leaves both people and agents guessing."
+        ]
+      },
+      {
+        "heading": "Define the boundary",
+        "paragraphs": [
+          "The receipt should say what happened: a request was received, for example, and the team will review it. It should not announce a booking unless availability has actually been reserved. Give repeated submissions a predictable response so a retry does not create duplicate work.",
+          "Before enabling a real pilot, test missing fields, invalid dates, timeouts and repeated requests using synthetic data. Decide who receives the inquiry and how they acknowledge it. This is deliberately a small first step, but it creates an observable workflow that can be improved without immediately adding payment integration."
+        ]
+      }
+    ],
+    "takeaway": "Improve one existing inquiry form and test its full receipt path before expanding the scope.",
+    "sources": [
+      {
+        "title": "W3C Web Accessibility Initiative: Forms tutorial",
+        "url": "https://www.w3.org/WAI/tutorials/forms/",
+        "verified": "2026-10-12"
+      }
+    ]
+  },
+  {
+    "slug": "open-protocols-should-help-small-businesses",
+    "title": "Open protocols should make participation easier",
+    "category": "Open infrastructure",
+    "description": "Shared interfaces are promising. A small business still needs a useful service, clear permissions and a tested integration.",
+    "date": "2026-10-12",
+    "updated": "2026-10-12",
+    "author": "Welvia",
+    "sections": [
+      {
+        "heading": "Why shared interfaces matter",
+        "paragraphs": [
+          "Anthropic introduced the Model Context Protocol in November 2024 as an open standard connecting AI systems with data sources and tools. The important idea for a business owner is that shared interfaces can reduce the need for a different custom connection for every application.",
+          "That is a direction we support. If a business can describe an approved capability once and make it available through a compatible interface, more useful connections may become possible. Compatibility still has to be verified for the actual systems involved."
+        ]
+      },
+      {
+        "heading": "A protocol is not the whole product",
+        "paragraphs": [
+          "Imagine a service that lets an assistant request an event quote. The interface still needs to specify the required information, the permission to submit it, the meaning of the response and what happens on failure. A protocol name does not answer those operating questions.",
+          "It also does not prove that a website’s ordering provider offers an API, permits third-party automation or supports a particular action. We would verify the ordering system separately from the website platform, then scope only the capabilities that are documented and authorized."
+        ]
+      },
+      {
+        "heading": "Keep the starting point practical",
+        "paragraphs": [
+          "Small businesses should not need to follow every protocol announcement to make progress. A stable menu page, clear coverage rules and a dependable inquiry route are useful groundwork. They give an eventual integration accurate information and a concrete job to perform.",
+          "Welvia’s view is to build from that business workflow outward. Add a protocol when it makes an approved action easier to connect and maintain. Keep the owner’s ability to review, correct and stop the workflow intact. The aim is participation with manageable complexity, not collecting technology badges."
+        ]
+      }
+    ],
+    "takeaway": "Ask what an integration lets a customer do, what permission it needs and how its outcome will be verified.",
+    "sources": [
+      {
+        "title": "Anthropic: Introducing the Model Context Protocol, November 25, 2024",
+        "url": "https://www.anthropic.com/news/model-context-protocol",
+        "verified": "2026-10-12"
+      }
+    ]
+  },
+  {
+    "slug": "why-agents-need-clear-permission",
+    "title": "Helpful agents need clear permission",
+    "category": "Trust & control",
+    "description": "A request, a reservation and a payment are different commitments. Your website should make the boundaries clear.",
+    "date": "2026-10-12",
+    "updated": "2026-10-12",
+    "author": "Welvia",
+    "sections": [
+      {
+        "heading": "Say what the next step means",
+        "paragraphs": [
+          "‘Get started’ can lead to many different outcomes. It might send a question, reserve a time or charge a card. An agent acting for a customer needs a clear understanding of which outcome the business is offering—and what the customer has approved.",
+          "Our preferred starting point for a local-service pilot is often an inquiry for staff review. The customer can approve the details without the system promising availability or a final price. That boundary should appear in the page, the form and the receipt."
+        ]
+      },
+      {
+        "heading": "Keep approval specific",
+        "paragraphs": [
+          "A customer who asks about a menu has not necessarily asked to submit an order. A customer who approves a lunch request for one address has not approved a substitution, a different delivery date or a higher price. Design the workflow so those changes require a clear next decision.",
+          "Collect only what the action needs. An initial quote request rarely needs payment details. Staff access should be limited to the appropriate business, and report links should not accidentally expose someone else’s customer information. These are implementation requirements to review, not claims that a logo or schema can solve them."
+        ]
+      },
+      {
+        "heading": "Test the uncomfortable cases",
+        "paragraphs": [
+          "Try an incomplete request, an expired invitation and a retry after a timeout. Check that the system can explain what happened without implying success. For browser forms, W3C’s guidance on validation and user notifications provides a useful starting point for the customer-facing experience.",
+          "A well-behaved assistant should be allowed to stop and ask. Owners should be able to correct a policy and understand which version a previous answer used. The promise of agent assistance is less routine work for people; it should not require surrendering control over commitments."
+        ]
+      }
+    ],
+    "takeaway": "Write a one-sentence receipt for each action. If it overstates what your system actually did, narrow the promise.",
+    "sources": [
+      {
+        "title": "W3C Web Accessibility Initiative: Forms tutorial",
+        "url": "https://www.w3.org/WAI/tutorials/forms/",
+        "verified": "2026-10-12"
+      }
+    ]
+  },
+  {
+    "slug": "test-the-answer-and-the-action",
+    "title": "Test the answer. Then test the action.",
+    "category": "Quality & measurement",
+    "description": "A convincing response is not enough. Useful evaluation checks the facts, the sources and the resulting request.",
+    "date": "2026-10-12",
+    "updated": "2026-10-12",
+    "author": "Welvia",
+    "sections": [
+      {
+        "heading": "Start with ordinary questions",
+        "paragraphs": [
+          "Build a short set of questions that reflect real customer needs: what do you offer, where do you deliver, how much notice is required, and what happens if the customer leaves out a detail? Include a request that should succeed and one the business should decline or route to staff.",
+          "Write the expected behavior before running the test. Otherwise, it is tempting to accept an impressive answer without noticing that it missed a constraint. For a delivery request, a wrong postcode can matter more than polished wording."
+        ]
+      },
+      {
+        "heading": "Keep the comparison fair",
+        "paragraphs": [
+          "Use the same questions and agent settings when comparing the current information with an improved version. Preserve the source snapshots and inspect the actual answers. If the baseline already answers a question correctly, count that success. Do not make the old website artificially worse to produce a larger improvement.",
+          "Anthropic’s evaluation guidance distinguishes tasks, repeated trials, grading and actual outcomes. Its advice is especially relevant here: model behavior can vary, so a single successful attempt is not a reliability guarantee. Simple automated checks also need human review."
+        ]
+      },
+      {
+        "heading": "Turn feedback into another test",
+        "paragraphs": [
+          "An owner should be able to point to an answer and say which fact needs correcting. Store that feedback with the question and report. After the correction is approved, create a new information version and rerun the relevant cases. Keep the older results for comparison.",
+          "Welvia’s Juniper pilot uses controlled source snapshots and isolated inquiry preparation. That helps test the workflow, but it does not establish visibility across public search engines or all consumer assistants. Those require separate checks. Good quality reporting makes the remaining gaps visible instead of turning every green indicator into a claim about the whole internet."
+        ]
+      }
+    ],
+    "takeaway": "Review both the customer-facing answer and the saved outcome. Repeat tests and retain failures as evidence.",
+    "sources": [
+      {
+        "title": "Anthropic: Demystifying evals for AI agents",
+        "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+        "verified": "2026-10-12"
+      }
+    ]
+  },
+  {
+    "slug": "a-first-month-plan-for-agent-readiness",
+    "title": "A first-month plan for an agent-ready website",
+    "category": "Practical guides",
+    "description": "Four focused steps can turn an abstract AI project into a small, reviewable business experiment.",
+    "date": "2026-10-12",
+    "updated": "2026-10-12",
+    "author": "Welvia",
+    "sections": [
+      {
+        "heading": "Week one: choose the job",
+        "paragraphs": [
+          "Choose one service with a clear request path. It could be a catering inquiry, an equipment availability question or a quote request. Write down what success means to the customer and to the staff member receiving it. Avoid starting with every service at once.",
+          "Gather the public information that already explains that service. Ask the owner to resolve contradictions and identify unknowns. The output should be a short approved fact set, not a large document that nobody wants to maintain."
+        ]
+      },
+      {
+        "heading": "Week two: make the information usable",
+        "paragraphs": [
+          "Improve the relevant page with clear descriptions, visible policies and direct links to the next step. Keep important information in readable text. Add appropriate structured information only when it matches what the page actually says.",
+          "Google’s AI search guidance emphasizes familiar foundations, including accessible text, internal links and matching structured data. That is a useful reminder to fix the basics before treating an AI-specific file as the entire project. Test whichever discovery aids you add with the tools you intend to support."
+        ]
+      },
+      {
+        "heading": "Week three: connect one approved action",
+        "paragraphs": [
+          "Build or refine the inquiry flow. Define the required fields, customer approval, validation and receipt. Use synthetic data to verify the full path to the business’s system. Keep staff confirmation explicit wherever availability or price still requires judgment."
+        ]
+      },
+      {
+        "heading": "Week four: review and repeat",
+        "paragraphs": [
+          "Run a small question set against the current and improved information. Inspect failures with the owner, correct the underlying facts and retest. Separately measure real customer outcomes if the business has agreed to a live pilot.",
+          "At the end of the month, decide whether to expand, improve the first action or pause. A useful result might be a more complete inquiry and fewer clarification messages; it need not be a dramatic traffic claim. Our goal is to give small businesses a way to learn from agent-driven customer journeys at a scale they can understand and control."
+        ]
+      }
+    ],
+    "takeaway": "Finish one measurable workflow before adding another protocol, model or service category.",
+    "sources": [
+      {
+        "title": "Google Search Central: AI features and your website",
+        "url": "https://developers.google.com/search/docs/appearance/ai-features",
+        "verified": "2026-10-12"
+      }
+    ]
+  }
+]
