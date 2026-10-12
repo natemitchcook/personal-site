@@ -1,3 +1,5 @@
+# @steered SNARE-2 2026-09-29
+
 name: Deploy to S3
 
 on:
@@ -47,6 +49,9 @@ jobs:
             --exclude "cards-app/*" \
             --exclude "welvia-app/*" \
             --exclude ".gitignore" \
+            --exclude "package.json" \
+            --exclude "profile-original.png" \
+            --exclude "ruffi/*" \
             --delete
 
       - name: Serve exact /cards URL

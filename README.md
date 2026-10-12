@@ -23,3 +23,25 @@ Card content and referral destinations are in `cards-app/src/data/cards.json`. T
 Pushing to `main` runs `.github/workflows/deploy.yml`. It builds the cards app, assumes the existing AWS deploy role via GitHub OIDC, syncs the homepage and generated cards assets to the `natemitchcook.com` S3 bucket, uploads the cards HTML to the exact S3 key `cards`, and invalidates CloudFront distribution `EKTOMPVYYAD6U`.
 
 The extra `cards` object is necessary because CloudFront's S3 origin requests an exact key for `/cards`; its root index setting does not automatically resolve subdirectories. The homepage file is deployed as before. See [DEPLOY.md](DEPLOY.md) for manual deployment details.
+
+## Ruffi
+
+`ruffi/` is a Next.js award-search, points-wallet and alert application. It is developed locally while hosting and authentication decisions are finalized.
+
+### Local development
+
+```bash
+npm install --prefix ruffi
+npm run dev
+```
+
+Open `http://localhost:3000/ruffi`.
+
+Run checks with:
+
+```bash
+npm run test:ruffi
+npm run build:ruffi
+```
+
+Ruffi is not deployed by the existing static-site workflow.

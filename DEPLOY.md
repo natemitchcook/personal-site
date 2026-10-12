@@ -1,5 +1,7 @@
 # Deployment Guide
 
+This guide currently applies only to the static homepage. Ruffi must not be deployed until its hosting, authentication, managed storage, secret retrieval, and alert-worker design are complete.
+
 ## Quick Deploy
 
 ```bash
@@ -35,7 +37,7 @@ The deployment workflow builds the React cards page from `cards-app/` and upload
 ## Full Deploy Command
 
 ```bash
-cd /Users/nccook/projects/personal-site && \
+cd /Users/nccook/personal-site && \
 ./deploy.sh && \
 aws cloudfront create-invalidation \
   --distribution-id EKTOMPVYYAD6U \

@@ -1,2 +1,11 @@
 cards-app/node_modules/
 cards/
+.DS_Store
+
+ruffi/.data/
+ruffi/.env
+ruffi/.env.local
+ruffi/.env.*.local
+ruffi/node_modules/
+ruffi/.next/
+ruffi/*.tsbuildinfo

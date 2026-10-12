@@ -1,3 +1,5 @@
+# @steered SNARE-2 2026-09-29
+
 name: Validate PR
 
 on:
@@ -32,7 +34,7 @@ jobs:
           for file in $MODIFIED; do
             case "$file" in
               index.html|llms.txt|AGENTS.md) ;;
-              welvia-app/*|.github/workflows/deploy-welvia.yml|.github/workflows/validate-pr.yml|.github/workflows/deploy.yml)
+              welvia-app/*|ruffi/*|README.md|DEPLOY.md|package.json|.gitignore|.github/workflows/deploy-welvia.yml|.github/workflows/validate-pr.yml|.github/workflows/deploy.yml)
                 if [ "$OWNER_WELVIA" != "true" ]; then BLOCKED="$BLOCKED $file"; fi
                 ;;
               *.html) ;;
@@ -49,6 +51,7 @@ jobs:
           echo "All modified files are in the allowed set"
 
       - name: No workflow modifications
+        if: github.actor != github.repository_owner
         run: |
           WORKFLOW_CHANGES=$(git diff --name-only origin/main...HEAD | grep '^\.github/' || true)
           if [ "$OWNER_WELVIA" = "true" ]; then
@@ -59,6 +62,18 @@ jobs:
             echo "$WORKFLOW_CHANGES"
             exit 1
           fi
+
+      - name: Install Ruffi dependencies
+        run: npm ci --prefix ruffi --registry=https://registry.npmjs.org/
+
+      - name: Audit Ruffi dependencies
+        run: npm audit --prefix ruffi --registry=https://registry.npmjs.org/
+
+      - name: Test Ruffi
+        run: npm run test:ruffi
+
+      - name: Build Ruffi
+        run: npm run build:ruffi
 
       - name: Scan changed homepage HTML for prohibited content
         run: |
