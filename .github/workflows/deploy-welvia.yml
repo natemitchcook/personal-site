@@ -44,5 +44,8 @@ jobs:
           python3 -c 'import zipfile; z=zipfile.ZipFile("/tmp/welvia-api.zip","w"); z.write("backend/index.py","index.py"); z.close()'
           aws lambda update-function-code --function-name "$function" --zip-file fileb:///tmp/welvia-api.zip
           aws lambda wait function-updated --function-name "$function"
+          python3 -c 'import zipfile; z=zipfile.ZipFile("/tmp/welvia-evals.zip","w"); z.write("evaluations/service.py","index.py"); z.close()'
+          aws lambda update-function-code --function-name welvia-evaluations-service --zip-file fileb:///tmp/welvia-evals.zip
+          aws lambda wait function-updated --function-name welvia-evaluations-service
           aws s3 sync dist/ "s3://$bucket/" --delete --cache-control 'public,max-age=300'
           aws cloudfront create-invalidation --distribution-id "$distribution" --paths '/*'

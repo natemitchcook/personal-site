@@ -145,4 +145,4 @@ jobs:
           pip install boto3 cfn-lint
           npm test
           npm run build
-          cfn-lint infrastructure.json
+          cfn-lint infrastructure.json evaluations/infrastructure.json
