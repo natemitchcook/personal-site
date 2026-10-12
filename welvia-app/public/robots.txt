@@ -1,2 +1,10 @@
 User-agent: *
 Disallow: /
+Allow: /blog/
+Allow: /brand/brand.css
+Allow: /brand/social-card.png
+Allow: /brand/favicon.svg
+Allow: /brand/favicon-32.png
+Allow: /brand/icon-512.png
+Allow: /sitemap.xml
+Sitemap: https://welvia.natemitchcook.com/sitemap.xml
