@@ -6,7 +6,7 @@ let invite=new URLSearchParams(location.hash.slice(1)).get('invite');
 if(invite){sessionStorage.setItem('welvia-invite:'+slug,invite);history.replaceState(null,'',location.pathname+location.search);}
 invite=invite||sessionStorage.getItem('welvia-invite:'+slug)||'';
 try{
- const [record,template]=await Promise.all([fetch('/api/businesses/'+encodeURIComponent(slug),{cache:'no-store',headers:invite?{'Authorization':'Bearer '+invite}:{}}),fetch('/pitch-template.html')]);if(!record.ok||!template.ok)throw Error('Unavailable');
+ const [record,template]=await Promise.all([fetch('/api/businesses/'+encodeURIComponent(slug),{cache:'no-store',headers:invite?{'Authorization':'Bearer '+invite}:{}}),fetch('/pitch-template.html',{cache:'no-store'})]);if(!record.ok||!template.ok)throw Error('Unavailable');
  const business=await record.json();const data=business.campaign;if(data.slug!==slug||!data.business_name||!Array.isArray(data.benefits)||!Array.isArray(data.scenarios)||!Array.isArray(data.pilot_steps))throw Error('Invalid record');
  const scope=new DOMParser().parseFromString(await template.text(),'text/html').body;
  scope.querySelectorAll('[data-field]').forEach(e=>{const v=data[e.dataset.field];if(typeof v!=='string')throw Error('Missing content');e.textContent=v;});
