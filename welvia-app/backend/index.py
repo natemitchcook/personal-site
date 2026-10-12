@@ -102,7 +102,7 @@ def billing_offer(business, invitation):
     offer=business.get('offer',{})
     expires=min(int(offer.get('expires_at',invitation['expires'] if invitation else 0)),int(invitation['expires']) if invitation else 0)
     amounts_valid=all(isinstance(offer.get(k),(int,Decimal)) and offer[k]>=0 for k in ['setup_amount','monthly_amount']) and offer.get('monthly_amount',0)>0
-    ready=bool(invitation and offer.get('expires_at') and expires-time.time()>=1800 and config.get('webhook_ready') and offer.get('approval')=='Approved' and config.get('enabled') and amounts_valid and config.get('setup_price_id') and config.get('monthly_price_id') and os.environ.get('STRIPE_SECRET_KEY'))
+    ready=bool(invitation and offer.get('expires_at') and expires-time.time()>=1800 and config.get('webhook_ready') is True and offer.get('approval')=='Approved' and config.get('enabled') is True and amounts_valid and config.get('setup_price_id') and config.get('monthly_price_id') and os.environ.get('STRIPE_SECRET_KEY'))
     public={k:offer[k] for k in ['setup_amount','monthly_amount','currency','regular_setup_amount','regular_monthly_amount'] if k in offer}
     public.update({'expires_at':expires,'ready':ready})
     return public,config
