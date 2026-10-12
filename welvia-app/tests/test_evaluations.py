@@ -1,4 +1,4 @@
-import os,json,sys,unittest
+import os,json,sys,unittest,re
 from pathlib import Path
 from unittest.mock import patch,MagicMock
 from botocore.exceptions import ClientError
@@ -52,4 +52,9 @@ class Evals(unittest.TestCase):
   s=app.summary([{'without':{'passed':True},'with':{'error':'Timeout','passed':False}}]);self.assertEqual(0,s['with']['passed']);self.assertEqual(1,s['with']['errors'])
  def test_rubric_tracks_approved_notice(self):
   p={**PROFILE,'facts':{**FACTS,'notice_hours':72}};self.assertEqual(['72'],app.cases(p)[1]['patterns'])
+ def test_timezone_check_accepts_display_and_identifier(self):
+  pattern=app.cases()[4]['patterns'][2]
+  for answer in ['America/Los_Angeles','America/Los Angeles','Pacific']:
+   self.assertIsNotNone(re.search(pattern,answer))
+  self.assertIsNone(re.search(pattern,'Eastern'))
 if __name__=='__main__':unittest.main()
