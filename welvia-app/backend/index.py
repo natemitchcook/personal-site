@@ -1,4 +1,5 @@
 import os, json, re, uuid, hashlib, secrets, time, logging
+import urllib.request, urllib.parse, urllib.error
 from datetime import datetime, timezone
 from decimal import Decimal
 import boto3
@@ -53,6 +54,9 @@ def validate(kind,data):
             errors['request_route']='Choose email, phone or existing form.'
         if data.get('website_help') not in ['me','team','provider','unsure']:
             errors['website_help']='Choose who can help.'
+        channel=data.get('proposal_update_channel','email')
+        if channel not in ['email','text']:errors['proposal_update_channel']='Choose email or text message.'
+        if channel=='text' and not re.fullmatch(r'[+0-9 ()-]{10,25}',str(data.get('contact_mobile',''))):errors['contact_mobile']='Enter a mobile number with country code.'
         if data.get('approval') is not True:
             errors['approval']='Confirm that you are authorized to submit these answers.'
     else:
@@ -93,6 +97,41 @@ def save_owner_answers(bid,data,checklist,rid,created_at):
     except db.meta.client.exceptions.ConditionalCheckFailedException:
         pass
 
+def billing_offer(business, invitation):
+    config=db.get_item(Key={'pk':'CONFIG#billing'},ConsistentRead=True).get('Item') or {}
+    offer=business.get('offer',{})
+    expires=min(int(offer.get('expires_at',invitation['expires'] if invitation else 0)),int(invitation['expires']) if invitation else 0)
+    amounts_valid=all(isinstance(offer.get(k),(int,Decimal)) and offer[k]>=0 for k in ['setup_amount','monthly_amount']) and offer.get('monthly_amount',0)>0
+    ready=bool(invitation and offer.get('expires_at') and expires-time.time()>=1800 and config.get('webhook_ready') and offer.get('approval')=='Approved' and config.get('enabled') and amounts_valid and config.get('setup_price_id') and config.get('monthly_price_id') and os.environ.get('STRIPE_SECRET_KEY'))
+    public={k:offer[k] for k in ['setup_amount','monthly_amount','currency','regular_setup_amount','regular_monthly_amount'] if k in offer}
+    public.update({'expires_at':expires,'ready':ready})
+    return public,config
+
+def stripe_call(method,path,params=None,idempotency_key=None):
+    key=os.environ.get('STRIPE_SECRET_KEY','')
+    if not key:raise ValueError('Stripe is not configured')
+    headers={'Authorization':'Bearer '+key,'Content-Type':'application/x-www-form-urlencoded'}
+    if idempotency_key:headers['Idempotency-Key']=idempotency_key
+    request=urllib.request.Request('https://api.stripe.com/v1/'+path,method=method,headers=headers,data=urllib.parse.urlencode(params).encode() if params else None)
+    with urllib.request.urlopen(request,timeout=10) as reply:return json.load(reply)
+
+def checkout(bid,business,invitation):
+    offer,config=billing_offer(business,invitation)
+    if not offer['ready']:return response(409,{'error':'Your setup and monthly price need to be confirmed before checkout.'})
+    # The client cannot choose prices, currency, redirects, or another business.
+    for label,expected_type in [('setup','one_time'),('monthly','recurring')]:
+        price=stripe_call('GET','prices/'+urllib.parse.quote(config[label+'_price_id'],safe=''))
+        if price.get('unit_amount')!=offer[label+'_amount'] or price.get('currency','').upper()!=offer.get('currency','USD').upper() or price.get('type')!=expected_type or not price.get('active'):
+            return response(409,{'error':'Your approved proposal and checkout pricing need to be reconciled.'})
+        if label=='monthly' and (price.get('recurring',{}).get('interval')!='month' or price['recurring'].get('interval_count',1)!=1):
+            return response(409,{'error':'The monthly plan needs to be confirmed.'})
+    site=os.environ['SITE_URL']
+    session=stripe_call('POST','checkout/sessions',{'mode':'subscription','line_items[0][price]':config['setup_price_id'],'line_items[0][quantity]':1,'line_items[1][price]':config['monthly_price_id'],'line_items[1][quantity]':1,'expires_at':min(int(time.time())+86400,offer['expires_at']),'client_reference_id':bid,'metadata[business_id]':bid,'subscription_data[metadata][business_id]':bid,'success_url':site+'/?business='+bid+'&checkout=success','cancel_url':site+'/?business='+bid+'#pricing'},digest(bid+':'+str(offer['expires_at'])+':'+str(int(time.time())//1800)))
+    url=session.get('url','')
+    if not url.startswith('https://checkout.stripe.com/'):
+        return response(502,{'error':'Checkout could not be opened. Please try again.'})
+    return response(200,{'url':url})
+
 def handler(event,context):
     if event.get('admin_action')=='invite':
         bid=event.get('business_id','')
@@ -108,7 +147,7 @@ def handler(event,context):
         method=event.get('requestContext',{}).get('http',{}).get('method','GET')
         path=event.get('rawPath','').rstrip('/')
         if path=='/api/health':return response(200,{'status':'ok','mode':'pilot','version':'1.0.0'})
-        match=re.fullmatch(r'/api/businesses/([a-z0-9-]{1,80})(?:/(onboarding|requests|qa|receipts))?',path)
+        match=re.fullmatch(r'/api/businesses/([a-z0-9-]{1,80})(?:/(onboarding|requests|qa|receipts|checkout))?',path)
         if not match:return response(404,{'error':'Not found'})
         bid,kind=match.groups()
         business=get_business(bid)
@@ -119,6 +158,8 @@ def handler(event,context):
         if method=='GET' and not kind:
             public={k:business.get(k) for k in PUBLIC_FIELDS}
             public['can_submit']=bool(invitation)
+            public['proposal_expires_at']=int(invitation['expires']) if invitation else None
+            public['offer']=billing_offer(business,invitation)[0]
             return response(200,public)
         if method!='POST':return response(405,{'error':'Method not allowed'})
         if not limit(event):return response(429,{'error':'Too many requests. Please wait a minute.'})
@@ -128,6 +169,9 @@ def handler(event,context):
         if not isinstance(data,dict):return response(400,{'error':'Expected an object'})
         if any(isinstance(v,str) and len(v)>2000 for v in data.values()):return response(400,{'error':'Answer is too long'})
         if data.get('website'):return response(400,{'error':'Invalid submission'})
+        if kind=='checkout':
+            if not invitation:return response(403,{'error':'Use your private invitation link to choose a plan.'})
+            return checkout(bid,business,invitation)
         if kind=='qa':
             question=str(data.get('question','')).lower()[:500]
             faqs=business.get('faq',[])
@@ -150,6 +194,7 @@ def handler(event,context):
         token=digest(bid+':'+kind+':'+idem) # random UUID is the bearer capability; returned only to submitter
         checklist=['Review owner answers','Confirm website editing route','Approve implementation scope'] if kind=='onboarding' else ['Staff review availability and price','Confirm the request with the customer']
         if kind=='onboarding':
+            checklist.append('Send updated setup proposal by '+str(data.get('proposal_update_channel','email'))+' after review')
             for k in ['lead_time','delivery_area','minimum','rules']:
                 if not data.get(k) or data.get(k)=='Not sure':checklist.append('Confirm '+k.replace('_',' '))
         now=datetime.now(timezone.utc).isoformat()
@@ -164,6 +209,7 @@ def handler(event,context):
         if kind=='onboarding':
             save_owner_answers(bid,data,checklist,rid,now)
         return response(201,{'reference':rid,'receipt_token':token,'status':item['status'],'checklist':checklist,'notification':item['notification']})
+    except (urllib.error.URLError,TimeoutError):return response(503,{'error':'Checkout is temporarily unavailable. Please try again later.'})
     except (ValueError,TypeError):return response(400,{'error':'Invalid request'})
     except ClientError:
         LOG.exception('AWS request failed')
