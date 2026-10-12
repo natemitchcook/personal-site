@@ -1,5 +1,6 @@
 """Render public editorial HTML without exposing any business database records."""
 import json,html,re,math
+from brand_studies import SHAPES,CONCEPTS
 from pathlib import Path
 from datetime import date,datetime,timezone
 from email.utils import format_datetime
@@ -15,6 +16,7 @@ for p in POSTS:
 POSTS.sort(key=lambda p:p['date'],reverse=True)
 def svg(kind='flow',cls='brand-symbol'):
  shapes={'flow':'<path class="stroke" d="M10 17 L19 45 Q21 51 25 44 L32 28 L39 44 Q43 51 45 44 L54 17"/>', 'door':'<path class="stroke" d="M16 49 V29 A16 16 0 0 1 32 13 A16 16 0 0 1 48 29 V49 M26 49 V31 A6 6 0 0 1 38 31 V49"/>', 'link':'<path class="stroke" d="M27 20 L20 20 A12 12 0 0 0 20 44 H27 M37 20 H44 A12 12 0 0 1 44 44 H37 M24 32 H40"/>'}
+ shapes.update(SHAPES)
  return f'<svg class="{cls} {kind}" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{shapes[kind]}</svg>'
 def logo():return '<a class="brand-lockup" href="/" aria-label="Welvia home">'+svg()+'<span>welvia</span></a>'
 def head(title,desc,path,index=True,article=None):
@@ -61,11 +63,12 @@ f.write_text(s)
 f=OUT/'pitch-template.html';s=f.read_text().replace('welvia<i>✳</i>','welvia'+svg()).replace('welvia✳','welvia');f.write_text(s)
 # Three live vector concepts: CSS motion stops for reduced-motion preferences.
 concepts=[('flow','01 / Flow W','A continuous path from a question to a useful action. The strongest fit for a compact favicon.'),('door','02 / Open door','A welcoming entrance for the next kind of customer. Softer and more architectural.'),('link','03 / Connection','Two sides meeting through a shared interface. A direct expression of useful connections.')]
-body='<section class="journal-hero"><span class="kicker">Welvia / Identity studies</span><h1>Make the<br>connection <em>visible.</em></h1><p class="dek">Three directions. One warm, confident palette. Hover or focus each mark to see it move.</p></section><section class="concept-grid">'
+concepts += CONCEPTS
+body='<section class="journal-hero"><span class="kicker">Welvia / Identity studies</span><h1>Make the<br>connection <em>visible.</em></h1><p class="dek">13 directions. One warm, confident palette. Each mark loops while it is on screen. Compare the movement with the still favicon below.</p><div class="motion-controls"><button type="button" id="motion-toggle" aria-pressed="false">Pause animations</button><span id="motion-status" role="status">Animations play automatically. Reduced-motion preferences are respected.</span></div></section><section class="concept-grid">'
 for kind,title,desc in concepts:
- body+='<article class="concept"><div class="concept-stage" tabindex="0" aria-label="Animate '+E(title)+'">'+svg(kind,'concept-symbol')+'</div><p class="kicker">'+title+'</p><h2>'+title.split(' / ')[1]+'</h2><p>'+desc+'</p><div class="favicon-samples"><span>In a browser tab</span>'+svg(kind)+'<span>Welvia</span></div><a href="/brand/'+kind+'.svg" download>Download SVG ↗</a></article>'
-body+='</section><section class="closing"><span class="kicker">Working direction / Flow W</span><h2>Simple enough to recognize.<br>Flexible enough to move.</h2><p>The Flow W is the current working mark. Each option is vector artwork, scales down to a favicon and has a reduced-motion state. These are original design concepts, not a trademark-clearance result.</p></section>'
-(OUT/'brand.html').write_text(shell('Welvia | Logo exploration','Three animated logo directions for Welvia.','/brand.html',body,index=False))
+ body+='<article class="concept" id="concept-'+kind+'"><div class="concept-stage" aria-label="Animated preview: '+E(title)+'">'+svg(kind,'concept-symbol')+'</div><p class="kicker">'+title+'</p><h2>'+title.split(' / ')[1]+'</h2><p>'+desc+'</p><div class="favicon-samples"><span>In a browser tab</span>'+svg(kind)+'<span>Welvia</span></div><a href="/brand/'+kind+'.svg" download>Download SVG ↗</a></article>'
+body+='</section><section class="design-notes"><span class="kicker">What informed these studies</span><h2>Motion with a reason.</h2><p>Explore widely, keep the silhouette legible, and give each mark a behavior connected to Welvia: finding, connecting or taking a useful next step. These are original studies, not reproductions of another studio’s identity.</p><p>References: <a href="https://iteration.design/">Iteration — exploration and craft</a> · <a href="https://www.ordinaryfolk.co/process">Ordinary Folk — personality through motion</a> · <a href="https://animations.dev/">Emil Kowalski — animation craft</a> · <a href="https://www.designweek.co.uk/the-strongest-motion-identities-encode-behaviour-not-aesthetics/">Andrew Vucko — brand behavior</a></p></section><script src="/brand/studies.js" defer></script><section class="closing"><span class="kicker">Working direction / Flow W</span><h2>Simple enough to recognize.<br>Flexible enough to move.</h2><p>The Flow W is the current working mark. Each option is vector artwork, scales down to a favicon and has a reduced-motion state. These are original design concepts, not a trademark-clearance result.</p></section>'
+(OUT/'brand.html').write_text(shell('Welvia | Logo exploration','Thirteen animated logo directions for Welvia, with looping previews and favicon studies.','/brand.html',body,index=False))
 for kind,_,_ in concepts:
  (OUT/'brand'/(kind+'.svg')).write_text(svg(kind).replace('<svg ','<svg xmlns="http://www.w3.org/2000/svg" ').replace('currentColor','#18231f'))
 # Agent-readable index links only public editorial content, never private business data.
