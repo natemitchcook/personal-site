@@ -24,4 +24,4 @@ Only the journal is newly allowed for indexing in robots.txt. Existing root home
 
 ## Identity assets
 
-Flow W is the working replacement for the star, pending the owner's preference. `/brand.html` compares three original SVG concepts with hover/focus motion and reduced-motion support. Source SVGs, PNG favicons, Apple icon, web manifest and social image live under public/brand. Do not change the mark in a weekly content run. Vector marks are original design studies; no trademark clearance is claimed.
+Flow W is the working replacement for the star, pending the owner's preference. `/brand.html` compares thirteen original SVG concepts with automatic viewport-aware loops, pause/resume controls and reduced-motion support. Source SVGs, PNG favicons, Apple icon, web manifest and social image live under public/brand. Do not change the mark in a weekly content run. Vector marks are original design studies; no trademark clearance is claimed.
