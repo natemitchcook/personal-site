@@ -34,7 +34,7 @@ jobs:
           for file in $MODIFIED; do
             case "$file" in
               index.html|llms.txt|AGENTS.md) ;;
-              welvia-app/*|ruffi/*|README.md|DEPLOY.md|package.json|.gitignore|.github/workflows/deploy-welvia.yml|.github/workflows/validate-pr.yml|.github/workflows/deploy.yml)
+              welvia-app/*|ruffi/*|README.md|DEPLOY.md|package.json|.gitignore|setup-oidc.sh|.github/workflows/deploy-welvia.yml|.github/workflows/validate-pr.yml|.github/workflows/deploy.yml)
                 if [ "$OWNER_WELVIA" != "true" ]; then BLOCKED="$BLOCKED $file"; fi
                 ;;
               *.html) ;;
