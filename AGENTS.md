@@ -6,6 +6,8 @@ The rules below protect the root résumé homepage and unsolicited contributions
 
 Welvia is another owner-authorized app under `welvia-app/`, deployed at `welvia.natemitchcook.com` by `.github/workflows/deploy-welvia.yml` and its isolated AWS stack. The root homepage restrictions do not apply inside Welvia. Preserve the personal-site source exclusions, separate deployment role and private submissions. Follow `welvia-app/README.md` for the pilot boundaries and tests.
 
+When Nate directly asks an agent to work in his local checkout, follow that request and preserve unrelated or uncommitted work. The repository now contains the static portfolio, the cards and Welvia apps, and the Ruffi application.
+
 ## Quick Start
 
 ```bash
@@ -23,16 +25,20 @@ gh pr create --title "Your title" --body "What changed and why"
 ## Repository Structure
 
 ```
-index.html      — the entire site (single file, inline CSS)
-llms.txt        — agent-readable site summary (llmstxt.org format)
-AGENTS.md       — this file (contribution context for agents)
-profile.png     — headshot photo (do not modify)
-favicon.png     — browser tab icon (do not modify)
-deploy.sh       — legacy manual deploy script
-.github/        — CI/CD workflows
+index.html      - static portfolio homepage with inline CSS
+llms.txt        - agent-readable site summary
+ruffi/          - Next.js award-search and alert application
+package.json    - repository-level local development commands
+AGENTS.md       - this file
+profile.png     - headshot photo (do not modify)
+favicon.png     - browser tab icon (do not modify)
+deploy.sh       - legacy static-site deployment script
+.github/        - CI/CD workflows
 ```
 
-The site is a **single HTML file** with inline `<style>`. There is no build step, no framework, no JavaScript. Changes deploy automatically when merged to `main`.
+The public portfolio homepage remains a single HTML file with inline CSS and no client JavaScript. Ruffi is a separate Next.js application under `ruffi/` and is currently local-only.
+
+Before changing Ruffi's TypeSafe integration, read `ruffi/.agents/skills/typesafe-ai/SKILL.md` and the relevant live TypeSafe documentation.
 
 ---
 
@@ -145,7 +151,10 @@ Insert before the closing `</section>` of the projects section:
 - Changing contact information
 - Modifying profile.png or favicon.png
 
-### Hard Rules (PR will be closed immediately)
+### Static Homepage Hard Rules
+
+These rules apply to top-level portfolio HTML, not to code under `ruffi/`.
+
 - No `<script>` tags of any kind
 - No external resource loading (CDN, fonts, analytics, iframes)
 - No form elements that submit to external services
@@ -192,6 +201,8 @@ Before submitting, verify:
 
 ## Testing Locally
 
+Static homepage:
+
 ```bash
 # Any static file server works
 python3 -m http.server 8000
@@ -200,6 +211,15 @@ npx serve .
 ```
 
 Open `http://localhost:8000` and verify at both desktop and mobile widths.
+
+Ruffi:
+
+```bash
+npm install --prefix ruffi
+npm run dev
+```
+
+Open `http://localhost:3000/ruffi`, then run `npm run test:ruffi` and `npm run build:ruffi`.
 
 ---
 

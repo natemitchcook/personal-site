@@ -1,0 +1,9 @@
+{
+  "name": "natemitchcook-com",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix ruffi run dev",
+    "build:ruffi": "npm --prefix ruffi run build",
+    "test:ruffi": "npm --prefix ruffi run test"
+  }
+}
