@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nate Cook - Product Leader, AI & Growth</title>
+    <title>Nate Cook | Product - AI Accelerator</title>
     <link rel="icon" type="image/png" href="favicon.png">
     <script type="application/ld+json">
     {
@@ -13,7 +13,7 @@
       "url": "https://natemitchcook.com",
       "image": "https://natemitchcook.com/profile.png",
       "email": "natemitchcook@gmail.com",
-      "jobTitle": "Product Lead, AI & Growth",
+      "jobTitle": "Product - AI Accelerator",
       "worksFor": {
         "@type": "Organization",
         "name": "Audible"
@@ -105,6 +105,16 @@
             font-weight: 500;
             margin-bottom: 8px;
             color: #171717;
+        }
+
+        .project-title a {
+            font-size: inherit;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        .subtitle + .subtitle {
+            margin-top: 12px;
         }
 
         .project-meta {
@@ -242,7 +252,10 @@
             <div class="header-content">
                 <h1>Hi, I'm Nate Cook</h1>
                 <p class="subtitle">
-                    I'm a product leader who builds. 14 years shipping enterprise platforms at Amazon, including 3 zero-to-one GenAI capabilities adopted by 8+ teams in 12 weeks. I find the highest-impact problem, ship fast, and let adoption do the talking. Currently leading AI product strategy at Audible.
+                    I'm an AI PM who loves to build and solve real problems for users. Currently building out AI agents and applications at Audible for internal adoption.
+                </p>
+                <p class="subtitle">
+                    What drives me is building AI teams and working at the frontier of AI deployment at scale for enterprise businesses: taking agents from impressive demos to governed, measured systems that people rely on every day. I find the highest-impact problem, ship fast, and let adoption do the talking.
                 </p>
             </div>
             <img src="profile.png" alt="Nate Cook" class="profile-photo">
@@ -324,11 +337,51 @@
             </article>
         </section>
 
+        <section class="projects">
+            <h2 class="section-title">What I'm Building</h2>
+
+            <article class="project-card">
+                <h3 class="project-title"><a href="https://natemitchcook.com/cards">Travel Card Guide</a></h3>
+                <div class="project-meta">Personal Build / React • 2026</div>
+                <p class="project-description">
+                    A guide to travel credit cards that compares welcome offers and annual benefits, includes a personal credit-use calculator, and explains how to find award flights with Seats.aero. Built in React 19 and TypeScript with Radix and shadcn components and Tailwind, compiled by Vite into a static page. All card data lives in one JSON file, so updating an offer is a data change, not a code change. GitHub Actions deploys it to S3 and CloudFront using short-lived OIDC credentials instead of stored AWS keys.
+                </p>
+                <span class="tag">React</span>
+                <span class="tag">TypeScript</span>
+                <span class="tag">Vite</span>
+                <span class="tag">S3 + CloudFront</span>
+            </article>
+
+            <article class="project-card">
+                <h3 class="project-title"><a href="https://github.com/natemitchcook/personal-site/tree/main/ruffi">Ruffi</a></h3>
+                <div class="project-meta">Personal Build / Agentic App • 2026</div>
+                <p class="project-description">
+                    An award-travel engine that finds flights bookable with points, ranks them against your actual points wallet, and alerts you when a meaningfully better option appears. One TypeScript service is the source of truth, exposed as both an HTTP API with an OpenAPI spec and an MCP server, so other agents use the same tools as the web app. Requests in plain English are parsed by deterministic code first and refined by a local Ollama model, and every model output is validated in code before it touches dates, seats, cabins, or points math. Availability comes from Seats.aero, with optional preference-aware ranking from TypeSafe Jev. Runs locally today; hosting is next.
+                </p>
+                <span class="tag">Next.js</span>
+                <span class="tag">TypeScript</span>
+                <span class="tag">MCP Server</span>
+                <span class="tag">Local LLM</span>
+            </article>
+
+            <article class="project-card">
+                <h3 class="project-title">Welvia</h3>
+                <div class="project-meta">Venture / Agentic Commerce • 2026</div>
+                <p class="project-description">
+                    Helps small businesses become usable by their customers' AI agents, not just findable. Instead of another SEO play, Welvia gives agents a clear action contract, an OpenAPI spec plus llms.txt, to read approved business facts, answer questions, and submit a complete, customer-approved request (like a catering order) that staff then confirm. Built on AWS with Lambda, API Gateway, DynamoDB, and CloudFront, with invitation-scoped access, duplicate-safe receipts, and an evaluation service that scores how well agents complete real tasks. In private pilot.
+                </p>
+                <span class="tag">Agentic Commerce</span>
+                <span class="tag">OpenAPI</span>
+                <span class="tag">AWS Serverless</span>
+                <span class="tag">Agent Evals</span>
+            </article>
+        </section>
+
         <section class="work">
             <h2 class="section-title">Work Experience</h2>
 
             <div class="work-item">
-                <div class="work-title">Product Lead, AI Acceleration</div>
+                <div class="work-title">Product - AI Accelerator</div>
                 <div class="work-company">Audible (Amazon)</div>
                 <div class="work-period">Oct 2025 - Present</div>
                 <div class="project-description" style="margin-top:4px">Handpicked for 6-person team by the Chief Product Officer. Own product vision for enterprise GenAI platform: agent infrastructure, governance, developer APIs, and adoption across 8+ teams.</div>
