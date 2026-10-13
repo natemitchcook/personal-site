@@ -1,35 +1,6 @@
-.brand-lockup{display:inline-flex;align-items:center;gap:9px;text-decoration:none;font-size:29px;font-weight:750;letter-spacing:-1.8px;color:#18231f}.brand-symbol{width:32px;height:32px;color:#487663;flex-shrink:0;vertical-align:middle}.logo{display:inline-flex;align-items:center;gap:6px}.logo .brand-symbol{width:27px;height:27px}.stroke{transform-origin:center;transition:transform .45s ease}.brand-lockup:hover .stroke,.brand-lockup:focus-visible .stroke,.logo:hover .stroke{transform:scale(.88) rotate(-7deg)}.concept-stage:hover .flow .stroke,.concept-stage:focus .flow .stroke{stroke-dasharray:150;animation:draw 1.6s ease both}.concept-stage:hover .door .stroke,.concept-stage:focus .door .stroke{animation:welcome 1.6s ease both}.concept-stage:hover .link .stroke,.concept-stage:focus .link .stroke{animation:connect 1.6s ease both}@keyframes draw{from{stroke-dashoffset:150}to{stroke-dashoffset:0}}@keyframes welcome{50%{transform:scaleX(1.16)}}@keyframes connect{50%{transform:scale(.8) rotate(8deg)}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
-/* The gallery loops independently of hover; all other site marks stay quiet. */
-.concept-stage svg *{transform-box:view-box;transform-origin:32px 32px;animation-duration:4s;animation-timing-function:cubic-bezier(.45,0,.2,1);animation-iteration-count:infinite}
-.concept-stage .flow .stroke{stroke-dasharray:150;animation:study-draw 4s ease-in-out infinite!important}
-.concept-stage .door .stroke{animation:study-door 4s ease-in-out infinite!important}
-.concept-stage .link .stroke{animation:study-connect 4s ease-in-out infinite!important}
-.concept-stage .relay .traveler{animation-name:study-relay}
-.concept-stage .orbit .satellites{animation-name:study-orbit;animation-duration:7s}
-.concept-stage .fold .left{animation-name:study-left}.concept-stage .fold .right{animation-name:study-right}
-.concept-stage .weave .thread{stroke-dasharray:70;animation-name:study-weave}.concept-stage .weave .two{animation-delay:.25s}
-.concept-stage .beacon .echo{animation-name:study-beacon}.concept-stage .beacon .outer{animation-delay:.5s}
-.concept-stage .hinge .panel{transform-origin:35px 32px;animation-name:study-hinge}
-.concept-stage .petal .petals{animation-name:study-petal;animation-duration:6s}
-.concept-stage .assemble .tile{animation-name:study-gather}.concept-stage .assemble .b{--x:7px;--y:-7px;animation-delay:.12s}.concept-stage .assemble .a{--x:-7px;--y:-7px}.concept-stage .assemble .c{--x:-7px;--y:7px;animation-delay:.24s}.concept-stage .assemble .d{--x:7px;--y:7px;animation-delay:.36s}
-.concept-stage .current .wave{animation-name:study-current}.concept-stage .current .b{animation-delay:.2s}.concept-stage .current .c{animation-delay:.4s}
-.concept-stage .portal .arrow{animation-name:study-forward}.concept-stage .portal .frame{animation-name:study-frame}
-@keyframes study-draw{0%,12%{stroke-dashoffset:150}45%,80%{stroke-dashoffset:0}100%{stroke-dashoffset:-150}}
-@keyframes study-door{0%,100%{transform:scaleX(1)}35%,65%{transform:scaleX(1.18)}}
-@keyframes study-connect{0%,100%{transform:scale(.82);opacity:.6}40%,75%{transform:scale(1);opacity:1}}
-@keyframes study-relay{0%,12%{transform:translate(0,0)}35%{transform:translate(10px,-12px)}60%,80%{transform:translate(40px,-24px)}100%{transform:translate(0,0)}}
-@keyframes study-orbit{0%,15%{transform:rotate(0)}85%,100%{transform:rotate(360deg)}}
-@keyframes study-left{0%,100%{transform:translate(-4px,0) rotate(-12deg)}40%,75%{transform:none}}
-@keyframes study-right{0%,100%{transform:translate(4px,0) rotate(12deg)}40%,75%{transform:none}}
-@keyframes study-weave{0%,10%{stroke-dashoffset:70;opacity:.35}50%,80%{stroke-dashoffset:0;opacity:1}100%{stroke-dashoffset:-70;opacity:.35}}
-@keyframes study-beacon{0%{transform:scale(.5);opacity:.15}35%{opacity:.9}80%,100%{transform:scale(1.08);opacity:.15}}
-@keyframes study-hinge{0%,100%{transform:scaleX(.15)}35%,70%{transform:scaleX(1)}}
-@keyframes study-petal{0%,12%{transform:rotate(-20deg) scale(.83)}55%,80%{transform:rotate(100deg) scale(1)}100%{transform:rotate(100deg) scale(.83)}}
-@keyframes study-gather{0%,100%{transform:translate(var(--x),var(--y));opacity:.45}40%,75%{transform:translate(0,0);opacity:1}}
-@keyframes study-current{0%,100%{transform:translateX(-3px)}40%,65%{transform:translateX(3px)}}
-@keyframes study-forward{0%,15%{transform:translateX(-9px);opacity:.25}50%,75%{transform:translateX(0);opacity:1}100%{transform:translateX(9px);opacity:.25}}
-@keyframes study-frame{0%,100%{transform:scale(.94)}50%,75%{transform:scale(1.06)}}
-body.motion-paused .concept-stage svg *,body .concept-stage.motion-offscreen svg *{animation-play-state:paused!important}
-.motion-controls{display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin-top:30px}.motion-controls button{font:inherit;border:1px solid #18231f;border-radius:40px;padding:12px 20px;background:#18231f;color:#f4f3f0;cursor:pointer}.motion-controls button:disabled{opacity:.6;cursor:default}.motion-controls span{font-size:13px;color:#58665d}.design-notes{max-width:800px;margin:0 auto 70px;line-height:1.7}.design-notes h2{font-size:36px;letter-spacing:-.04em}.concept:nth-child(3n+2) .concept-stage{background:#e9e3d6}.concept:nth-child(3n) .concept-stage{background:#18231f}.concept:nth-child(3n) .concept-symbol{color:#bdd6c5}
-@media(prefers-reduced-motion:reduce){.concept-stage svg *{animation:none!important;stroke-dashoffset:0!important}}
-@media(prefers-reduced-motion:reduce){#main .concept-stage svg *{animation:none!important;stroke-dashoffset:0!important}}
+.brand-lockup{display:inline-flex;align-items:center;gap:9px;text-decoration:none;font-size:29px;font-weight:750;letter-spacing:-1.8px;color:#18231f}.brand-symbol{width:32px;height:32px;color:#487663;flex-shrink:0;vertical-align:middle}.logo{display:inline-flex;align-items:center;gap:6px}.logo .brand-symbol{width:27px;height:27px}
+/* One short wave, then rest, in every ten-second cycle. */
+.current .wave{transform-box:view-box;transform-origin:32px 32px;animation:welvia-current 10s cubic-bezier(.45,0,.2,1) infinite}.current .wave.b{animation-delay:.16s}.current .wave.c{animation-delay:.32s}@keyframes welvia-current{0%,24%,100%{transform:translateX(0)}7%{transform:translateX(-3px)}15%{transform:translateX(3px)}}
+html.motion-paused .current .wave,html.page-hidden .current .wave{animation-play-state:paused}.current-intro{padding-bottom:35px}.current-showcase{border-radius:22px;background:#18231f;color:#bdd6c5;padding:50px;margin-bottom:75px}.current-mark-stage{min-height:300px;display:flex;align-items:center;justify-content:center;gap:25px}.current-hero-mark{width:180px;height:180px;flex-shrink:0}.current-wordmark{font-size:clamp(60px,10vw,130px);font-weight:650;letter-spacing:-.08em}.current-caption{display:flex;justify-content:space-between;align-items:center;gap:20px;padding-top:25px;border-top:1px solid #4c6155;font-size:13px}.current-caption button{font:inherit;border:1px solid #bdd6c5;border-radius:30px;background:transparent;color:#e2eee4;padding:10px 17px;cursor:pointer}.current-caption button:disabled{opacity:.6;cursor:default}#motion-status{font-size:12px;color:#bdd6c5;margin-bottom:0}.brand-story{max-width:760px}.brand-story .kicker{color:#487663}.brand-story section{margin-bottom:55px}
+@media(max-width:600px){.current-showcase{padding:25px}.current-mark-stage{min-height:230px;gap:12px}.current-hero-mark{width:100px;height:100px}.current-caption{align-items:start;flex-direction:column;gap:14px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
