@@ -48,4 +48,5 @@ jobs:
           aws lambda update-function-code --function-name welvia-evaluations-service --zip-file fileb:///tmp/welvia-evals.zip
           aws lambda wait function-updated --function-name welvia-evaluations-service
           aws s3 sync dist/ "s3://$bucket/" --delete --cache-control 'public,max-age=300'
+          aws s3 cp dist/business "s3://$bucket/business" --content-type 'text/html; charset=utf-8' --cache-control 'public,max-age=300'
           aws cloudfront create-invalidation --distribution-id "$distribution" --paths '/*'

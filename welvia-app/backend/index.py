@@ -126,7 +126,7 @@ def checkout(bid,business,invitation):
         if label=='monthly' and (price.get('recurring',{}).get('interval')!='month' or price['recurring'].get('interval_count',1)!=1):
             return response(409,{'error':'The monthly plan needs to be confirmed.'})
     site=os.environ['SITE_URL']
-    session=stripe_call('POST','checkout/sessions',{'mode':'subscription','line_items[0][price]':config['setup_price_id'],'line_items[0][quantity]':1,'line_items[1][price]':config['monthly_price_id'],'line_items[1][quantity]':1,'expires_at':min(int(time.time())+86400,offer['expires_at']),'client_reference_id':bid,'metadata[business_id]':bid,'subscription_data[metadata][business_id]':bid,'success_url':site+'/?business='+bid+'&checkout=success','cancel_url':site+'/?business='+bid+'#pricing'},digest(bid+':'+str(offer['expires_at'])+':'+str(int(time.time())//1800)))
+    session=stripe_call('POST','checkout/sessions',{'mode':'subscription','line_items[0][price]':config['setup_price_id'],'line_items[0][quantity]':1,'line_items[1][price]':config['monthly_price_id'],'line_items[1][quantity]':1,'expires_at':min(int(time.time())+86400,offer['expires_at']),'client_reference_id':bid,'metadata[business_id]':bid,'subscription_data[metadata][business_id]':bid,'success_url':site+'/business?business='+bid+'&checkout=success','cancel_url':site+'/business?business='+bid+'#pricing'},digest(bid+':'+str(offer['expires_at'])+':'+str(int(time.time())//1800)))
     url=session.get('url','')
     if not url.startswith('https://checkout.stripe.com/'):
         return response(502,{'error':'Checkout could not be opened. Please try again.'})
@@ -138,7 +138,7 @@ def handler(event,context):
         if not get_business(bid): return {'error':'unknown business'}
         token=secrets.token_urlsafe(32)
         db.put_item(Item={'pk':'INVITE#'+digest(token),'business_id':bid,'expires':int(time.time())+7*86400})
-        return {'url':os.environ['SITE_URL']+'/?business='+bid+'#invite='+token,'expires_in_days':7}
+        return {'url':os.environ['SITE_URL']+'/business?business='+bid+'#invite='+token,'expires_in_days':7}
     if event.get('admin_action')=='review':
         bid=event.get('business_id','')
         b=get_business(bid)

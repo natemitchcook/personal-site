@@ -17,3 +17,6 @@ await copyFile(css,'dist/app.css');
 
 execFileSync('python3',['scripts/build_editorial.py'],{stdio:'inherit'});
 execFileSync('python3',['scripts/check_editorial.py'],{stdio:'inherit'});
+// S3 REST origins do not resolve extensionless routes to index.html.
+// Publish the same authenticated business shell at the canonical route.
+await copyFile('dist/index.html','dist/business');
