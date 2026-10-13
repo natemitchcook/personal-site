@@ -72,3 +72,18 @@ Each manual run evaluates ten scenarios once per variant. Reported checks are de
 Public journal: `/blog/index.html`; Current identity and brand profile: `/brand.html` (noindex). Ten initial articles live in `content/posts.json`. Read `content/EDITORIAL.md` before editing or publishing. Weekly articles are produced by an owner-authorized ChatGPT task, committed through a validated PR and deployed by the existing app workflow; no model or publishing secret is shipped to the browser. The task runs Monday mornings in America/New_York.
 
 The build generates readable article HTML, alternate Markdown, article-specific titles/descriptions/canonical and social tags, BlogPosting structured data, RSS and a journal-only sitemap. Static assets include SVG/PNG favicons, Apple touch icon, manifest and a 1200×630 social image. No invented social handles or unverifiable business contact metadata are added. Homepage and private business noindex/access settings are preserved. The new public journal is allowed in robots.txt. A crawler being allowed does not guarantee indexing.
+
+## Google Analytics
+GA4 property measurement ID: `G-N5KBXBFBPD`. The shared HTML head loads
+`/analytics.js` on homepage, brand page, business proposal shell, journal and
+all articles (including future articles). A business proposal is distinguished
+by its validated business slug. URL fragments and other query parameters are
+excluded from explicitly configured page URLs; referrers are reduced to origin.
+Custom events record clicks, onboarding/request form starts and submission
+outcomes, Q&A requests/responses and checkout starts. Event payloads never copy
+form values, answer text, errors or invitation tokens. Advertising signals and
+personalization are disabled. Cookies are scoped to the Welvia hostname.
+Google Analytics stream-side Enhanced Measurement is controlled separately in
+Google's admin; review its automatic collection settings before enabling
+additional features or user-provided data collection. No indexing settings change.
+Keep this property when moving domains and update the stream URL at launch.
