@@ -69,6 +69,6 @@ Each manual run evaluates ten scenarios once per variant. Reported checks are de
 
 ## Welvia Journal and brand
 
-Public journal: `/blog/index.html`; visual identity studies: `/brand.html` (noindex). Ten initial articles live in `content/posts.json`. Read `content/EDITORIAL.md` before editing or publishing. Weekly articles are produced by an owner-authorized ChatGPT task, committed through a validated PR and deployed by the existing app workflow; no model or publishing secret is shipped to the browser. The task runs Monday mornings in America/New_York.
+Public journal: `/blog/index.html`; Current identity and brand profile: `/brand.html` (noindex). Ten initial articles live in `content/posts.json`. Read `content/EDITORIAL.md` before editing or publishing. Weekly articles are produced by an owner-authorized ChatGPT task, committed through a validated PR and deployed by the existing app workflow; no model or publishing secret is shipped to the browser. The task runs Monday mornings in America/New_York.
 
 The build generates readable article HTML, alternate Markdown, article-specific titles/descriptions/canonical and social tags, BlogPosting structured data, RSS and a journal-only sitemap. Static assets include SVG/PNG favicons, Apple touch icon, manifest and a 1200×630 social image. No invented social handles or unverifiable business contact metadata are added. Homepage and private business noindex/access settings are preserved. The new public journal is allowed in robots.txt. A crawler being allowed does not guarantee indexing.
