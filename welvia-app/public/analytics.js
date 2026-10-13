@@ -8,7 +8,7 @@
   let referrer = '';
   try { referrer = new URL(document.referrer).origin + '/'; } catch {}
   window.dataLayer = window.dataLayer || [];
-  const gtag = (...args) => window.dataLayer.push(args);
+  function gtag() { window.dataLayer.push(arguments); }
   window.gtag = gtag;
   const context = {page_location: cleanUrl, page_referrer: referrer,
     page_title: validBusiness ? 'Welvia business proposal' : document.title,
