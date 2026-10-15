@@ -8,7 +8,7 @@ from botocore.exceptions import ClientError
 
 db = boto3.resource('dynamodb').Table(os.environ['TABLE_NAME'])
 LOG = logging.getLogger(__name__)
-PUBLIC_FIELDS = ['campaign','id','name','city','state','category','is_demo','sources','faq']
+PUBLIC_FIELDS = ['campaign','id','name','city','state','category','is_demo','sources','faq','findings','reviewed_at']
 REQUIRED_ONBOARDING = ['contact_name','contact_email','services','request_route','request_destination','website_help','approval']
 REQUIRED_REQUEST = ['food','quantity','fulfillment','date','time','timezone','recipient','requester','phone','confirm']
 
@@ -34,9 +34,44 @@ def get_business(bid):
           'scenarios':[{'title':c['scenario_title'],'prompt':c['customer_prompt'],'fields':split(c['required_fields']),'note':c['business_rules']}],
           'pilot_steps':split(c['pilot_steps']), 'cta_label':c['cta_label']}
         business.update({'id':bid,'name':p['business_name'],'city':p['city'],'state':p['state'],'category':p['category'], 'site':p['website_url'], 'campaign':campaign, 'public_enabled':bool(page.get('public_enabled') and c.get('content_approval')=='Approved')})
+        business['reviewed_at']=p.get('last_verified','')
+        urls=re.findall(r'https://[^\s;|]+',str(p.get('source_urls','')))
+        business['sources']=[{'url':u,'label':'Research source'} for u in urls[:6]]
+        business['findings']=[{'title':'Observed on your website','status':'Needs review','detail':c.get('specific_observation',''),'url':p['website_url']},
+          {'title':'Your request workflow','status':'Needs review','detail':p.get('observed_workflow',c.get('business_rules','')),'url':p['website_url']},
+          {'title':'End-to-end agent handoff','status':'Not tested','detail':'We will test the agreed action after you approve the facts and implementation scope.','url':''}]
     if business.get('campaign_override'):
         business['campaign']=business['campaign_override']
     return business or None
+
+def public_proposal(business):
+    """Marketing projection only. Owner answers, contact lists and receipts stay private."""
+    public={k:business.get(k) for k in PUBLIC_FIELDS}
+    if not public.get('findings'):
+        public['findings']=[{'title':f.get('question','Business information'),'status':'Needs review','detail':f.get('answer',''),'url':next((s['url'] for s in business.get('sources',[]) if s.get('url','').startswith('https://')),'')} for f in business.get('faq',[])[:2]]
+        public['findings'].append({'title':'End-to-end agent handoff','status':'Not tested','detail':'A proposed workflow, awaiting business confirmation and implementation testing.','url':''})
+    public['pricing']={'setup_amount':25000,'regular_setup_amount':50000,'monthly_amount':5000,'annual_amount':47500,'currency':'USD'}
+    return public
+
+def save_interest(bid,data):
+    """Unauthenticated leads never update verified owner answers or authorize work."""
+    allowed={'contact_name','contact_email','business_url','message','submission_id','consent'}
+    if set(data)-allowed:return response(400,{'error':'Unexpected fields'})
+    if not all(isinstance(data.get(k),str) and data[k].strip() for k in ['contact_name','contact_email','submission_id']):
+        return response(422,{'error':'Please enter your name and email.'})
+    if not re.fullmatch(r'[^\s@]+@[^\s@]+\.[^\s@]+',data['contact_email']) or data.get('consent') is not True:
+        return response(422,{'error':'Enter a valid email and agree to a reply about your plan.'})
+    if not re.fullmatch(r'[a-f0-9-]{36}',data['submission_id']):return response(400,{'error':'Invalid submission ID'})
+    if bid=='general':
+        url=urllib.parse.urlparse(str(data.get('business_url','')))
+        if url.scheme not in ['http','https'] or not url.hostname:return response(422,{'error':'Enter your business website, including https://.'})
+    key='LEAD#'+bid+'#'+data['submission_id']
+    item={'pk':key,'business_id':bid,'answers':data,'status':'Needs review','created_at':datetime.now(timezone.utc).isoformat(),'outreach_state':'Not sent'}
+    try:db.put_item(Item=item,ConditionExpression=Attr('pk').not_exists())
+    except db.meta.client.exceptions.ConditionalCheckFailedException:
+        old=db.get_item(Key={'pk':key},ConsistentRead=True).get('Item',{})
+        if old.get('answers')!=data:return response(409,{'error':'This submission ID has already been used.'})
+    return response(201,{'reference':'WEL-'+data['submission_id'][:8].upper(),'status':'Needs review'})
 
 def auth(event, bid):
     token = (event.get('headers',{}).get('authorization') or event.get('headers',{}).get('Authorization') or '').removeprefix('Bearer ')
@@ -147,21 +182,20 @@ def handler(event,context):
         method=event.get('requestContext',{}).get('http',{}).get('method','GET')
         path=event.get('rawPath','').rstrip('/')
         if path=='/api/health':return response(200,{'status':'ok','mode':'pilot','version':'1.0.0'})
-        match=re.fullmatch(r'/api/businesses/([a-z0-9-]{1,80})(?:/(onboarding|requests|qa|receipts|checkout))?',path)
+        match=re.fullmatch(r'/api/businesses/([a-z0-9-]{1,80})(?:/(interest|onboarding|requests|qa|receipts|checkout))?',path)
         if not match:return response(404,{'error':'Not found'})
         bid,kind=match.groups()
-        business=get_business(bid)
+        business={'id':'general'} if bid=='general' and kind=='interest' else get_business(bid)
         if not business:return response(404,{'error':'Unknown business'})
         invitation=auth(event,bid)
-        if not business.get('public_enabled') and not invitation:
-            return response(403,{'error':'Use your private invitation link to open this page.'})
         if method=='GET' and not kind:
-            public={k:business.get(k) for k in PUBLIC_FIELDS}
+            public=public_proposal(business)
             public['can_submit']=bool(invitation)
-            public['proposal_expires_at']=int(invitation['expires']) if invitation else None
-            public['offer']=billing_offer(business,invitation)[0]
+            public['offer']=billing_offer(business,invitation)[0] if invitation else {'ready':False}
             return response(200,public)
         if method!='POST':return response(405,{'error':'Method not allowed'})
+        if kind!='interest' and not invitation:
+            return response(403,{'error':'Owner access is required for this action. You can request a plan from the public proposal.'})
         if not limit(event):return response(429,{'error':'Too many requests. Please wait a minute.'})
         raw=event.get('body') or '{}'
         if len(raw)>16000:return response(413,{'error':'Submission too large'})
@@ -169,6 +203,7 @@ def handler(event,context):
         if not isinstance(data,dict):return response(400,{'error':'Expected an object'})
         if any(isinstance(v,str) and len(v)>2000 for v in data.values()):return response(400,{'error':'Answer is too long'})
         if data.get('website'):return response(400,{'error':'Invalid submission'})
+        if kind=='interest':return save_interest(bid,data)
         if kind=='checkout':
             if not invitation:return response(403,{'error':'Use your private invitation link to choose a plan.'})
             return checkout(bid,business,invitation)

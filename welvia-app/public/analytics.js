@@ -17,11 +17,11 @@
   gtag('set', context);
   gtag('config', id, {...context, cookie_domain: location.hostname,
     allow_google_signals: false, allow_ad_personalization_signals: false});
-  const allowed = new Set(['form_start','form_submit_attempt','form_submit_success','form_submit_error','qa_request','qa_response','checkout_start','business_page_ready','button_click','link_click']);
+  const allowed = new Set(['form_start','form_submit_attempt','form_submit_success','form_submit_error','qa_request','qa_response','checkout_start','business_page_ready','preview_viewed','finding_expanded','cta_clicked','signup_started','signup_completed','button_click','link_click']);
   window.welviaAnalytics = {track(name, detail = {}) {
     if (!allowed.has(name)) return;
     const params = {...context};
-    if (['onboarding','request','qa','feedback'].includes(detail.form_type)) params.form_type = detail.form_type;
+    if (['onboarding','request','qa','feedback','interest'].includes(detail.form_type)) params.form_type = detail.form_type;
     if (typeof detail.destination === 'string') {
       try {
         const url = new URL(detail.destination, location.origin);
@@ -33,10 +33,11 @@
   document.addEventListener('click', e => {
     const el = e.target.closest?.('a,button');
     if (!el) return;
+    if(el.matches('a[href="#onboarding"],a[href="#plan"]'))window.welviaAnalytics.track('cta_clicked');
     window.welviaAnalytics.track(el.tagName === 'A' ? 'link_click' : 'button_click',
       {destination: el.tagName === 'A' ? el.href : ''});
   }, {capture:true});
-  window.addEventListener('welvia:campaign-ready', () => window.welviaAnalytics.track('business_page_ready'));
+  window.addEventListener('welvia:campaign-ready', () => {window.welviaAnalytics.track('business_page_ready');window.welviaAnalytics.track('preview_viewed');});
   const script = document.createElement('script');
   script.async = true;
   script.src = 'https://www.googletagmanager.com/gtag/js?id=' + id;
