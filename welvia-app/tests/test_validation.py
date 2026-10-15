@@ -43,10 +43,10 @@ class Validation(unittest.TestCase):
     with patch.object(app,'db',mock):app.save_owner_answers('avalon',{'services':'New claim'},[], 'TEST', '2026-10-11')
     self.assertNotIn('services',mock.update_item.call_args.kwargs['UpdateExpression'])
 
- def test_private_draft_denied(self):
+ def test_proposal_is_public_without_invitation(self):
     with patch.object(app,'get_business',return_value={'id':'247foru','public_enabled':False}),patch.object(app,'auth',return_value=None):
         r=app.handler({'rawPath':'/api/businesses/247foru','requestContext':{'http':{'method':'GET'}}},None)
-        self.assertEqual(403,r['statusCode'])
+        self.assertEqual(200,r['statusCode']);self.assertNotIn('proposal_expires_at',r['body'])
  def test_public_projection_excludes_private_fields(self):
     b={'id':'avalon','campaign':{'business_name':'Avalon'},'contact_email':'secret@example.com','email_draft':'private','owner_answers':{'secret':'value'},'fields':{'do_not_contact':True}}
     with patch.object(app,'get_business',return_value=b),patch.object(app,'auth',return_value={'business_id':'avalon','expires':9999999999}):
@@ -86,3 +86,20 @@ class Validation(unittest.TestCase):
     data={'contact_name':'Owner','contact_email':'owner@example.com','services':'Catering','request_route':'email','request_destination':'owner@example.com','website_help':'me','approval':True,'proposal_update_channel':'text'}
     self.assertIn('contact_mobile',app.validate('onboarding',data))
     data['contact_mobile']='+1 415 555 0123';self.assertEqual({},app.validate('onboarding',data))
+
+ def test_all_private_actions_require_invite(self):
+    for action in ['onboarding','requests','receipts','checkout','qa']:
+        with self.subTest(action=action),patch.object(app,'get_business',return_value={'id':'avalon','public_enabled':True}),patch.object(app,'auth',return_value=None):
+            r=app.handler({'rawPath':'/api/businesses/avalon/'+action,'body':'{}','requestContext':{'http':{'method':'POST'}}},None)
+            self.assertEqual(403,r['statusCode'])
+ def test_public_interest_stores_lead_only(self):
+    import json
+    data={'contact_name':'Test','contact_email':'test@example.com','consent':True,'submission_id':'12345678-1234-1234-1234-123456789abc'}
+    with patch.object(app,'get_business',return_value={'id':'avalon'}),patch.object(app,'auth',return_value=None),patch.object(app,'limit',return_value=True),patch.object(app,'db') as db:
+        r=app.handler({'rawPath':'/api/businesses/avalon/interest','body':json.dumps(data),'requestContext':{'http':{'method':'POST'}}},None)
+        self.assertEqual(201,r['statusCode']);self.assertTrue(db.put_item.call_args.kwargs['Item']['pk'].startswith('LEAD#avalon#'));db.update_item.assert_not_called()
+ def test_interest_rejects_owner_fields(self):
+    self.assertEqual(400,app.save_interest('avalon',{'approval':True,'owner_answers':{'services':'injected'}})['statusCode'])
+ def test_interest_invalid_consent_and_email(self):
+    for email,consent in [('invalid',True),('test@example.com',False)]:
+        self.assertEqual(422,app.save_interest('avalon',{'contact_name':'Test','contact_email':email,'consent':consent,'submission_id':'12345678-1234-1234-1234-123456789abc'})['statusCode'])

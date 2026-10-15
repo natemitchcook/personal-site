@@ -1,3 +1,19 @@
+# Current acquisition release — October 15, 2026
+
+Business proposals at /business?business=<stable-id> are publicly viewable and do not expire. This owner-authorized change supersedes the historical access descriptions below. Existing draft/review flags remain workflow metadata, not viewing gates. Public GET returns marketing content, findings, public sources and pricing; private answers, contacts, email drafts, notes, receipts and evaluations remain protected. Never put confidential data into campaign or finding fields.
+
+Public POST /api/businesses/<id>/interest creates a separate LEAD# record, never owner answers or implementation authorization. It validates consent, fields, lengths, idempotency and rate limits. The generic homepage uses /api/businesses/general/interest. Other business POST routes and all evaluation APIs require private owner access. Acquisition email links must use permanent parameter URLs without invitation fragments.
+
+Setup is $250 introductory (regular $500). Optional care is $50/month or $475/year. Care scope proposes monthly checks, a report and one factual correction batch capped at 30 minutes. Custom integrations require a separate quote. No countdown or expired-page screen. The lead form takes no payment; authenticated checkout remains disabled until credentials, prices, webhooks and lifecycle tests are ready.
+
+Findings use existing research, labeled Needs review or Not tested, with stored last_verified dates when available. Do not manufacture Passed checks. Controlled evaluations are not evidence of public assistant recommendations. Current branding and existing chat examples remain.
+
+Remaining pilot gates: secure runtime Resend credential and automatic notifications; staff approval UI; verified owner onboarding; Stripe sandbox lifecycle, billing portal and agreed cancellation/refund terms; implementation completion records and scheduled care reports; full Juniper rehearsal before Avalon implementation. These are not claimed complete by this release.
+
+Validation: npm test; node --test tests/analytics.test.cjs; npm run build. Test public viewing, protected writes, isolated lead storage, mobile layout and live API routes.
+
+## Historical architecture notes (access and pricing descriptions superseded above)
+
 # Welvia working pilot
 
 Homepage: https://welvia.natemitchcook.com/
