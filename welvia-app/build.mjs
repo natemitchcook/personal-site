@@ -20,3 +20,8 @@ execFileSync('python3',['scripts/check_editorial.py'],{stdio:'inherit'});
 // S3 REST origins do not resolve extensionless routes to index.html.
 // Publish the same authenticated business shell at the canonical route.
 await copyFile('dist/index.html','dist/business');
+
+// Public synthetic demonstration only. No owner data or authentication state.
+await mkdir('dist/care-demo',{recursive:true});
+await copyFile('care/demo/index.html','dist/care-demo/index.html');
+await copyFile('care/demo/index.html','dist/care-demo.html');
