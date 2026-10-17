@@ -24,3 +24,4 @@ await copyFile('dist/index.html','dist/business');
 // Public synthetic demonstration only. No owner data or authentication state.
 await mkdir('dist/care-demo',{recursive:true});
 await copyFile('care/demo/index.html','dist/care-demo/index.html');
+await copyFile('care/demo/index.html','dist/care-demo.html');
