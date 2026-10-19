@@ -409,5 +409,69 @@
         "verified": "2026-10-12"
       }
     ]
+  },
+  {
+    "slug": "measure-ai-visits-without-mistaking-them-for-customers",
+    "title": "An AI visit is not a customer: four numbers worth tracking",
+    "category": "Quality & measurement",
+    "description": "Separate crawler access, assistant referrals, received inquiries and accepted bookings to understand what AI-related activity actually means.",
+    "date": "2026-10-19",
+    "updated": "2026-10-19",
+    "author": "Welvia",
+    "sections": [
+      {
+        "heading": "Ask what the number proves",
+        "paragraphs": [
+          "A restaurant sees a rise in AI-related traffic. Should it prepare for more catering orders? Not from that number alone. A system fetching a menu, a person following an assistant’s recommendation and a confirmed catering order are different events. Combining them into one score hides the decisions an owner needs to make.",
+          "Our recommendation is a small weekly report with four separate measures. Record the source, date range and limitations beside each one. Independent businesses deserve useful evidence about this new channel, even when the honest result is that an outcome is not yet measurable."
+        ]
+      },
+      {
+        "heading": "First: can identified crawlers reach useful pages?",
+        "paragraphs": [
+          "Cloudflare’s AI Crawl Control documentation separates crawler requests, successful responses, errors and requested paths. For businesses already using that service, these are useful access checks. Its setup guide requires traffic to pass through Cloudflare and explains that free-plan identification uses self-identifying user-agent strings. Coverage depends on the service and configuration; the label is not a census of every agent.",
+          "Ask your website provider for equivalent evidence where available. Start with the menu, service-area page and inquiry instructions. An error on one of those pages suggests a concrete repair. A successful fetch shows that content was served, not that it was understood, recommended or used to purchase anything."
+        ]
+      },
+      {
+        "heading": "Second: did an assistant refer a visit?",
+        "paragraphs": [
+          "Google Analytics’ current default-channel documentation, checked October 19, 2026, lists an AI Assistant channel for traffic from sources such as ChatGPT and Gemini. It separately places Google’s AI Overviews and AI Mode in Organic Search. Those definitions matter when comparing reports: a single AI-labeled row does not represent every AI-assisted discovery journey.",
+          "Review the landing pages and recorded sources, rather than reporting all visits as agent actions. A referral can represent a person clicking a recommendation. It does not establish that an assistant filled in a form. Keep unknown origins unknown, and avoid promising complete attribution from a website report."
+        ]
+      },
+      {
+        "heading": "Third and fourth: what reached the business, and what was accepted?",
+        "paragraphs": [
+          "Count an inquiry when your receiving system actually saves it, not merely when someone presses Submit. Give each request a reference so retries can be recognized. Then track staff acceptance separately. A catering inquiry may be complete but still need a delivery check, a price agreement or a change of date.",
+          "For example, a hypothetical caterer could record five received inquiries and two accepted bookings during a week. That is a business outcome report, but it should not call all five AI-generated or credit the two bookings to AI without supporting attribution. A link to an external ordering provider also does not prove checkout completion. Ask what outcome evidence that provider makes available before counting sales."
+        ]
+      },
+      {
+        "heading": "Make the report lead to one improvement",
+        "paragraphs": [
+          "Keep controlled evaluations in a separate section. Testing whether an assistant answers a delivery question correctly can reveal a useful information gap. It does not measure how often public assistants recommend the business. Likewise, a blank metric should say “not measured” when collection is absent, rather than displaying a reassuring zero.",
+          "This week, choose one service and write four rows: crawler access, assistant referrals, saved inquiries and accepted bookings. Assign a source and an owner to each row. Keep customer contact details out of the summary. At the next review, fix one observed problem, such as an unreadable menu or an unclear receipt, and record what changed. That is a practical way to improve participation without mistaking activity for customers."
+        ]
+      }
+    ],
+    "takeaway": "For one service, track access, referrals, received inquiries and accepted bookings separately. Label missing evidence as not measured and use the report to choose one concrete fix.",
+    "sources": [
+      {
+        "title": "Cloudflare: Analyze AI traffic",
+        "url": "https://developers.cloudflare.com/ai-crawl-control/features/analyze-ai-traffic/",
+        "verified": "2026-10-19"
+      },
+      {
+        "title": "Cloudflare: Get started with AI Crawl Control",
+        "url": "https://developers.cloudflare.com/ai-crawl-control/get-started/",
+        "verified": "2026-10-19"
+      },
+      {
+        "title": "Google Analytics Help: Default channel group",
+        "url": "https://support.google.com/analytics/answer/9756891?hl=en",
+        "verified": "2026-10-19"
+      }
+    ]
   }
 ]
