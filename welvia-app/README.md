@@ -1,3 +1,7 @@
+# Current acquisition offer: free first website review
+
+The public offer is a free first website review, practical recommendations and a starter file with upload instructions, delivered by email. The interest form requires name, email and a website on the general page, and uses the existing isolated LEAD# storage and explicit follow-up consent. Business pages use the same short review form even when an invitation is present. No payment or website editing access is requested. Reviews and starter-file preparation are staff-delivered; this release does not add an automated crawler, file generator or email delivery. Optional implementation and ongoing care are scoped and priced separately. Historical prices below are superseded for acquisition.
+
 # Current acquisition release — October 15, 2026
 
 Business proposals at /business?business=<stable-id> are publicly viewable and do not expire. This owner-authorized change supersedes the historical access descriptions below. Existing draft/review flags remain workflow metadata, not viewing gates. Public GET returns marketing content, findings, public sources and pricing; private answers, contacts, email drafts, notes, receipts and evaluations remain protected. Never put confidential data into campaign or finding fields.
