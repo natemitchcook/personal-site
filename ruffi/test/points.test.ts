@@ -1,8 +1,9 @@
 // @steered SNARE-2 2026-09-29
 
 import assert from "node:assert/strict";
-import { chmod, mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { chmod, mkdtemp, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
+import os from "node:os";
 import test from "node:test";
 import { applyPreferenceDecision } from "../packages/points/src/decisioning.ts";
 import { buildFundingPlan, rankAwardOffers } from "../packages/points/src/funding.ts";
@@ -145,8 +146,7 @@ test("validates a local Ollama interpretation before using it", async () => {
 });
 
 test("normalizes Seats.aero trip details and treats American zero seats as unknown", async () => {
-  await mkdir(path.join(process.cwd(), ".data"), { recursive: true });
-  const directory = await mkdtemp(path.join(process.cwd(), ".data", "test-credentials-"));
+  const directory = await mkdtemp(path.join(os.homedir(), "ruffi-test-credentials-"));
   const credentialFile = path.join(directory, "credentials.txt");
   await writeFile(credentialFile, "seats_aero_api_key=test-seats-key\n", {
     encoding: "utf8",
@@ -289,8 +289,7 @@ test("keeps hard constraints and wallet feasibility in deterministic ranking", (
 });
 
 test("Jev can preference-rank eligible offers without changing eligibility", async () => {
-  await mkdir(path.join(process.cwd(), ".data"), { recursive: true });
-  const directory = await mkdtemp(path.join(process.cwd(), ".data", "test-credentials-"));
+  const directory = await mkdtemp(path.join(os.homedir(), "ruffi-test-credentials-"));
   const credentialFile = path.join(directory, "credentials.txt");
   await writeFile(credentialFile, "typesafe_api_key=test-typesafe-key\n", {
     encoding: "utf8",
