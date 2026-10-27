@@ -3,6 +3,7 @@ import urllib.request, urllib.parse, urllib.error
 from datetime import datetime, timezone
 from decimal import Decimal
 import boto3
+import reviews
 from boto3.dynamodb.conditions import Attr
 from botocore.exceptions import ClientError
 
@@ -65,13 +66,22 @@ def save_interest(bid,data):
     if bid=='general':
         url=urllib.parse.urlparse(str(data.get('business_url','')))
         if url.scheme not in ['http','https'] or not url.hostname:return response(422,{'error':'Enter your business website, including https://.'})
+    if os.environ.get('REVIEW_QUEUE_URL') and bid=='general':
+        try: reviews.canonical(data.get('business_url',''))
+        except (ValueError, UnicodeError): return response(422,{'error':'Enter a public website using its standard address.'})
     key='LEAD#'+bid+'#'+data['submission_id']
-    item={'pk':key,'business_id':bid,'answers':data,'status':'Needs review','created_at':datetime.now(timezone.utc).isoformat(),'outreach_state':'Not sent'}
+    item={'pk':key,'business_id':bid,'answers':data,'status':'Needs review','created_at':datetime.now(timezone.utc).isoformat(),'outreach_state':'Not sent','email_status':'Queued'}
     try:db.put_item(Item=item,ConditionExpression=Attr('pk').not_exists())
     except db.meta.client.exceptions.ConditionalCheckFailedException:
         old=db.get_item(Key={'pk':key},ConsistentRead=True).get('Item',{})
         if old.get('answers')!=data:return response(409,{'error':'This submission ID has already been used.'})
-    return response(201,{'reference':'WEL-'+data['submission_id'][:8].upper(),'status':'Needs review'})
+        item=old
+    try:
+        delivery=reviews.enqueue(db,item)
+    except Exception:
+        LOG.error('Review queue unavailable')
+        return response(503,{'error':'Your request is saved, but email processing could not start. Please retry this form; it will reuse your request.'})
+    return response(201,{'reference':'WEL-'+data['submission_id'][:8].upper(),'status':'Needs review','email_status':delivery})
 
 def auth(event, bid):
     token = (event.get('headers',{}).get('authorization') or event.get('headers',{}).get('Authorization') or '').removeprefix('Bearer ')
@@ -168,6 +178,46 @@ def checkout(bid,business,invitation):
     return response(200,{'url':url})
 
 def handler(event,context):
+    # Only native SQS events or IAM-authorized direct invokes reach these branches.
+    # API Gateway carries user JSON inside body, never in top-level event fields.
+    if event.get('Records'):
+        failures=[]
+        for record in event['Records']:
+            if record.get('eventSource')!='aws:sqs': raise ValueError('Unsupported event source')
+            try:
+                job=json.loads(record['body'])
+                if job.get('prepare_only'):
+                    business=get_business(job['business_id']) or {}
+                    url=business.get('site') or business.get('campaign',{}).get('website','')
+                    try:
+                        artifact=reviews.prepare(db,url)
+                        state={'pk':'PREPARATION#'+job['business_id'],'review_key':artifact['pk'],'state':'Ready','prepared_at':artifact['prepared_at']}
+                    except (ValueError,OSError) as error:
+                        state={'pk':'PREPARATION#'+job['business_id'],'state':'Needs manual review','reason':type(error).__name__}
+                    db.put_item(Item=state)
+                else:
+                    reviews.deliver(db,job['lead_key'],get_business)
+            except Exception:
+                LOG.error('Review worker job failed; queue will retry')
+                failures.append({'itemIdentifier':record['messageId']})
+        return {'batchItemFailures':failures}
+    if event.get('admin_action')=='prepare_review':
+        bid=event.get('business_id','')
+        if not get_business(bid): return {'error':'unknown business'}
+        boto3.client('sqs').send_message(QueueUrl=os.environ['REVIEW_QUEUE_URL'],MessageBody=json.dumps({'prepare_only':True,'business_id':bid}))
+        return {'status':'Queued','business_id':bid}
+    if event.get('admin_action')=='outreach_preflight':
+        bid=event.get('business_id','')
+        business=get_business(bid) or {}
+        url=business.get('site') or business.get('campaign',{}).get('website','')
+        artifact=db.get_item(Key={'pk':'REVIEW#'+digest(reviews.canonical(url))},ConsistentRead=True).get('Item')
+        ready=bool(artifact and artifact.get('prepared_at',0)>time.time()-30*86400)
+        return {'ready':ready,'business_id':bid,'reason':'Starter file prepared' if ready else 'Prepare the review before outreach'}
+    if event.get('admin_action')=='retry_review':
+        key=event.get('lead_key','')
+        if not key.startswith('LEAD#'): return {'error':'Invalid lead key'}
+        lead=db.get_item(Key={'pk':key},ConsistentRead=True).get('Item')
+        return {'status':reviews.enqueue(db,lead)} if lead else {'error':'Unknown request'}
     if event.get('admin_action')=='invite':
         bid=event.get('business_id','')
         if not get_business(bid): return {'error':'unknown business'}

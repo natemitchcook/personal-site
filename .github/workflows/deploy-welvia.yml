@@ -41,7 +41,7 @@ jobs:
           bucket=$(python3 -c 'import json; print(next(x["OutputValue"] for x in json.load(open("/tmp/welvia-outputs.json")) if x["OutputKey"]=="Bucket"))')
           distribution=$(python3 -c 'import json; print(next(x["OutputValue"] for x in json.load(open("/tmp/welvia-outputs.json")) if x["OutputKey"]=="DistributionId"))')
           function=$(python3 -c 'import json; print(next(x["OutputValue"] for x in json.load(open("/tmp/welvia-outputs.json")) if x["OutputKey"]=="Function"))')
-          python3 -c 'import zipfile; z=zipfile.ZipFile("/tmp/welvia-api.zip","w"); z.write("backend/index.py","index.py"); z.close()'
+          python3 -c 'import zipfile; z=zipfile.ZipFile("/tmp/welvia-api.zip","w"); z.write("backend/index.py","index.py"); z.write("backend/reviews.py","reviews.py"); z.close()'
           aws lambda update-function-code --function-name "$function" --zip-file fileb:///tmp/welvia-api.zip
           aws lambda wait function-updated --function-name "$function"
           python3 -c 'import zipfile; z=zipfile.ZipFile("/tmp/welvia-evals.zip","w"); z.write("evaluations/service.py","index.py"); z.close()'
