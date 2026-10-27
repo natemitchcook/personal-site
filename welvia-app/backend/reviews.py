@@ -272,10 +272,21 @@ def email_payload(lead, artifact):
     ]
     cta = 'Want me to handle the setup? Reply to this email and I can help improve your business information, connect booking or inquiry steps, and discuss optional ongoing care. We agree on scope and pricing before any paid work.'
     limitation = 'This is a starter map of your website, not a guarantee that AI assistants will read it or recommend your business. It does not enable bookings or purchases by itself.'
+    feedback_intro = 'Can I ask a quick favor? Reply with even one honest answer. Negative feedback is helpful too.'
+    feedback_questions = [
+        'What was useful, or confusing, about this review?',
+        'Were you able to add llms.txt to your website? If not, what stopped you?',
+        'What business task are you trying to finish soon that you would consider paying someone to handle? It does not have to involve AI.'
+    ]
+    feedback_link = ('mailto:' + urllib.parse.quote(reply_to, safe='@+.')
+                     + '?' + urllib.parse.urlencode({'subject': 'Feedback on my free Welvia review',
+                         'body': 'Hi Nate,\\n\\n' + '\\n\\n'.join(feedback_questions) + '\\n\\nMy thoughts: '}))
     text = ('Your free website review\n\nWebsite: ' + artifact['source_url'] + '\n\n' + scope +
             '\n\nRecommendations\n' + '\n'.join('- ' + x for x in artifact['recommendations']) +
             '\n\nUpload instructions\n' + '\n'.join(str(i+1) + '. ' + x for i, x in enumerate(instructions)) +
-            '\n\n' + limitation + '\n\n' + cta + '\n\nNate Cook\nWelvia\nReply if you want us to stop following up.')
+            '\n\n' + limitation + '\n\nQuick feedback (optional)\n' + feedback_intro +
+            '\n' + '\n'.join('- ' + q for q in feedback_questions) +
+            '\n\n' + cta + '\n\nNate Cook\nWelvia\nReply if you want us to stop following up.')
     e = html.escape
     markup = ('<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Your Welvia website review</title></head>'
               '<body style="margin:0;background:#f4f3f0;color:#18231f;font-family:Arial,sans-serif;line-height:1.7">'
@@ -286,7 +297,10 @@ def email_payload(lead, artifact):
               '<p>Website: ' + e(artifact['source_url']) + '</p><p>' + e(scope) + '</p>'
               '<h2>What we recommend</h2><ul>' + ''.join('<li>' + e(x) + '</li>' for x in artifact['recommendations']) +
               '</ul><h2>How to add your file</h2><ol>' + ''.join('<li>' + e(x) + '</li>' for x in instructions) +
-              '</ol><p>' + e(limitation) + '</p><h2>A little help can go a long way.</h2><p>' + e(cta) + '</p>'
+              '</ol><p>' + e(limitation) + '</p><h2>Can I ask you something?</h2><p>' + e(feedback_intro) + '</p><ul>' +
+              ''.join('<li>' + e(q) + '</li>' for q in feedback_questions) + '</ul>' +
+              '<p><a href="' + e(feedback_link, quote=True) + '" style="color:#326450;font-weight:bold">Reply with feedback</a></p>' +
+              '<h2>A little help can go a long way.</h2><p>' + e(cta) + '</p>'
               '<p><a style="display:inline-block;background:#326450;color:white;padding:14px 22px;border-radius:8px" href="mailto:' +
               e(reply_to) + '?subject=Help%20with%20my%20Welvia%20review">Ask Nate for help</a></p>'
               '<p>Nate Cook<br>Welvia</p><p style="font-size:13px">You requested this free review. Reply if you want us to stop following up.</p></main></body></html>')
@@ -311,7 +325,7 @@ def acquisition_payload(business, recipient='recipient@example.com'):
     values = {'BUSINESS_SHORT_NAME': name, 'BUSINESS_URL': url,
               'HEADLINE': campaign.get('headline') or 'Your next customer could start with AI.',
               'PREHEADER': 'A free website review prepared for ' + name + '.',
-              'INTRO': (campaign.get('intro') or 'I put together a starting plan for ' + name + '.') + ' Your first website review is free, including recommendations and an llms.txt starter file with upload instructions.',
+              'INTRO': 'I grew up around my family’s restaurant and now work in AI. ' + (campaign.get('intro') or 'I put together a starting plan for ' + name + '.') + ' Your first website review is free, with practical recommendations and a starter file you can share with whoever runs your site.',
               'BENEFIT_ONE_TITLE': benefits[0]['title'], 'BENEFIT_ONE_BODY': benefits[0].get('description',''),
               'BENEFIT_TWO_TITLE': benefits[1]['title'], 'BENEFIT_TWO_BODY': benefits[1].get('description',''),
               'CONTROL_NOTE': 'Your team stays in control of availability, pricing and acceptance. Any implementation is agreed with you first.',
@@ -319,9 +333,20 @@ def acquisition_payload(business, recipient='recipient@example.com'):
               'UNSUBSCRIBE_URL': 'mailto:natemitchcook@gmail.com?subject=Stop%20Welvia%20emails'}
     def render(template, escape=False):
         return re.sub(r'\{\{\{([A-Z_]+)\}\}\}', lambda m: html.escape(str(values[m[1]]), quote=True) if escape else str(values[m[1]]), template)
+    question = 'One quick question: what is the main thing you are trying to improve in your business right now? If you are stuck on a task, I would love to hear about it, even if it has nothing to do with AI.'
+    question_link = 'mailto:natemitchcook@gmail.com?' + urllib.parse.urlencode({'subject': 'My biggest business priority',
+                     'body': 'Hi Nate,\\n\\nThe thing I am working on right now is: '})
+    html_email = render(ACQUISITION_HTML, True)
+    question_markup = ('<p style="font-family:Arial,Helvetica,sans-serif;color:#18231f;font-size:16px;line-height:25px">'
+                       + html.escape(question) + ' <a href="' + html.escape(question_link, quote=True)
+                       + '" style="color:#326450;font-weight:bold">Reply and tell me</a>.</p>')
+    html_email = re.sub(r'(?=<p style="[^"]*">Nate<br><strong>Founder, Welvia</strong></p>)',
+                        lambda match: question_markup, html_email, count=1)
+    text_email = render(ACQUISITION_TEXT).replace('Nate\\nFounder, Welvia',
+                      question + '\\n\\nJust reply to this email.\\n\\nNate\\nFounder, Welvia')
     return {'from': 'Nate at Welvia <hello@welvia.natemitchcook.com>', 'reply_to': 'natemitchcook@gmail.com',
             'to': [recipient], 'subject': 'A free website review for ' + name,
-            'html': render(ACQUISITION_HTML, True), 'text': render(ACQUISITION_TEXT), 'attachments': []}
+            'html': html_email, 'text': text_email, 'attachments': []}
 
 
 def enqueue(db, lead):
