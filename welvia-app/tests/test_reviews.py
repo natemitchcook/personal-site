@@ -87,6 +87,7 @@ class Reviews(unittest.TestCase):
             reviews.deliver(db,lead['pk'],MagicMock())
             request=send.call_args.args[0]
             self.assertEqual(lead['email_payload'],json.loads(request.data))
+            self.assertEqual('WelviaReviews/1.0',request.get_header('User-agent'))
             self.assertEqual('review-'+reviews.digest(lead['pk']),request.get_header('Idempotency-key'))
             prepare.assert_not_called()
         self.assertTrue(any(c.kwargs.get('ExpressionAttributeValues',{}).get(':s')=='Accepted by Resend' for c in db.update_item.call_args_list))

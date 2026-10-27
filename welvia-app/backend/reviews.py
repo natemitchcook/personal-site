@@ -270,7 +270,7 @@ def deliver(db, key, get_business):
         if not token:
             raise RuntimeError('Resend credential is not configured.')
         request = urllib.request.Request('https://api.resend.com/emails', data=json.dumps(payload).encode(), method='POST',
-                                         headers={'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', 'Idempotency-Key': 'review-' + digest(key)})
+                                         headers={'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', 'User-Agent': 'WelviaReviews/1.0', 'Idempotency-Key': 'review-' + digest(key)})
         try:
             with urllib.request.urlopen(request, timeout=10) as reply:
                 result = json.load(reply)
