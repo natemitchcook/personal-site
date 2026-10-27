@@ -123,7 +123,8 @@ def prepare(db, url, force=False):
     try:
         _, _, robots = fetch(robots_url)
     except ValueError as error:
-        if str(error) not in ('Website returned HTTP 404', 'Website returned HTTP 410'):
+        # RFC 9309: unavailable robots (4xx) permits crawling; rate limits do not.
+        if str(error) not in ('Website returned HTTP 401', 'Website returned HTTP 403', 'Website returned HTTP 404', 'Website returned HTTP 410'):
             raise
     else:
         policy = urllib.robotparser.RobotFileParser()
