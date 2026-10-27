@@ -25,3 +25,6 @@ await copyFile('dist/index.html','dist/business');
 await mkdir('dist/care-demo',{recursive:true});
 await copyFile('care/demo/index.html','dist/care-demo/index.html');
 await copyFile('care/demo/index.html','dist/care-demo.html');
+
+// Founder-led variant retains the shared homepage sections and application assets.
+execFileSync('python3',['scripts/build_founder.py'],{stdio:'inherit'});

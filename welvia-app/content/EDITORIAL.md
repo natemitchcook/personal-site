@@ -12,7 +12,7 @@ Use current news where there is a meaningful, verified small-business implicatio
 
 ## Build and publication
 
-Run `npm test` and `npm run build` in `welvia-app`. Build runs `scripts/build_editorial.py` and `scripts/check_editorial.py`; it emits HTML, matching Markdown, article metadata, BlogPosting data, RSS and sitemap. Do not edit generated `dist/`. Public article URLs deliberately end in `.html` to work with the existing private S3 origin without changing AWS routing. Journal index: `/blog/index.html`. Draft articles stay outside `posts.json` until ready to publish.
+Run `npm test` and `npm run build` in `welvia-app`. Build runs `scripts/build_editorial.py` and `scripts/check_editorial.py`; it emits HTML, matching Markdown, article metadata, BlogPosting data, RSS and sitemap. Do not edit generated `dist/`. Public article URLs use `/blog/<slug>` without an extension. The build emits extensionless HTML objects and the deployment sets their HTML content type explicitly. Legacy `.html` copies remain available with clean canonical URLs. Journal index: `/blog/index.html`. Draft articles stay outside `posts.json` until ready to publish.
 
 Open a narrowly scoped PR, wait for required checks, merge with a current-head guard, then verify `Deploy Welvia pilot` succeeds and the real article URL returns the intended HTML. A commit or merged PR alone does not establish deployment. Preserve concurrent work; re-read before resolving conflicts.
 
