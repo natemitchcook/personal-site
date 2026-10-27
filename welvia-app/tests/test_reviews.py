@@ -82,6 +82,18 @@ class Reviews(unittest.TestCase):
         self.assertIn('Ask Nate for help',payload['html'])
         self.assertIn('&lt;before&gt;',payload['html'])
         self.assertIn('does not enable bookings',payload['text'])
+        self.assertIn('What was useful, or confusing', payload['text'])
+        self.assertIn('paying someone to handle', payload['text'])
+        self.assertIn('Reply with feedback', payload['html'])
+        self.assertIn('subject=Feedback+on+my+free+Welvia+review', payload['html'])
+
+    def test_acquisition_reaches_out_with_founder_story_and_open_question(self):
+        business={'id':'example','name':'Example Local Shop','campaign':{'benefits':[]}}
+        draft=reviews.acquisition_payload(business)
+        self.assertIn('grew up around my family', draft['text'])
+        self.assertIn('what is the main thing you are trying to improve', draft['text'])
+        self.assertIn('Reply and tell me', draft['html'])
+        self.assertIn('Nate\\nFounder, Welvia', draft['text'])
 
     @patch.dict(os.environ,{'RESEND_API_KEY':'test-only'})
     def test_send_records_acceptance_and_reuses_frozen_payload(self):
