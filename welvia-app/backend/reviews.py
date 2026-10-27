@@ -259,6 +259,7 @@ def prepare_business(db, bid, refresh=False):
 
 
 def email_payload(lead, artifact):
+    """One universal, transactional free-review email for general and business pages."""
     reply_to = os.environ.get('REVIEW_REPLY_TO', 'natemitchcook@gmail.com')
     subject = 'Your free website review and llms.txt starter file'
     prepared = time.strftime('%B %d, %Y', time.gmtime(int(artifact.get('prepared_at', time.time()))))
@@ -270,28 +271,83 @@ def email_payload(lead, artifact):
         'Open ' + target + ' in a private browser window. It should show the text directly without a login.',
         'If your website builder cannot publish a root-level text file, reply to this email. We can help find the right approach.'
     ]
-    cta = 'Want me to handle the setup? Reply to this email and I can help improve your business information, connect booking or inquiry steps, and discuss optional ongoing care. We agree on scope and pricing before any paid work.'
-    limitation = 'This is a starter map of your website, not a guarantee that AI assistants will read it or recommend your business. It does not enable bookings or purchases by itself.'
-    text = ('Your free website review\n\nWebsite: ' + artifact['source_url'] + '\n\n' + scope +
+    feedback_intro = ("I'm building Welvia to make life easier for small-business owners, "
+                      "and I'm still learning where I can be most useful.")
+    feedback_questions = [
+        'Was anything about this review confusing or not useful?',
+        'Were you able to add the file to your website? If not, what stopped you?',
+        "What's one task you're trying to get done for your business that you'd consider paying someone to take off your plate?"
+    ]
+    feedback_after = ("It doesn't even have to involve AI. You can reply to just one question. "
+                      "Even if Welvia isn't useful to you right now, I'd genuinely appreciate knowing why.")
+    cta = ("And if you'd rather have me handle the setup, just say the word. "
+           "We can discuss what you need before agreeing on any paid work.")
+    limitation = ('This is a starter map of your website, not a guarantee that AI assistants will read it or recommend your business. '
+                  'It does not enable bookings or purchases by itself.')
+    feedback_link = ('mailto:' + urllib.parse.quote(reply_to, safe='@+.')
+                     + '?' + urllib.parse.urlencode({'subject': 'Feedback on my free Welvia review',
+                         'body': 'Hi Nate,\n\n' + '\n\n'.join(feedback_questions) + '\n\nMy thoughts: '}))
+    text = ('Hi there,\n\nYour free Welvia website review is ready!\n\n'
+            "I've attached your starter llms.txt file, along with recommendations and instructions for adding it to your website.\n\n"
+            'Website: ' + artifact['source_url'] + '\n\n' + scope +
             '\n\nRecommendations\n' + '\n'.join('- ' + x for x in artifact['recommendations']) +
-            '\n\nUpload instructions\n' + '\n'.join(str(i+1) + '. ' + x for i, x in enumerate(instructions)) +
-            '\n\n' + limitation + '\n\n' + cta + '\n\nNate Cook\nWelvia\nReply if you want us to stop following up.')
+            '\n\nHow to add your file\n' + '\n'.join(str(i+1) + '. ' + x for i, x in enumerate(instructions)) +
+            '\n\n' + limitation +
+            '\n\nCan I ask you something?\n\n' + feedback_intro +
+            "\n\nI'd love your honest feedback:\n" +
+            '\n'.join(str(i+1) + '. ' + q for i, q in enumerate(feedback_questions)) +
+            '\n\n' + feedback_after + '\n\n' + cta +
+            '\n\nThanks,\nNate Cook\nFounder, Welvia\n\n'
+            'You requested this free review. Reply if you want us to stop following up.')
     e = html.escape
-    markup = ('<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Your Welvia website review</title></head>'
-              '<body style="margin:0;background:#f4f3f0;color:#18231f;font-family:Arial,sans-serif;line-height:1.7">'
-              '<main style="padding:32px 6%;max-width:960px;margin:auto">'
-              '<img src="https://welvia.natemitchcook.com/brand/icon-192.png" width="48" height="48" alt="Welvia">'
-              '<p style="font-size:25px;font-weight:bold">welvia</p><h1>Your next step starts here.</h1>'
-              '<p>Your free website review and <strong>llms.txt</strong> starter file are ready.</p>'
-              '<p>Website: ' + e(artifact['source_url']) + '</p><p>' + e(scope) + '</p>'
-              '<h2>What we recommend</h2><ul>' + ''.join('<li>' + e(x) + '</li>' for x in artifact['recommendations']) +
-              '</ul><h2>How to add your file</h2><ol>' + ''.join('<li>' + e(x) + '</li>' for x in instructions) +
-              '</ol><p>' + e(limitation) + '</p><h2>A little help can go a long way.</h2><p>' + e(cta) + '</p>'
-              '<p><a style="display:inline-block;background:#326450;color:white;padding:14px 22px;border-radius:8px" href="mailto:' +
-              e(reply_to) + '?subject=Help%20with%20my%20Welvia%20review">Ask Nate for help</a></p>'
-              '<p>Nate Cook<br>Welvia</p><p style="font-size:13px">You requested this free review. Reply if you want us to stop following up.</p></main></body></html>')
-    return {'from': 'Nate at Welvia <hello@welvia.natemitchcook.com>', 'to': [lead['answers']['contact_email'].strip()],
-            'reply_to': reply_to, 'subject': subject, 'html': markup, 'text': text,
+    body = (
+        '<!doctype html><html lang="en"><head><meta charset="utf-8">'
+        '<meta name="viewport" content="width=device-width, initial-scale=1.0">'
+        '<title>Your Welvia website review</title></head>'
+        '<body style="margin:0;background-color:#f6f5f1;color:#18231f;font-family:Arial,Helvetica,sans-serif;">'
+        '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f6f5f1" '
+        'style="width:100%;background-color:#f6f5f1;"><tr><td align="center" style="padding:28px 18px;">'
+        '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" '
+        'style="width:100%;max-width:620px;background-color:#ffffff;border-radius:18px;">'
+        '<tr><td style="padding:32px 32px 10px;">'
+        '<img src="https://welvia.natemitchcook.com/brand/icon-192.png" width="44" height="44" border="0" '
+        'style="display:block;width:44px;height:44px;" alt="Welvia">'
+        '<p style="font-family:Arial,Helvetica,sans-serif;font-size:26px;line-height:32px;color:#18231f;font-weight:bold;margin:8px 0 22px;">welvia</p>'
+        '<p style="font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:25px;color:#18231f;">Hi there,</p>'
+        '<h1 style="font-family:Arial,Helvetica,sans-serif;font-size:29px;line-height:36px;color:#18231f;margin:0 0 14px;">Your free website review is ready!</h1>'
+        '<p style="font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:25px;color:#18231f;">'
+        "I've attached your starter <strong>llms.txt</strong> file, along with recommendations and instructions for adding it to your website.</p>"
+        '<p style="font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:22px;color:#52685b;">Website: '
+        + e(artifact['source_url']) + '<br>' + e(scope) + '</p>'
+        '<h2 style="font-family:Arial,Helvetica,sans-serif;font-size:22px;line-height:29px;color:#18231f;">What we recommend</h2>'
+        '<ul style="font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:25px;color:#18231f;">'
+        + ''.join('<li style="margin-bottom:8px;">' + e(x) + '</li>' for x in artifact['recommendations']) + '</ul>'
+        '<h2 style="font-family:Arial,Helvetica,sans-serif;font-size:22px;line-height:29px;color:#18231f;">How to add your file</h2>'
+        '<ol style="font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:25px;color:#18231f;">'
+        + ''.join('<li style="margin-bottom:8px;">' + e(x) + '</li>' for x in instructions) + '</ol>'
+        '<p style="font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:21px;color:#52685b;">' + e(limitation) + '</p>'
+        '</td></tr><tr><td bgcolor="#e6ece5" style="padding:22px 32px;background-color:#e6ece5;">'
+        '<h2 style="font-family:Arial,Helvetica,sans-serif;font-size:24px;line-height:30px;color:#18231f;margin:0 0 12px;">Can I ask you something?</h2>'
+        '<p style="font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:25px;color:#18231f;">' + e(feedback_intro) + '</p>'
+        '<p style="font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:25px;color:#18231f;">I&#39;d love your honest feedback:</p>'
+        '<ol style="font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:25px;color:#18231f;">'
+        + ''.join('<li style="margin-bottom:8px;">' + e(q) + '</li>' for q in feedback_questions) + '</ol>'
+        '<p style="font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:25px;color:#18231f;">' + e(feedback_after) + '</p>'
+        '<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td bgcolor="#326450" '
+        'style="border-radius:12px;background-color:#326450;"><a href="' + e(feedback_link, quote=True) + '" '
+        'style="display:block;padding:13px 19px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:24px;color:#ffffff;text-decoration:none;font-weight:bold;">'
+        'Reply with feedback</a></td></tr></table></td></tr>'
+        '<tr><td style="padding:22px 32px 32px;">'
+        '<p style="font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:25px;color:#18231f;">' + e(cta) + '</p>'
+        '<p style="font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:25px;color:#18231f;">'
+        'Thanks,<br>Nate Cook<br>Founder, Welvia</p>'
+        '<p style="font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:20px;color:#52685b;">'
+        'You requested this free review. Reply if you want us to stop following up.</p>'
+        '</td></tr></table></td></tr></table></body></html>'
+    )
+    return {'from': 'Nate at Welvia <hello@welvia.natemitchcook.com>',
+            'to': [lead['answers']['contact_email'].strip()],
+            'reply_to': reply_to, 'subject': subject, 'html': body, 'text': text,
             'attachments': [{'filename': 'llms.txt', 'content': base64.b64encode(artifact['llms_txt'].encode()).decode()}]}
 
 
@@ -311,7 +367,7 @@ def acquisition_payload(business, recipient='recipient@example.com'):
     values = {'BUSINESS_SHORT_NAME': name, 'BUSINESS_URL': url,
               'HEADLINE': campaign.get('headline') or 'Your next customer could start with AI.',
               'PREHEADER': 'A free website review prepared for ' + name + '.',
-              'INTRO': (campaign.get('intro') or 'I put together a starting plan for ' + name + '.') + ' Your first website review is free, including recommendations and an llms.txt starter file with upload instructions.',
+              'INTRO': 'I grew up around my family’s restaurant and now work in AI. ' + (campaign.get('intro') or 'I put together a starting plan for ' + name + '.') + ' Your first website review is free, with practical recommendations and a starter file you can share with whoever runs your site.',
               'BENEFIT_ONE_TITLE': benefits[0]['title'], 'BENEFIT_ONE_BODY': benefits[0].get('description',''),
               'BENEFIT_TWO_TITLE': benefits[1]['title'], 'BENEFIT_TWO_BODY': benefits[1].get('description',''),
               'CONTROL_NOTE': 'Your team stays in control of availability, pricing and acceptance. Any implementation is agreed with you first.',
@@ -319,9 +375,20 @@ def acquisition_payload(business, recipient='recipient@example.com'):
               'UNSUBSCRIBE_URL': 'mailto:natemitchcook@gmail.com?subject=Stop%20Welvia%20emails'}
     def render(template, escape=False):
         return re.sub(r'\{\{\{([A-Z_]+)\}\}\}', lambda m: html.escape(str(values[m[1]]), quote=True) if escape else str(values[m[1]]), template)
+    question = 'One quick question: what is the main thing you are trying to improve in your business right now? If you are stuck on a task, I would love to hear about it, even if it has nothing to do with AI.'
+    question_link = 'mailto:natemitchcook@gmail.com?' + urllib.parse.urlencode({'subject': 'My biggest business priority',
+                     'body': 'Hi Nate,\n\nThe thing I am working on right now is: '})
+    html_email = render(ACQUISITION_HTML, True)
+    question_markup = ('<p style="font-family:Arial,Helvetica,sans-serif;color:#18231f;font-size:16px;line-height:25px">'
+                       + html.escape(question) + ' <a href="' + html.escape(question_link, quote=True)
+                       + '" style="color:#326450;font-weight:bold">Reply and tell me</a>.</p>')
+    html_email = re.sub(r'(?=<p style="[^"]*">Nate<br><strong>Founder, Welvia</strong></p>)',
+                        lambda match: question_markup, html_email, count=1)
+    text_email = render(ACQUISITION_TEXT).replace('Nate\nFounder, Welvia',
+                      question + '\n\nJust reply to this email.\n\nNate\nFounder, Welvia')
     return {'from': 'Nate at Welvia <hello@welvia.natemitchcook.com>', 'reply_to': 'natemitchcook@gmail.com',
             'to': [recipient], 'subject': 'A free website review for ' + name,
-            'html': render(ACQUISITION_HTML, True), 'text': render(ACQUISITION_TEXT), 'attachments': []}
+            'html': html_email, 'text': text_email, 'attachments': []}
 
 
 def enqueue(db, lead):

@@ -79,9 +79,39 @@ class Reviews(unittest.TestCase):
         self.assertEqual(b'# Example\n',base64.b64decode(payload['attachments'][0]['content']))
         self.assertEqual('llms.txt',payload['attachments'][0]['filename'])
         self.assertIn('https://example.com/llms.txt',payload['text'])
-        self.assertIn('Ask Nate for help',payload['html'])
+        self.assertIn('Your free website review is ready!',payload['html'])
+        self.assertIn('Was anything about this review confusing or not useful?', payload['text'])
+        self.assertIn("What's one task you're trying to get done", payload['text'])
+        self.assertIn("It doesn't even have to involve AI.", payload['text'])
+        self.assertIn("You can reply to just one question.", payload['text'])
+        self.assertIn('before agreeing on any paid work', payload['text'])
+        self.assertIn('Reply with feedback', payload['html'])
+        self.assertIn('subject=Feedback+on+my+free+Welvia+review', payload['html'])
         self.assertIn('&lt;before&gt;',payload['html'])
         self.assertIn('does not enable bookings',payload['text'])
+        self.assertEqual('owner@example.com', payload['to'][0])
+        self.assertEqual('natemitchcook@gmail.com', payload['reply_to'])
+
+    def test_same_free_review_email_for_general_and_personalized_prospects(self):
+        general = self.lead()
+        personal = {'pk':'LEAD#avalon#456', 'business_id':'avalon',
+                    'answers':{'contact_email':'another@example.com'}}
+        a = reviews.email_payload(general, self.artifact())
+        b = reviews.email_payload(personal, self.artifact())
+        self.assertEqual(a['subject'], b['subject'])
+        self.assertEqual(a['text'], b['text'])
+        self.assertEqual(a['html'], b['html'])
+        self.assertEqual(a['attachments'], b['attachments'])
+        self.assertEqual(['owner@example.com'], a['to'])
+        self.assertEqual(['another@example.com'], b['to'])
+
+    def test_acquisition_reaches_out_with_founder_story_and_open_question(self):
+        business={'id':'example','name':'Example Local Shop','campaign':{'benefits':[]}}
+        draft=reviews.acquisition_payload(business)
+        self.assertIn('grew up around my family', draft['text'])
+        self.assertIn('what is the main thing you are trying to improve', draft['text'])
+        self.assertIn('Reply and tell me', draft['html'])
+        self.assertIn('Nate\nFounder, Welvia', draft['text'])
 
     @patch.dict(os.environ,{'RESEND_API_KEY':'test-only'})
     def test_send_records_acceptance_and_reuses_frozen_payload(self):
