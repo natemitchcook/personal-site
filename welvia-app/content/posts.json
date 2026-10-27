@@ -473,5 +473,62 @@
         "verified": "2026-10-19"
       }
     ]
+  },
+  {
+    "slug": "webmcp-storefronts-start-with-one-safe-tool",
+    "title": "WebMCP is reaching storefronts. Start with one safe tool",
+    "category": "Agent actions",
+    "description": "A new storefront rollout shows how browser agents may use structured website tools, and why a small business should begin with one narrow, reviewable action.",
+    "date": "2026-10-26",
+    "updated": "2026-10-26",
+    "author": "Welvia",
+    "sections": [
+      {
+        "heading": "A preview is moving beyond demos",
+        "paragraphs": [
+          "On October 21, Cloudflare described a WebMCP rollout for Commerce.com storefronts. Cloudflare reported that Commerce.com runs almost 100,000 domains and can expose tools that help a browser-based agent search products, inspect details and build a cart. The reported checkout flow still returns control to the person for the final purchase. That boundary matters: adding an item to a cart is an action, but it is not a completed order.",
+          "This is a notable implementation, not proof that every browser or assistant can use these tools today. Cloudflare calls WebMCP an experimental proposed browser standard in early preview. Chrome's documentation says it is available through an origin trial and a local development flag, and that an agent must visit the site to discover its tools. Small businesses can learn from the direction without treating preview support as universal distribution."
+        ]
+      },
+      {
+        "heading": "The useful idea is a clear tool contract",
+        "paragraphs": [
+          "WebMCP lets a page describe a function as a named tool with a natural-language description and a structured input schema. Chrome documents two approaches: JavaScript tools and annotations on standard HTML forms. The current Community Group draft also says it is not a W3C Standard and lists security and privacy risks that implementations still need to address.",
+          "For a small business, the immediate lesson is simpler than choosing an API. Write down one action so a person, an assistant and the business all agree on what it does. A caterer might define request_catering_availability with event date, arrival time, address, guest count, dietary notes, customer name and callback details. Its result should say that an inquiry was received for review. It should not say the event is booked, food is reserved or a price is final unless the underlying system has actually created that state."
+        ]
+      },
+      {
+        "heading": "Keep the first action narrow and reversible",
+        "paragraphs": [
+          "Before exposing a tool, decide who may use it, which fields are required, what data should never be requested, and when the customer must confirm. Define maximum lengths, allowed dates and service-area rules. Give successful inquiries a reference, make retries safe, and provide a normal human form when the tool is unavailable. Log the outcome without copying unnecessary customer details into analytics.",
+          "Then test with synthetic examples. Try missing fields, an out-of-area address, a duplicate submission and a date the business cannot accept. Check both the answer shown to the customer and the record received by staff. A controlled test can show that the tool handles these cases; it cannot show that public assistants are recommending the business or that customers are completing purchases."
+        ]
+      },
+      {
+        "heading": "Prepare now without betting on one preview",
+        "paragraphs": [
+          "A business does not need to deploy WebMCP this week to benefit from this work. Improve the existing form, publish the relevant rules in readable text, and create the action contract beside it. That foundation can support people today and make a later browser tool easier to review. If the business joins a preview, enable one low-consequence action first and keep an off switch.",
+          "The larger rollout reported by Cloudflare suggests platforms may eventually make agent tools available across many independent storefronts at once. Small businesses should have a practical path into that future. Their safest starting point is one useful action whose inputs, permissions, fallback and real-world result are all explicit."
+        ]
+      }
+    ],
+    "takeaway": "Write a one-page contract for one website action: required inputs, permission, result, confirmation, retry behavior, fallback and off switch. Test it with synthetic data before exposing it to an agent.",
+    "sources": [
+      {
+        "title": "Cloudflare: How Commerce.com and Cloudflare are getting storefronts ready for AI agents",
+        "url": "https://blog.cloudflare.com/webmcp-commerce/",
+        "verified": "2026-10-26"
+      },
+      {
+        "title": "Chrome for Developers: WebMCP",
+        "url": "https://developer.chrome.com/docs/ai/webmcp",
+        "verified": "2026-10-26"
+      },
+      {
+        "title": "Web Machine Learning Community Group: WebMCP draft specification",
+        "url": "https://webmachinelearning.github.io/webmcp/",
+        "verified": "2026-10-26"
+      }
+    ]
   }
 ]

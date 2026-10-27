@@ -50,4 +50,10 @@ jobs:
           aws s3 sync dist/ "s3://$bucket/" --delete --cache-control 'public,max-age=300'
           aws s3 cp dist/business "s3://$bucket/business" --content-type 'text/html; charset=utf-8' --cache-control 'public,max-age=300'
           aws s3 cp dist/new "s3://$bucket/new" --content-type 'text/html; charset=utf-8' --cache-control 'public,max-age=300'
+          # Extensionless article objects must render as HTML, not downloads.
+          for article in dist/blog/*; do
+            if [ -f "$article" ] && [[ "${article##*/}" != *.* ]]; then
+              aws s3 cp "$article" "s3://$bucket/blog/${article##*/}" --content-type 'text/html; charset=utf-8' --cache-control 'public,max-age=300'
+            fi
+          done
           aws cloudfront create-invalidation --distribution-id "$distribution" --paths '/*'
