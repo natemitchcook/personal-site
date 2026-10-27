@@ -280,7 +280,7 @@ def email_payload(lead, artifact):
     ]
     feedback_link = ('mailto:' + urllib.parse.quote(reply_to, safe='@+.')
                      + '?' + urllib.parse.urlencode({'subject': 'Feedback on my free Welvia review',
-                         'body': 'Hi Nate,\\n\\n' + '\\n\\n'.join(feedback_questions) + '\\n\\nMy thoughts: '}))
+                         'body': 'Hi Nate,\n\n' + '\n\n'.join(feedback_questions) + '\n\nMy thoughts: '}))
     text = ('Your free website review\n\nWebsite: ' + artifact['source_url'] + '\n\n' + scope +
             '\n\nRecommendations\n' + '\n'.join('- ' + x for x in artifact['recommendations']) +
             '\n\nUpload instructions\n' + '\n'.join(str(i+1) + '. ' + x for i, x in enumerate(instructions)) +
@@ -335,15 +335,15 @@ def acquisition_payload(business, recipient='recipient@example.com'):
         return re.sub(r'\{\{\{([A-Z_]+)\}\}\}', lambda m: html.escape(str(values[m[1]]), quote=True) if escape else str(values[m[1]]), template)
     question = 'One quick question: what is the main thing you are trying to improve in your business right now? If you are stuck on a task, I would love to hear about it, even if it has nothing to do with AI.'
     question_link = 'mailto:natemitchcook@gmail.com?' + urllib.parse.urlencode({'subject': 'My biggest business priority',
-                     'body': 'Hi Nate,\\n\\nThe thing I am working on right now is: '})
+                     'body': 'Hi Nate,\n\nThe thing I am working on right now is: '})
     html_email = render(ACQUISITION_HTML, True)
     question_markup = ('<p style="font-family:Arial,Helvetica,sans-serif;color:#18231f;font-size:16px;line-height:25px">'
                        + html.escape(question) + ' <a href="' + html.escape(question_link, quote=True)
                        + '" style="color:#326450;font-weight:bold">Reply and tell me</a>.</p>')
     html_email = re.sub(r'(?=<p style="[^"]*">Nate<br><strong>Founder, Welvia</strong></p>)',
                         lambda match: question_markup, html_email, count=1)
-    text_email = render(ACQUISITION_TEXT).replace('Nate\\nFounder, Welvia',
-                      question + '\\n\\nJust reply to this email.\\n\\nNate\\nFounder, Welvia')
+    text_email = render(ACQUISITION_TEXT).replace('Nate\nFounder, Welvia',
+                      question + '\n\nJust reply to this email.\n\nNate\nFounder, Welvia')
     return {'from': 'Nate at Welvia <hello@welvia.natemitchcook.com>', 'reply_to': 'natemitchcook@gmail.com',
             'to': [recipient], 'subject': 'A free website review for ' + name,
             'html': html_email, 'text': text_email, 'attachments': []}
