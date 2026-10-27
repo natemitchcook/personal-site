@@ -98,6 +98,18 @@ class Validation(unittest.TestCase):
     with patch.object(app,'get_business',return_value={'id':'avalon'}),patch.object(app,'auth',return_value=None),patch.object(app,'limit',return_value=True),patch.object(app,'db') as db:
         r=app.handler({'rawPath':'/api/businesses/avalon/interest','body':json.dumps(data),'requestContext':{'http':{'method':'POST'}}},None)
         self.assertEqual(201,r['statusCode']);self.assertTrue(db.put_item.call_args.kwargs['Item']['pk'].startswith('LEAD#avalon#'));db.update_item.assert_not_called()
+ def test_discovery_feedback_is_stored_only_with_the_lead(self):
+    data={'contact_name':'Test','contact_email':'test@example.com','consent':True,'submission_id':'12345678-1234-1234-1234-123456789abc','priority':'More booking requests','attempts':'Tried posting more often','confusion':'Where does the file go?','pay_for':'Fix my site'}
+    with patch.object(app,'db') as db:
+        response=app.save_interest('avalon',data)
+        self.assertEqual(201,response['statusCode'])
+        item=db.put_item.call_args.kwargs['Item']
+        self.assertEqual('More booking requests',item['answers']['priority'])
+        self.assertNotIn('owner_answers',item)
+        db.update_item.assert_not_called()
+ def test_discovery_feedback_has_server_side_length_limit(self):
+    data={'contact_name':'Test','contact_email':'test@example.com','consent':True,'submission_id':'12345678-1234-1234-1234-123456789abc','priority':'x'*601}
+    self.assertEqual(422,app.save_interest('avalon',data)['statusCode'])
  def test_interest_rejects_owner_fields(self):
     self.assertEqual(400,app.save_interest('avalon',{'approval':True,'owner_answers':{'services':'injected'}})['statusCode'])
  def test_interest_invalid_consent_and_email(self):
