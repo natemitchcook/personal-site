@@ -93,7 +93,7 @@ class Reviews(unittest.TestCase):
         self.assertIn('grew up around my family', draft['text'])
         self.assertIn('what is the main thing you are trying to improve', draft['text'])
         self.assertIn('Reply and tell me', draft['html'])
-        self.assertIn('Nate\\nFounder, Welvia', draft['text'])
+        self.assertIn('Nate\nFounder, Welvia', draft['text'])
 
     @patch.dict(os.environ,{'RESEND_API_KEY':'test-only'})
     def test_send_records_acceptance_and_reuses_frozen_payload(self):
