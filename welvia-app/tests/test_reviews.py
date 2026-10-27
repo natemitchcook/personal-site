@@ -130,3 +130,56 @@ class Reviews(unittest.TestCase):
         with patch.dict(os.environ,{'REVIEW_QUEUE_URL':'queue'}),patch.object(reviews.boto3,'client') as client:
             self.assertEqual('Queued',reviews.enqueue(database(),lead))
             self.assertEqual({'lead_key':lead['pk']},json.loads(client.return_value.send_message.call_args.kwargs['MessageBody']))
+
+class ResearchStarters(unittest.TestCase):
+    def db(self, cached=None):
+        db=database()
+        records={
+            'PROSPECT#example':{'fields':{'business_name':'Example Catering','website_url':'https://example.com','category':'Catering','city':'Albany','state':'NY','contact_email':'private@example.com','notes':'PRIVATE NOTES','source_urls':'https://example.com/menu; https://unrelated.example/private'}},
+            'BUSINESS#example':{'owner_answers':{'password':'PRIVATE PASSWORD'},'sources':[{'url':'https://example.com/contact'}]}
+        }
+        if cached: records['REVIEW#'+reviews.digest('https://example.com/')]=cached
+        db.get_item.side_effect=lambda **kw: {'Item':records[kw['Key']['pk']]} if kw['Key']['pk'] in records else {}
+        return db
+
+    def test_blocked_site_has_honest_research_starter_without_private_fields(self):
+        db=self.db()
+        with patch.object(reviews,'prepare',side_effect=ValueError('blocked')):
+            artifact=reviews.prepare_business(db,'example')
+        self.assertEqual('public_research',artifact['preparation_mode'])
+        self.assertIn('Example Catering',artifact['llms_txt'])
+        self.assertIn('Albany, NY',artifact['llms_txt'])
+        self.assertIn('https://example.com/menu',artifact['llms_txt'])
+        self.assertIn('prior public business research',artifact['scope'])
+        self.assertIn('could not complete',artifact['scope'])
+        self.assertNotIn('PRIVATE',json.dumps(artifact))
+        self.assertNotIn('private@example.com',json.dumps(artifact))
+        self.assertNotIn('unrelated.example',json.dumps(artifact))
+        preparation=db.put_item.call_args.kwargs['Item']
+        self.assertEqual('PREPARATION#example',preparation['pk'])
+        self.assertEqual(artifact['pk'],preparation['review_key'])
+        self.assertEqual('Ready',preparation['state'])
+
+    def test_saved_file_delivers_without_recrawling_even_when_old(self):
+        artifact={'pk':'REVIEW#'+reviews.digest('https://example.com/'),'name':'Example','llms_txt':'# Example','version':'v1','prepared_at':int(time.time())-40*86400}
+        with patch.object(reviews,'prepare') as crawl:
+            result=reviews.prepare_business(self.db(artifact),'example')
+            crawl.assert_not_called()
+        self.assertEqual(artifact,result)
+        self.assertFalse(reviews.usable(artifact))
+        self.assertTrue(reviews.usable(artifact,fresh=False))
+
+    def test_missing_business_does_not_get_a_fabricated_file(self):
+        with self.assertRaises(ValueError): reviews.prepare_business(self.db(),'missing')
+
+    def test_explicit_refresh_can_upgrade_research_file(self):
+        cached={'pk':'REVIEW#'+reviews.digest('https://example.com/'),'name':'Example','version':'v1','prepared_at':int(time.time()),'preparation_mode':'public_research'}
+        live=dict(cached,llms_txt='# Live Example',version='v2')
+        with patch.object(reviews,'prepare',return_value=live) as crawl:
+            result=reviews.prepare_business(self.db(cached),'example',refresh=True)
+        crawl.assert_called_once()
+        self.assertEqual('homepage',result['preparation_mode'])
+
+    def test_fictional_demo_is_excluded(self):
+        db=database({'is_demo':True})
+        with self.assertRaises(ValueError): reviews.business_identity(db,'demo')

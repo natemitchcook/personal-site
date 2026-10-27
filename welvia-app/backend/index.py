@@ -187,14 +187,10 @@ def handler(event,context):
             try:
                 job=json.loads(record['body'])
                 if job.get('prepare_only'):
-                    business=get_business(job['business_id']) or {}
-                    url=business.get('site') or business.get('campaign',{}).get('website','')
                     try:
-                        artifact=reviews.prepare(db,url)
-                        state={'pk':'PREPARATION#'+job['business_id'],'review_key':artifact['pk'],'state':'Ready','prepared_at':artifact['prepared_at']}
+                        reviews.prepare_business(db,job['business_id'],refresh=job.get('refresh') is True)
                     except (ValueError,OSError) as error:
-                        state={'pk':'PREPARATION#'+job['business_id'],'state':'Needs manual review','reason':type(error).__name__}
-                    db.put_item(Item=state)
+                        db.put_item(Item={'pk':'PREPARATION#'+job['business_id'],'state':'Needs manual review','reason':type(error).__name__})
                 else:
                     reviews.deliver(db,job['lead_key'],get_business)
             except Exception:
@@ -203,15 +199,16 @@ def handler(event,context):
         return {'batchItemFailures':failures}
     if event.get('admin_action')=='prepare_review':
         bid=event.get('business_id','')
-        if not get_business(bid): return {'error':'unknown business'}
-        boto3.client('sqs').send_message(QueueUrl=os.environ['REVIEW_QUEUE_URL'],MessageBody=json.dumps({'prepare_only':True,'business_id':bid}))
+        try: reviews.business_identity(db,bid)
+        except (ValueError,UnicodeError): return {'error':'Business needs a real name and public website'}
+        boto3.client('sqs').send_message(QueueUrl=os.environ['REVIEW_QUEUE_URL'],MessageBody=json.dumps({'prepare_only':True,'business_id':bid,'refresh':event.get('refresh') is True}))
         return {'status':'Queued','business_id':bid}
     if event.get('admin_action')=='outreach_preflight':
         bid=event.get('business_id','')
-        business=get_business(bid) or {}
-        url=business.get('site') or business.get('campaign',{}).get('website','')
-        artifact=db.get_item(Key={'pk':'REVIEW#'+digest(reviews.canonical(url))},ConsistentRead=True).get('Item')
-        ready=reviews.usable(artifact)
+        try: identity=reviews.business_identity(db,bid)
+        except (ValueError,UnicodeError): return {'ready':False,'business_id':bid,'reason':'Missing business identity or website'}
+        artifact=db.get_item(Key={'pk':'REVIEW#'+digest(identity['url'])},ConsistentRead=True).get('Item')
+        ready=reviews.usable(artifact,fresh=False)
         return {'ready':ready,'business_id':bid,'reason':'Starter file prepared' if ready else 'Prepare the review before outreach'}
     if event.get('admin_action')=='retry_review':
         key=event.get('lead_key','')
