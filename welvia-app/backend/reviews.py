@@ -112,8 +112,8 @@ def clean(value, limit=300):
     return re.sub(r'[\[\]<>`\\]', '', ' '.join(value.split()))[:limit]
 
 
-def usable(artifact):
-    if not artifact or artifact.get('prepared_at', 0) <= time.time() - 30 * 86400:
+def usable(artifact, fresh=True):
+    if not artifact or (fresh and artifact.get('prepared_at', 0) <= time.time() - 30 * 86400):
         return False
     name = artifact.get('name', '')
     return bool(name and not re.search(r'^(site unavailable|website unavailable|access denied|just a moment|attention required|verify you are human|403 forbidden|404 not found)', name, re.I))
@@ -185,9 +185,84 @@ def prepare(db, url, force=False):
     return artifact
 
 
+def business_identity(db, bid):
+    """Whitelist public research only; never include contacts, notes or owner answers."""
+    business = db.get_item(Key={'pk': 'BUSINESS#' + bid}, ConsistentRead=True).get('Item') or {}
+    prospect = db.get_item(Key={'pk': 'PROSPECT#' + bid}, ConsistentRead=True).get('Item') or {}
+    fields = prospect.get('fields', {})
+    if business.get('is_demo'):
+        raise ValueError('Fictional demo is excluded from prospect preparation.')
+    name = clean(fields.get('business_name') or business.get('name', ''), 150)
+    url = canonical(fields.get('website_url') or business.get('site', ''))
+    if not name:
+        raise ValueError('Business name is missing.')
+    sources = [x.get('url', '') for x in business.get('sources', []) if isinstance(x, dict)]
+    sources += re.findall(r'https?://[^\s;|]+', str(fields.get('source_urls', '')))
+    return {'name': name, 'url': url,
+            'category': clean(fields.get('category') or business.get('category', ''), 150),
+            'city': clean(fields.get('city') or business.get('city', ''), 100),
+            'state': clean(fields.get('state') or business.get('state', ''), 100),
+            'sources': sources}
+
+
+def prepare_business(db, bid, refresh=False):
+    identity = business_identity(db, bid)
+    url = identity['url']
+    key = 'REVIEW#' + digest(url)
+    cached = db.get_item(Key={'pk': key}, ConsistentRead=True).get('Item')
+    # Existing files stay deliverable. Refresh is a separate staff operation, not
+    # a network dependency on the prospect's request. Email shows preparation date.
+    if not refresh and usable(cached, fresh=False):
+        artifact = cached
+    else:
+        try:
+            artifact = prepare(db, url, force=True)
+            artifact['preparation_mode'] = 'homepage'
+        except (ValueError, OSError, http.client.HTTPException):
+            name = identity['name']
+            location = ', '.join(x for x in [identity['city'], identity['state']] if x)
+            llms = '# ' + name + '\n\n'
+            summary = '. '.join(x for x in [identity['category'], location] if x)
+            if summary:
+                llms += '> ' + summary + '.\n\n'
+            llms += '## Website\n\n- [Official website](' + url + ')\n'
+            links = []
+            for source in identity['sources']:
+                try:
+                    link = canonical(source)
+                except (ValueError, UnicodeError):
+                    continue
+                host = urllib.parse.urlsplit(link).hostname.removeprefix('www.')
+                if host != urllib.parse.urlsplit(url).hostname.removeprefix('www.') or link == url or link in links:
+                    continue
+                links.append(link)
+            if links:
+                llms += '\n## Previously researched business pages\n\n'
+                llms += ''.join('- [Business information](' + link + ')\n' for link in links[:10])
+            llms += ('\n## Information status\n\nThis starter file is based on prior public business research. '
+                     'The live website could not be fully checked during preparation. Verify the business details and linked pages before publishing. '
+                     'Confirm current services, hours, prices, availability and requests directly with the business. This file does not authorize transactions.\n')
+            artifact = {'pk': key, 'url': url, 'source_url': url, 'name': name, 'llms_txt': llms,
+                        'prepared_at': int(time.time()), 'version': digest(llms), 'preparation_mode': 'public_research',
+                        'scope': 'Prepared from prior public business research. We could not complete a live homepage check, so please verify the details and links before uploading.',
+                        'recommendations': [
+                            'Confirm the business name, location, service category and links in your starter file before publishing.',
+                            'Make services, hours, service area and contact information clear and consistent on your website.',
+                            'Keep booking, ordering or inquiry instructions explicit, including what customers must confirm.',
+                            'Reply if you want help checking website access and preparing more detailed information or agent actions.'
+                        ]}
+        db.put_item(Item=artifact)
+    db.put_item(Item={'pk': 'PREPARATION#' + bid, 'business_id': bid, 'review_key': artifact['pk'],
+                      'state': 'Ready', 'prepared_at': artifact['prepared_at'], 'version': artifact['version'],
+                      'preparation_mode': artifact.get('preparation_mode', 'homepage')})
+    return artifact
+
+
 def email_payload(lead, artifact):
     reply_to = os.environ.get('REVIEW_REPLY_TO', 'natemitchcook@gmail.com')
     subject = 'Your free website review and llms.txt starter file'
+    prepared = time.strftime('%B %d, %Y', time.gmtime(int(artifact.get('prepared_at', time.time()))))
+    scope = artifact['scope'] + ' Starter file prepared ' + prepared + '.'
     target = urllib.parse.urlunsplit((*urllib.parse.urlsplit(artifact['source_url'])[:2], '/llms.txt', '', ''))
     instructions = [
         'Download the attached llms.txt and review its facts and links. If your website already has this file, keep a backup and merge useful existing information instead of overwriting it.',
@@ -197,7 +272,7 @@ def email_payload(lead, artifact):
     ]
     cta = 'Want me to handle the setup? Reply to this email and I can help improve your business information, connect booking or inquiry steps, and discuss optional ongoing care. We agree on scope and pricing before any paid work.'
     limitation = 'This is a starter map of your website, not a guarantee that AI assistants will read it or recommend your business. It does not enable bookings or purchases by itself.'
-    text = ('Your free website review\n\nWebsite: ' + artifact['source_url'] + '\n\n' + artifact['scope'] +
+    text = ('Your free website review\n\nWebsite: ' + artifact['source_url'] + '\n\n' + scope +
             '\n\nRecommendations\n' + '\n'.join('- ' + x for x in artifact['recommendations']) +
             '\n\nUpload instructions\n' + '\n'.join(str(i+1) + '. ' + x for i, x in enumerate(instructions)) +
             '\n\n' + limitation + '\n\n' + cta + '\n\nNate Cook\nWelvia\nReply if you want us to stop following up.')
@@ -208,7 +283,7 @@ def email_payload(lead, artifact):
               '<img src="https://welvia.natemitchcook.com/brand/icon-192.png" width="48" height="48" alt="Welvia">'
               '<p style="font-size:25px;font-weight:bold">welvia</p><h1>Your next step starts here.</h1>'
               '<p>Your free website review and <strong>llms.txt</strong> starter file are ready.</p>'
-              '<p>Website: ' + e(artifact['source_url']) + '</p><p>' + e(artifact['scope']) + '</p>'
+              '<p>Website: ' + e(artifact['source_url']) + '</p><p>' + e(scope) + '</p>'
               '<h2>What we recommend</h2><ul>' + ''.join('<li>' + e(x) + '</li>' for x in artifact['recommendations']) +
               '</ul><h2>How to add your file</h2><ol>' + ''.join('<li>' + e(x) + '</li>' for x in instructions) +
               '</ol><p>' + e(limitation) + '</p><h2>A little help can go a long way.</h2><p>' + e(cta) + '</p>'
@@ -265,7 +340,7 @@ def deliver(db, key, get_business):
             business = get_business(lead['business_id']) if lead['business_id'] != 'general' else {}
             url = lead['answers'].get('business_url') if lead['business_id'] == 'general' else (business or {}).get('site') or (business or {}).get('campaign', {}).get('website')
             try:
-                artifact = prepare(db, url or '')
+                artifact = prepare(db, url or '') if lead['business_id'] == 'general' else prepare_business(db, lead['business_id'])
             except (ValueError, OSError, http.client.HTTPException) as error:
                 set_status(db, key, 'Needs manual review', type(error).__name__)
                 return
