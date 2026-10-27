@@ -65,5 +65,19 @@ class BusinessTemplateTests(unittest.TestCase):
         self.assertNotIn('section.block{padding-top:75px', self.shell)
 
 
+    def test_hero_gradient_spans_the_viewport_and_does_not_create_horizontal_scroll(self):
+        # The hero content keeps its 1380px wrapper, while the gradient extends
+        # across the entire viewport for laptop, desktop and ultrawide screens.
+        self.assertIn('.hero{padding-top:110px;padding-bottom:110px;position:relative;overflow:visible;isolation:isolate}', self.shell)
+        self.assertIn('.hero:after{content:\'\';position:absolute;top:0;bottom:0;left:50%;width:100vw;transform:translateX(-50%)', self.shell)
+        self.assertIn('radial-gradient(ellipse 85% 115%', self.shell)
+        self.assertIn('body{margin:0;background:var(--bg);color:var(--ink);overflow-x:clip}', self.shell)
+        self.assertNotIn('width:570px;height:570px', self.shell)
+
+    def test_founder_homepage_reuses_the_responsive_hero(self):
+        founder = (ROOT / 'content/founder/hero.html').read_text()
+        self.assertIn('class="wrap hero founder-hero"', founder)
+
+
 if __name__ == '__main__':
     unittest.main()
