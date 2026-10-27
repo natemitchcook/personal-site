@@ -56,13 +56,17 @@ def public_proposal(business):
 
 def save_interest(bid,data):
     """Unauthenticated leads never update verified owner answers or authorize work."""
-    allowed={'contact_name','contact_email','business_url','message','submission_id','consent'}
+    allowed={'contact_name','contact_email','business_url','message','priority','attempts','confusion','pay_for','submission_id','consent'}
     if set(data)-allowed:return response(400,{'error':'Unexpected fields'})
     if not all(isinstance(data.get(k),str) and data[k].strip() for k in ['contact_name','contact_email','submission_id']):
         return response(422,{'error':'Please enter your name and email.'})
     if not re.fullmatch(r'[^\s@]+@[^\s@]+\.[^\s@]+',data['contact_email']) or data.get('consent') is not True:
         return response(422,{'error':'Enter a valid email and agree to a reply about your plan.'})
     if not re.fullmatch(r'[a-f0-9-]{36}',data['submission_id']):return response(400,{'error':'Invalid submission ID'})
+    for field in ('message','priority','attempts','confusion','pay_for'):
+        value = data.get(field, '')
+        if not isinstance(value, str) or len(value) > (1500 if field == 'message' else 600):
+            return response(422, {'error': 'Please keep optional feedback within the character limits.'})
     if bid=='general':
         url=urllib.parse.urlparse(str(data.get('business_url','')))
         if url.scheme not in ['http','https'] or not url.hostname:return response(422,{'error':'Enter your business website, including https://.'})
