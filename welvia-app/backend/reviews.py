@@ -112,11 +112,18 @@ def clean(value, limit=300):
     return re.sub(r'[\[\]<>`\\]', '', ' '.join(value.split()))[:limit]
 
 
+def usable(artifact):
+    if not artifact or artifact.get('prepared_at', 0) <= time.time() - 30 * 86400:
+        return False
+    name = artifact.get('name', '')
+    return bool(name and not re.search(r'^(site unavailable|website unavailable|access denied|just a moment|attention required|verify you are human|403 forbidden|404 not found)', name, re.I))
+
+
 def prepare(db, url, force=False):
     url = canonical(url)
     key = 'REVIEW#' + digest(url)
     cached = db.get_item(Key={'pk': key}, ConsistentRead=True).get('Item')
-    if cached and not force and cached.get('prepared_at', 0) > time.time() - 30 * 86400:
+    if not force and usable(cached):
         return cached
     origin = urllib.parse.urlsplit(url)
     robots_url = urllib.parse.urlunsplit((origin.scheme, origin.netloc, '/robots.txt', '', ''))
@@ -137,8 +144,8 @@ def prepare(db, url, force=False):
     page = Page()
     page.feed(document)
     name = clean(page.title, 150)
-    if not name:
-        raise ValueError('The website needs manual review: no readable page title.')
+    if not usable({'name': name, 'prepared_at': int(time.time())}):
+        raise ValueError('The website needs manual review: missing title or unavailable/challenge page.')
     links = []
     seen = {final_url}
     for href, label in page.links:
@@ -183,7 +190,7 @@ def email_payload(lead, artifact):
     subject = 'Your free website review and llms.txt starter file'
     target = urllib.parse.urlunsplit((*urllib.parse.urlsplit(artifact['source_url'])[:2], '/llms.txt', '', ''))
     instructions = [
-        'Download the attached llms.txt and review its facts and links.',
+        'Download the attached llms.txt and review its facts and links. If your website already has this file, keep a backup and merge useful existing information instead of overwriting it.',
         'Ask your website provider to upload it as a plain text file at the root of your website, keeping the exact filename llms.txt.',
         'Open ' + target + ' in a private browser window. It should show the text directly without a login.',
         'If your website builder cannot publish a root-level text file, reply to this email. We can help find the right approach.'

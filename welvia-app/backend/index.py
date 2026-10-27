@@ -211,7 +211,7 @@ def handler(event,context):
         business=get_business(bid) or {}
         url=business.get('site') or business.get('campaign',{}).get('website','')
         artifact=db.get_item(Key={'pk':'REVIEW#'+digest(reviews.canonical(url))},ConsistentRead=True).get('Item')
-        ready=bool(artifact and artifact.get('prepared_at',0)>time.time()-30*86400)
+        ready=reviews.usable(artifact)
         return {'ready':ready,'business_id':bid,'reason':'Starter file prepared' if ready else 'Prepare the review before outreach'}
     if event.get('admin_action')=='retry_review':
         key=event.get('lead_key','')

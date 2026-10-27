@@ -57,8 +57,13 @@ class Reviews(unittest.TestCase):
             with self.assertRaises(ValueError): reviews.prepare(database(),'https://example.com')
             self.assertEqual(fetch.call_count,1)
 
+    def test_unavailable_page_is_not_an_outreach_ready_file(self):
+        self.assertFalse(reviews.usable({'name':'Site Unavailable','prepared_at':int(time.time())}))
+        with patch.object(reviews,'fetch',side_effect=[ValueError('Website returned HTTP 404'),('https://example.com/','text/html','<title>Site Unavailable</title>')]):
+            with self.assertRaises(ValueError): reviews.prepare(database(),'https://example.com')
+
     def test_cached_artifact_avoids_network(self):
-        artifact={'prepared_at':int(time.time()),'llms_txt':'# Example'}
+        artifact={'name':'Example','prepared_at':int(time.time()),'llms_txt':'# Example'}
         with patch.object(reviews,'fetch') as fetch:
             self.assertEqual(artifact,reviews.prepare(database(artifact),'https://example.com'))
             fetch.assert_not_called()
