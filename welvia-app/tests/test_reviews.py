@@ -47,6 +47,16 @@ class Reviews(unittest.TestCase):
             with self.assertRaises(ValueError): reviews.prepare(database(),'https://example.com')
             self.assertEqual(fetch.call_count,1)
 
+    def test_missing_robots_access_error_allows_public_homepage(self):
+        with patch.object(reviews,'fetch',side_effect=[ValueError('Website returned HTTP 403'),('https://example.com/','text/html','<title>Example</title>')]):
+            artifact=reviews.prepare(database(),'https://example.com')
+        self.assertIn('# Example',artifact['llms_txt'])
+
+    def test_robots_server_error_does_not_crawl(self):
+        with patch.object(reviews,'fetch',side_effect=ValueError('Website returned HTTP 503')) as fetch:
+            with self.assertRaises(ValueError): reviews.prepare(database(),'https://example.com')
+            self.assertEqual(fetch.call_count,1)
+
     def test_cached_artifact_avoids_network(self):
         artifact={'prepared_at':int(time.time()),'llms_txt':'# Example'}
         with patch.object(reviews,'fetch') as fetch:
