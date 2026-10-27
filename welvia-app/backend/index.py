@@ -177,6 +177,42 @@ def checkout(bid,business,invitation):
         return response(502,{'error':'Checkout could not be opened. Please try again.'})
     return response(200,{'url':url})
 
+def preview_access(event):
+    token=(event.get('headers',{}).get('authorization') or event.get('headers',{}).get('Authorization') or '').removeprefix('Bearer ')
+    if not re.fullmatch(r'[A-Za-z0-9_-]{43}',token): return False
+    item=db.get_item(Key={'pk':'PREVIEW#'+digest(token)},ConsistentRead=True).get('Item',{})
+    return item.get('scope')=='email-preview' and item.get('expires',0)>time.time()
+
+def email_preview(event,method,path):
+    if not preview_access(event): return response(403,{'error':'Open your private preview link to continue. It may have expired.'})
+    if method!='GET': return response(405,{'error':'Previews are read-only.'})
+    if path=='/api/email-preview':
+        catalog=db.get_item(Key={'pk':'CONFIG#email-preview'},ConsistentRead=True).get('Item',{})
+        return response(200,{'businesses':catalog.get('businesses',[])})
+    match=re.fullmatch(r'/api/email-preview/([a-z0-9-]{1,80})',path)
+    if not match:return response(404,{'error':'Not found'})
+    bid=match[1]
+    business=get_business(bid)
+    if not business or business.get('is_demo'): return response(404,{'error':'Unknown prospect'})
+    prospect=db.get_item(Key={'pk':'PROSPECT#'+bid},ConsistentRead=True).get('Item',{}).get('fields',{})
+    recipient=prospect.get('contact_email') or 'recipient@example.com'
+    warnings=['Outreach draft: confirm the recipient and add a mailing address before sending.']
+    if str(prospect.get('do_not_contact','0')).lower() in ('1','true','yes'): warnings.append('This business is marked do not contact.')
+    review=None
+    artifact={}
+    try:
+        identity=reviews.business_identity(db,bid)
+        artifact=db.get_item(Key={'pk':'REVIEW#'+digest(identity['url'])},ConsistentRead=True).get('Item',{})
+        if reviews.usable(artifact,fresh=False):
+            review=reviews.email_payload({'answers':{'contact_email':'requester@example.com'}},artifact)
+        else: warnings.append('The review file is not prepared yet. Previewing will not generate or send it.')
+    except (ValueError,UnicodeError): warnings.append('The business website needs to be checked before preparing a review.')
+    return response(200,{'business':{'id':bid,'name':business['name']},
+        'landing_url':os.environ['SITE_URL']+'/business?business='+bid,
+        'outreach':reviews.acquisition_payload(business,recipient),'review':review,
+        'file':{'name':'llms.txt','text':artifact.get('llms_txt',''),'mode':artifact.get('preparation_mode','homepage'),'prepared_at':artifact.get('prepared_at')} if review else None,
+        'warnings':warnings})
+
 def handler(event,context):
     # Only native SQS events or IAM-authorized direct invokes reach these branches.
     # API Gateway carries user JSON inside body, never in top-level event fields.
@@ -197,6 +233,11 @@ def handler(event,context):
                 LOG.error('Review worker job failed; queue will retry')
                 failures.append({'itemIdentifier':record['messageId']})
         return {'batchItemFailures':failures}
+    if event.get('admin_action')=='preview_invite':
+        token=secrets.token_urlsafe(32)
+        expires=int(time.time())+30*86400
+        db.put_item(Item={'pk':'PREVIEW#'+digest(token),'scope':'email-preview','expires':expires})
+        return {'url':os.environ['SITE_URL']+'/email-preview.html#access='+token,'expires':expires}
     if event.get('admin_action')=='prepare_review':
         bid=event.get('business_id','')
         try: reviews.business_identity(db,bid)
@@ -228,6 +269,8 @@ def handler(event,context):
     try:
         method=event.get('requestContext',{}).get('http',{}).get('method','GET')
         path=event.get('rawPath','').rstrip('/')
+        if path=='/api/email-preview' or path.startswith('/api/email-preview/'):
+            return email_preview(event,method,path)
         if path=='/api/health':return response(200,{'status':'ok','mode':'pilot','version':'1.0.0'})
         match=re.fullmatch(r'/api/businesses/([a-z0-9-]{1,80})(?:/(interest|onboarding|requests|qa|receipts|checkout))?',path)
         if not match:return response(404,{'error':'Not found'})
