@@ -25,3 +25,19 @@ Keep a copy of the pre-cutover distribution/function association, DNS, Lambda en
 ## Still intentionally pending
 
 AWS registration/DNS/certificate/live template identifiers; reviewed infrastructure change set; domain-restricted email key authorization; new receiving inbox verification; dynamic business ID export; browser redirect/HTTPS/API/email verification. Source changes alone do not complete migration.
+
+## Offline proposal helper (AWS inventory refreshed October 29)
+
+`prepare_template.py` reads a fresh exported **live** template, not the stale embedded bootstrap in the repository generator. It never calls AWS, reads credentials or applies changes. Supply the inspected hosted zone and choose a distinct output file:
+
+```sh
+python3 migration/prepare_template.py live-stack.json prepare.json --phase prepare --zone-id Z053932135TAY9N1QUIVN
+python3 migration/prepare_template.py live-stack.json cutover.json --phase cutover --zone-id Z053932135TAY9N1QUIVN
+cfn-lint prepare.json cutover.json
+```
+
+Both proposals add a required `MigrationCertificateArn` parameter with no default. Supply only a verified issued certificate covering the two exact hostnames in us-east-1. The prepare phase changes CDN aliases/certificate and adds new A/AAAA DNS records while preserving old DNS. It does not redirect or change the API environment. The cutover phase additionally attaches the static viewer function and updates SITE_URL/SiteUrl. That function is a newly metered AWS resource: obtain cost approval before creating it. Do not enable cutover until code is deployed on the new origin and the owner-approved release gates are met.
+
+The helper asserts Lambda Code, API behaviors, existing DNS, IAM and unrelated resources remain unchanged. Inspect the actual change set for only intended resources; any Lambda code/IAM/storage change is a stop condition. Export the template again if infrastructure changed since preparation. Keep the code-only CI deployment and infrastructure changes coordinated: never run the repository's historical generator against production without reconciling its bootstrap and live resources.
+
+Current verified inventory: stack `welvia-app`; distribution `E28HYCEER7L2DP`; new zone `Z053932135TAY9N1QUIVN`; no existing edge function associations; API uses same-origin requests with no CORS allowlist. These observations do not prove registration, HTTPS or cutover completion. [CloudFront Function resource documentation](https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-cloudfront-function.html).
