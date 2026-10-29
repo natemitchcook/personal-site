@@ -21,6 +21,13 @@
   window.welviaAnalytics = {track(name, detail = {}) {
     if (!allowed.has(name)) return;
     const params = {...context};
+    // Only known public partner labels, never raw query strings or form values.
+    const sources = ['helen-guo','smb-deal-hunter','eric-cacciatore','restaurant-unstoppable','adam-sylvester','melinda-emerson','smallbizlady','ramon-ray','donald-burns','paul-jamison','ica','main-street','jobber','nsfva','barista-exchange','shopify','manhattan-chamber','restaurant-owners-managers','alignable','skool'];
+    const attribution = window.welviaReferral?.get?.() || {};
+    const source = attribution.ref || attribution.utm_source;
+    if (sources.includes(source)) params.referral_source = source;
+    if (['newsletter','community','email','social','podcast','referral'].includes(attribution.utm_medium)) params.referral_medium = attribution.utm_medium;
+    if (attribution.utm_campaign === 'free-review') params.referral_campaign = 'free-review';
     if (['onboarding','request','qa','feedback','interest'].includes(detail.form_type)) params.form_type = detail.form_type;
     if (typeof detail.destination === 'string') {
       try {
