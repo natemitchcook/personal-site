@@ -15,7 +15,7 @@ if(file){$('text').textContent=current.file?.text||'No file is prepared for this
 else if(mail){$('from').textContent=mail.from;$('to').textContent=tab==='review'?'The person who requests the review':mail.to.join(', ');$('subject').textContent=mail.subject;$('text').textContent=mail.text;
 // Use an explicitly allowed blob document instead of srcdoc, whose opaque sandbox origin can fail frame-src self.
 // Keep the empty sandbox: no scripts, forms, popups, same-origin access or top navigation.
-const policy='<meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; img-src https://welvia.natemitchcook.com/brand/; base-uri \'none\'; form-action \'none\'"><meta name="referrer" content="no-referrer">';
+const policy='<meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; img-src https://welvia.app/brand/; base-uri \'none\'; form-action \'none\'"><meta name="referrer" content="no-referrer">';
 clearFrame();
 frameUrl=URL.createObjectURL(new Blob([mail.html.replace(/<head>/i,'<head>'+policy)],{type:'text/html;charset=utf-8'}));
 $('email').src=frameUrl;}
