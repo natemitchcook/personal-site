@@ -54,14 +54,36 @@ def public_proposal(business):
     public['pricing']={'setup_amount':25000,'regular_setup_amount':50000,'monthly_amount':5000,'annual_amount':47500,'currency':'USD'}
     return public
 
+# Keep this finite public vocabulary in sync with referral.cjs (tested).
+REFERRAL_SOURCES = ['helen-guo','smb-deal-hunter','eric-cacciatore','restaurant-unstoppable','adam-sylvester','melinda-emerson','smallbizlady','ramon-ray','donald-burns','paul-jamison','ica','main-street','jobber','nsfva','barista-exchange','shopify','manhattan-chamber','restaurant-owners-managers','alignable','skool']
+REFERRAL_VALUES = {'ref':REFERRAL_SOURCES,'utm_source':REFERRAL_SOURCES,'utm_medium':['newsletter','community','email','social','podcast','referral'],'utm_campaign':['free-review'],'utm_content':['founder-story','free-review']}
+
+def sanitize_attribution(value):
+    if not isinstance(value, dict): return {}
+    result = {key:value[key] for key,allowed in REFERRAL_VALUES.items() if isinstance(value.get(key), str) and value[key] in allowed}
+    return result if result.get('ref') or result.get('utm_source') else {}
+
+REVIEW_CONSENT_COPY = 'Email me my free website review and related updates about this request.'
+MARKETING_CONSENT_COPY = 'Also email me Welvia tips, product updates and offers. I can unsubscribe anytime.'
+CONSENT_VERSION = '2026-10-29-v1'
+SOURCE_PAGES = ['/', '/index.html', '/new', '/business']
+
 def save_interest(bid,data):
     """Unauthenticated leads never update verified owner answers or authorize work."""
-    allowed={'contact_name','contact_email','business_url','message','priority','attempts','confusion','pay_for','submission_id','consent'}
+    allowed={'contact_name','contact_email','business_url','message','priority','attempts','confusion','pay_for','submission_id','consent','attribution','marketing_consent','consent_version','source_page'}
     if set(data)-allowed:return response(400,{'error':'Unexpected fields'})
     if not all(isinstance(data.get(k),str) and data[k].strip() for k in ['contact_name','contact_email','submission_id']):
         return response(422,{'error':'Please enter your name and email.'})
     if not re.fullmatch(r'[^\s@]+@[^\s@]+\.[^\s@]+',data['contact_email']) or data.get('consent') is not True:
         return response(422,{'error':'Enter a valid email and agree to a reply about your plan.'})
+    if 'marketing_consent' in data and type(data['marketing_consent']) is not bool:
+        return response(422,{'error':'Invalid marketing preference.'})
+    if 'consent_version' in data and data['consent_version'] != CONSENT_VERSION:
+        return response(422,{'error':'Please reload the form and review the current consent choices.'})
+    if data.get('marketing_consent') and data.get('consent_version') != CONSENT_VERSION:
+        return response(422,{'error':'Please use the current form to opt into marketing.'})
+    if 'source_page' in data and data['source_page'] not in SOURCE_PAGES:
+        return response(422,{'error':'Invalid source page.'})
     if not re.fullmatch(r'[a-f0-9-]{36}',data['submission_id']):return response(400,{'error':'Invalid submission ID'})
     for field in ('message','priority','attempts','confusion','pay_for'):
         value = data.get(field, '')
@@ -73,8 +95,25 @@ def save_interest(bid,data):
     if os.environ.get('REVIEW_QUEUE_URL') and bid=='general':
         try: reviews.canonical(data.get('business_url',''))
         except (ValueError, UnicodeError): return response(422,{'error':'Enter a public website using its standard address.'})
+    # Sanitize even direct API callers; unknown labels/PII never enter attribution.
+    data=dict(data)
+    attribution=sanitize_attribution(data.pop('attribution',None))
+    if attribution: data['attribution']=attribution
     key='LEAD#'+bid+'#'+data['submission_id']
     item={'pk':key,'business_id':bid,'answers':data,'status':'Needs review','created_at':datetime.now(timezone.utc).isoformat(),'outreach_state':'Not sent','email_status':'Queued'}
+    if attribution: item['attribution']=attribution
+    # A legacy combined consent is never promoted to a marketing subscription.
+    current_consent = data.get('consent_version') == CONSENT_VERSION
+    item['marketing_consent'] = bool(current_consent and data.get('marketing_consent') is True)
+    item['consent_record'] = {
+        'version': CONSENT_VERSION if current_consent else 'legacy-bundled',
+        'recorded_at': item['created_at'],
+        'source_page': data.get('source_page','unknown'),
+        'review_requested': True,
+        'marketing_opt_in': item['marketing_consent'],
+        'review_copy': REVIEW_CONSENT_COPY if current_consent else 'Legacy combined consent; exact historical copy not asserted',
+        'marketing_copy': MARKETING_CONSENT_COPY if current_consent else '',
+    }
     try:db.put_item(Item=item,ConditionExpression=Attr('pk').not_exists())
     except db.meta.client.exceptions.ConditionalCheckFailedException:
         old=db.get_item(Key={'pk':key},ConsistentRead=True).get('Item',{})
