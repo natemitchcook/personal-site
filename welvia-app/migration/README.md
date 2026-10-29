@@ -41,3 +41,14 @@ Both proposals add a required `MigrationCertificateArn` parameter with no defaul
 The helper asserts Lambda Code, API behaviors, existing DNS, IAM and unrelated resources remain unchanged. Inspect the actual change set for only intended resources; any Lambda code/IAM/storage change is a stop condition. Export the template again if infrastructure changed since preparation. Keep the code-only CI deployment and infrastructure changes coordinated: never run the repository's historical generator against production without reconciling its bootstrap and live resources.
 
 Current verified inventory: stack `welvia-app`; distribution `E28HYCEER7L2DP`; new zone `Z053932135TAY9N1QUIVN`; no existing edge function associations; API uses same-origin requests with no CORS allowlist. These observations do not prove registration, HTTPS or cutover completion. [CloudFront Function resource documentation](https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-cloudfront-function.html).
+
+
+## Activation order (avoid a code/DNS circular dependency)
+
+1. Owner may merge PR37 independently; it has no domain cutover. Confirm its deployment succeeds.
+2. With the issued two-host certificate, review/apply only the prepare proposal: both aliases and new A/AAAA, no redirect and no SITE_URL change. Verify new-host HTTPS serves the existing app. The old host continues working.
+3. Owner merges PR38 after new-host HTTPS is available. Its workflow publishes `/smb` and explicit S3 objects for `/blog/` and `/care-demo/`, so new navigation works **before** edge redirects. The retained `/new` alias also works without an edge function. Wait for this code deployment, then test both hosts without submitting customer forms.
+4. Activate the reviewed cutover proposal only after those checks: add the static viewer function and SITE_URL change. Keep `/api/*` untouched. Confirm old-host business links and referral queries redirect correctly and canonical routes work. Use the fresh live template to avoid overwriting intervening infrastructure changes.
+5. Email From/Reply-To activation is a separate gate: verify new domain authentication, receiving inbox and separately approved domain-restricted key capability. Existing verified From is deliberately the fallback; never rotate or print a credential in this procedure. Frozen existing messages remain unchanged.
+
+The certificate parameter file for this run must use the actually issued us-east-1 certificate, not a placeholder. Updated progress and AWS approvals belong in the private operational record, not guessed source defaults. No merge or application is performed by these instructions.
