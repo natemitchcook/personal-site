@@ -55,6 +55,7 @@
       if (variant === 'after') { const ul = document.createElement('ul'); errors.forEach(error => { const li = document.createElement('li'); const a = document.createElement('a'); a.href = '#' + error.field; a.textContent = error.text; a.addEventListener('click', e => { e.preventDefault(); $(error.field).focus(); }); li.append(a); ul.append(li); $(error.field).setAttribute('aria-invalid', 'true'); }); $('errors').append(ul); }
       $('errors').hidden = false; $('errors').focus(); $('status').textContent = 'No receipt created for these invalid choices.'; return;
     }
+    $('errors').hidden = true; $('errors').replaceChildren();
     pending = input; details($('summary'), input); $('quote-form').hidden = true; $('review').hidden = false; $('receipt').hidden = true; $('review').focus();
   });
   $('edit').addEventListener('click', () => { $('review').hidden = true; $('quote-form').hidden = false; pending = null; $('service').focus(); });
