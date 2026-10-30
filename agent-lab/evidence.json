@@ -1,0 +1,32 @@
+{
+  "kind": "controlled-fixture-engineering-checks",
+  "recordedAt": "2026-10-30T01:56:21.739752+00:00",
+  "command": "node --test agent-lab/test.cjs",
+  "result": {
+    "tests": 11,
+    "passed": 11,
+    "failed": 0
+  },
+  "scope": [
+    "pure model validation, eligibility, stable repeated-submit receipt, recovery/reset",
+    "same business-rule matrix for both variants",
+    "static source contracts for synthetic-only fields, no network/storage APIs, labels/focus/reduced-motion"
+  ],
+  "notMeasured": [
+    "independent browser-agent task success or failure",
+    "mobile/desktop rendering",
+    "screen-reader usability",
+    "customer behavior, conversion, revenue",
+    "server delivery or real booking",
+    "continuous monitoring"
+  ],
+  "browserAttempt": "Local Chromium launch blocked by sandbox: socket() Operation not permitted. No browser result claimed.",
+  "sourceSha256": {
+    "index.html": "74655a28f341efeb0371bfa5885ff57e16fd854946d598720fbc553f2895cd64",
+    "model.js": "9daeb3d323435762c29323f14f7e92a92a346f54ab2fb3b87fdd0983f2f17ad6",
+    "lab.js": "e8cfcf694e40e698d32e72e99558636ac2158824fd921bb966e036945a933ca1",
+    "lab.css": "707ae6867aaf7a3f873e667224fa7348459b91a2c033d9edfcc0ec76fa0a1e05",
+    "test.cjs": "ac643c67ca3796dce7fbd145b662fff042c5a40d8a9220f6ab66f482c0bf2942"
+  },
+  "testOutput": "\u2714 before: valid synthetic request creates exactly one stable local receipt (4.454048ms)\n\u2714 before: missing, invalid and out-of-area requests never create a receipt (0.233134ms)\n\u2714 before: recovery and reset preserve explicit boundaries (0.205162ms)\n\u2714 before: extra contact fields are ignored, never copied into receipt (0.381663ms)\n\u2714 after: valid synthetic request creates exactly one stable local receipt (0.147037ms)\n\u2714 after: missing, invalid and out-of-area requests never create a receipt (0.089993ms)\n\u2714 after: recovery and reset preserve explicit boundaries (0.208818ms)\n\u2714 after: extra contact fields are ignored, never copied into receipt (0.102431ms)\n\u2714 same rule matrix applies to both variants (0.477464ms)\n\u2714 HTML uses fixed synthetic identity and no free-text input, external submission or tracking (0.588097ms)\n\u2714 accessible improved controls, review focus and reduced motion are implemented (0.225432ms)\n\u2139 tests 11\n\u2139 suites 0\n\u2139 pass 11\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 103.058856\n"
+}
