@@ -66,7 +66,7 @@ def sanitize_attribution(value):
 REVIEW_CONSENT_COPY = 'Email me my free website review and related updates about this request.'
 MARKETING_CONSENT_COPY = 'Also email me Welvia tips, product updates and offers. I can unsubscribe anytime.'
 CONSENT_VERSION = '2026-10-29-v1'
-SOURCE_PAGES = ['/', '/index.html', '/new', '/business']
+SOURCE_PAGES = ['/', '/index.html', '/new','/smb', '/business']
 
 def save_interest(bid,data):
     """Unauthenticated leads never update verified owner answers or authorize work."""

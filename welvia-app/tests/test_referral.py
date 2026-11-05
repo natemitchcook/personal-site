@@ -11,7 +11,7 @@ from unittest.mock import MagicMock, patch
 
 ROOT = Path(__file__).resolve().parents[1]
 os.environ.setdefault('TABLE_NAME', 'test')
-os.environ.setdefault('SITE_URL', 'https://welvia.natemitchcook.com')
+os.environ.setdefault('SITE_URL', 'https://welvia.app')
 sys.path.insert(0, str(ROOT / 'backend'))
 with patch('boto3.resource'):
     import index as app
