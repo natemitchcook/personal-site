@@ -1,0 +1,20 @@
+name: Validate controlled agent lab
+on:
+  pull_request:
+    paths: ['agent-lab/**', '.github/workflows/validate-agent-lab.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check syntax and fixture contracts
+        run: |
+          node --check agent-lab/model.js
+          node --check agent-lab/lab.js
+          node --test agent-lab/test.cjs
