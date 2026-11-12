@@ -16,7 +16,7 @@ await copyFile(js,'dist/app.js');
 await copyFile(css,'dist/app.css');
 
 execFileSync('python3',['scripts/build_editorial.py'],{stdio:'inherit'});
-execFileSync('python3',['scripts/check_editorial.py'],{stdio:'inherit'});
+
 // S3 REST origins do not resolve extensionless routes to index.html.
 // Publish the same authenticated business shell at the canonical route.
 await copyFile('dist/index.html','dist/business');
@@ -28,3 +28,7 @@ await copyFile('care/demo/index.html','dist/care-demo.html');
 
 // Founder-led variant retains the shared homepage sections and application assets.
 execFileSync('python3',['scripts/build_founder.py'],{stdio:'inherit'});
+
+execFileSync('python3',['scripts/build_navigation.py'],{stdio:'inherit'});
+execFileSync('python3',['scripts/check_editorial.py'],{stdio:'inherit'});
+execFileSync('node',['--test','tests/migration.test.cjs'],{stdio:'inherit'});

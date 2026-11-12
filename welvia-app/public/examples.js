@@ -1,5 +1,11 @@
 (() => {
  const examples = {
+ software: [
+  'Can you help me compare this software and request a demo for my team?',
+  'The company publishes its features, plan details and demo request process. I can help you find the relevant information and prepare questions about your team’s needs.',
+  'How large is your team, and what workflow do you want to improve? I can prepare a demo request. The company will confirm availability, compatibility and pricing before you commit.',
+  'Next step: prepare a demo request, with your approval.'
+ ],
  bagels: [
   'I need breakfast for 12 people tomorrow at 9. Can I get bagels delivered to my office?',
   'The bagel shop offers breakfast catering with assorted bagels, cream cheese and coffee. Delivery is available within its published service area, and catering requests need at least 24 hours’ notice.',

@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const code = fs.readFileSync('public/analytics.js','utf8');
 test('all pages load GA once; business events omit tokens, referrer paths and form values',()=>{
  const scripts=[],listeners={};
- const location=new URL('https://welvia.natemitchcook.com/?business=test-kitchen&token=SECRET#invite=SECRET');
+ const location=new URL('https://welvia.app/?business=test-kitchen&token=SECRET#invite=SECRET');
  const document={title:'Welvia',referrer:'https://example.com/private?email=SECRET',
  head:{appendChild:s=>scripts.push(s)},createElement:()=>({}),addEventListener:(n,f)=>listeners[n]=f};
  const window={addEventListener:(n,f)=>listeners[n]=f};

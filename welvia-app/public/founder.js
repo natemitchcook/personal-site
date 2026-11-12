@@ -2,7 +2,7 @@
   const word = document.getElementById('business-word');
   const button = document.querySelector('.cycle-toggle');
   if (!word || !button) return;
-  const words = ['a restaurant.', 'a plumber.', 'a dry cleaner.', 'a caterer.', 'a cleaning service.', 'a business like yours.'];
+  const words = ['a local shop.', 'a professional service.', 'a software company.', 'a healthcare practice.', 'a restaurant.', 'a business like yours.'];
   const motion = matchMedia('(prefers-reduced-motion: reduce)');
   let paused = motion.matches, index = 0, timer;
   function sync() {

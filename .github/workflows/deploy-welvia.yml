@@ -49,7 +49,14 @@ jobs:
           aws lambda wait function-updated --function-name welvia-evaluations-service
           aws s3 sync dist/ "s3://$bucket/" --delete --cache-control 'public,max-age=300'
           aws s3 cp dist/business "s3://$bucket/business" --content-type 'text/html; charset=utf-8' --cache-control 'public,max-age=300'
-          aws s3 cp dist/new "s3://$bucket/new" --content-type 'text/html; charset=utf-8' --cache-control 'public,max-age=300'
+          for page in smb new journal; do
+            aws s3 cp "dist/$page" "s3://$bucket/$page" --content-type 'text/html; charset=utf-8' --cache-control 'public,max-age=300'
+          done
+          # Serve directory URLs before edge redirects are activated. A private S3
+          # REST origin does not resolve directory requests to index.html.
+          for directory in blog care-demo; do
+            aws s3api put-object --bucket "$bucket" --key "$directory/" --body "dist/$directory/index.html" --content-type 'text/html; charset=utf-8' --cache-control 'public,max-age=300'
+          done
           # Extensionless article objects must render as HTML, not downloads.
           for article in dist/blog/*; do
             if [ -f "$article" ] && [[ "${article##*/}" != *.* ]]; then
