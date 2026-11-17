@@ -59,6 +59,13 @@ jobs:
           aws s3 cp cards/index.html s3://natemitchcook.com/cards \
             --content-type "text/html; charset=utf-8"
 
+      - name: Serve exact /cma URL with noindex headers
+        run: |
+          aws s3 cp cma/index.html s3://natemitchcook.com/cma \
+            --content-type "text/html; charset=utf-8" \
+            --cache-control "public,max-age=300" \
+            --metadata "robots-tag=noindex,nofollow,noarchive,nosnippet"
+
       - name: Set content types
         run: |
           aws s3 cp s3://natemitchcook.com/index.html s3://natemitchcook.com/index.html \
