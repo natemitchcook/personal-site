@@ -51,6 +51,8 @@ jobs:
             --exclude ".gitignore" \
             --exclude "package.json" \
             --exclude "profile-original.png" \
+            --exclude "cma" \
+            --exclude "strata" \
             --exclude "ruffi/*" \
             --delete
 
