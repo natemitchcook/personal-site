@@ -52,9 +52,9 @@ Validation: npm test; node --test tests/analytics.test.cjs; npm run build. Test 
 
 # Welvia working pilot
 
-Homepage: https://welvia.natemitchcook.com/
-Private example business: https://welvia.natemitchcook.com/business?business=test-kitchen
-Avalon proposal: https://welvia.natemitchcook.com/business?business=avalon
+Homepage: https://welvia.app/
+Private example business: https://welvia.app/business?business=test-kitchen
+Avalon proposal: https://welvia.app/business?business=avalon
 
 This app lives alongside the personal website in `welvia-app/`; it has its own AWS stack, asset bucket, CloudFront distribution, API, database and GitHub deployment role. The personal homepage and cards remain separate.
 
@@ -140,7 +140,7 @@ Google's admin; review its automatic collection settings before enabling
 additional features or user-provided data collection. No indexing settings change.
 Keep this property when moving domains and update the stream URL at launch.
 
-Business proposal URLs use `https://welvia.natemitchcook.com/business?business=<business_id>`. The query selects a stored record; existing invitation authorization still applies. The build emits an extensionless HTML shell and deployment sets its content type explicitly.
+Business proposal URLs use `https://welvia.app/business?business=<business_id>`. The query selects a stored record; existing invitation authorization still applies. The build emits an extensionless HTML shell and deployment sets its content type explicitly.
 
 ## Private email previews
 

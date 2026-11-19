@@ -2,7 +2,7 @@ import os, sys, json, time, unittest
 from pathlib import Path
 from unittest.mock import patch, MagicMock
 os.environ['TABLE_NAME']='test'
-os.environ['SITE_URL']='https://welvia.natemitchcook.com'
+os.environ['SITE_URL']='https://welvia.app'
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'backend'))
 with patch('boto3.resource'): import index as app
 import reviews

@@ -4,7 +4,7 @@ from pathlib import Path
 from html.parser import HTMLParser
 from urllib.parse import urlsplit,unquote
 from xml.etree import ElementTree as ET
-ROOT=Path(__file__).resolve().parents[1];D=ROOT/'dist';P=json.loads((ROOT/'content/posts.json').read_text());H='https://welvia.natemitchcook.com'
+ROOT=Path(__file__).resolve().parents[1];D=ROOT/'dist';P=json.loads((ROOT/'content/posts.json').read_text());H='https://welvia.app'
 class Page(HTMLParser):
  def __init__(self,text):
   super().__init__();self.tags=[];self.feed(text)
@@ -38,7 +38,7 @@ assert len(urls)==len(P)+1 and all('/blog/' in u and '?' not in u for u in urls)
 items=ET.parse(D/'blog/feed.xml').findall('./channel/item')
 assert len(items)==len(P)
 expected={H+'/blog/'+p['slug'] for p in P}
-assert set(urls)==expected|{H+'/blog/index.html'}
+assert set(urls)==expected|{H+'/blog/'}
 assert {item.findtext('link') for item in items}==expected
 assert {item.findtext('guid') for item in items}==expected
 assert 'noindex,nofollow' in (D/'index.html').read_text() and 'noindex,nofollow' in (D/'brand.html').read_text()

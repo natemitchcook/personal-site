@@ -1,6 +1,6 @@
 import json,uuid,os,urllib.request,urllib.error
 from datetime import datetime,timedelta
-BASE=os.environ.get('WELVIA_API_BASE','https://welvia.natemitchcook.com').rstrip('/')
+BASE=os.environ.get('WELVIA_API_BASE','https://welvia.app').rstrip('/')
 TOKEN=os.environ['WELVIA_INVITE_TOKEN']
 results=[]
 def call(path,data=None,token=TOKEN):
