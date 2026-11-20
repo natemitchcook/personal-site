@@ -66,14 +66,14 @@ jobs:
           aws s3 cp cma/index.html s3://natemitchcook.com/cma \
             --content-type "text/html; charset=utf-8" \
             --cache-control "public,max-age=300" \
-            --metadata "robots-tag=noindex,nofollow,noarchive,nosnippet"
+            --metadata '{"robots-tag":"noindex,nofollow,noarchive,nosnippet"}'
 
       - name: Serve exact /strata URL
         run: |
           aws s3 cp strata/index.html s3://natemitchcook.com/strata \
             --content-type "text/html; charset=utf-8" \
             --cache-control "public,max-age=300" \
-            --metadata "robots-tag=noindex,nofollow"
+            --metadata '{"robots-tag":"noindex,nofollow"}'
 
       - name: Set content types
         run: |
